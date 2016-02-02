@@ -6,6 +6,7 @@ using FluentValidation;
 using justinobney.gymbuddy.api.Data.Devices;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
+using justinobney.gymbuddy.api.Interfaces;
 using MediatR;
 
 namespace justinobney.gymbuddy.api.Requests.Users
@@ -60,4 +61,11 @@ namespace justinobney.gymbuddy.api.Requests.Users
         }
     }
 
+    public class CreateUserCommandMapper : IAutoMapperConfiguration
+    {
+        public void Configure(IMapperConfiguration cfg)
+        {
+            cfg.CreateMap<CreateUserCommand, User>();
+        }
+    }
 }

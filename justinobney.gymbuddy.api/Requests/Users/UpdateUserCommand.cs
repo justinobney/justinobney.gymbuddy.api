@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
+using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 
@@ -36,6 +37,15 @@ namespace justinobney.gymbuddy.api.Requests.Users
             _mapper.Map(message, user);
             user.ModifiedAt = DateTime.UtcNow;
             await _userRepo.UpdateAsync(user);
+        }
+    }
+
+    public class UpdateUserCommandMapper : IAutoMapperConfiguration
+    {
+        public void Configure(IMapperConfiguration cfg)
+        {
+            cfg.CreateMap<UpdateUserCommand, User>()
+                .ForMember(dest => dest.CreatedAt, opts => opts.Ignore());
         }
     }
 }
