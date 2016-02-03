@@ -1,17 +1,18 @@
-using System.Data.Entity;
 using System.Linq;
+using AutoMapper.QueryableExtensions;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Requests.Decorators;
+using justinobney.gymbuddy.api.Responses;
 using MediatR;
 
 namespace justinobney.gymbuddy.api.Requests.Users
 {
-    public class GetUsersQuery : IRequest<IQueryable<User>>
+    public class GetUsersQuery : IRequest<IQueryable<ProfileListing>>
     {
     }
 
     [DoNotValidate]
-    public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IQueryable<User>>
+    public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IQueryable<ProfileListing>>
     {
         private readonly UserRepository _userRepo;
 
@@ -20,9 +21,10 @@ namespace justinobney.gymbuddy.api.Requests.Users
             _userRepo = userRepo;
         }
 
-        public IQueryable<User> Handle(GetUsersQuery message)
+        public IQueryable<ProfileListing> Handle(GetUsersQuery message)
         {
-            return _userRepo.GetAll().Include(u=>u.Devices);
+            return _userRepo.GetAll()
+                .ProjectTo<ProfileListing>(MappingConfig.Config);
         }
     }
 }

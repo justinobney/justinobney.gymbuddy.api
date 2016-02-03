@@ -233,6 +233,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IAuthorize.cs" />
+    <Compile Include="Interfaces\IAutoMapperConfiguration.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Interfaces\IHasTouchedProperties.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
@@ -251,6 +252,7 @@
     <Compile Include="Requests\Users\GetUsersQuery.cs" />
     <Compile Include="Requests\Users\UpdateUserCommand.cs" />
     <Compile Include="Responses\ApiError.cs" />
+    <Compile Include="Responses\ProfileListing.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />

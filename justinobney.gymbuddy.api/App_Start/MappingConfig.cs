@@ -13,7 +13,7 @@ namespace justinobney.gymbuddy.api
     {
         public static IMapper Register()
         {
-            var config = new MapperConfiguration(cfg =>
+            Config = new MapperConfiguration(cfg =>
             {
                 Assembly
                     .GetExecutingAssembly()
@@ -26,10 +26,12 @@ namespace justinobney.gymbuddy.api
                     });
             });
 
-            Instance = config.CreateMapper();
+            Instance = Config.CreateMapper();
 
             return Instance;
         }
+
+        public static MapperConfiguration Config { get; set; }
 
         public static IMapper Instance { get; set; }
     }
