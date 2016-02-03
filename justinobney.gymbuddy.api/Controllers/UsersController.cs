@@ -1,9 +1,11 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Requests.Users;
+using justinobney.gymbuddy.api.Responses;
 using MediatR;
 
 namespace justinobney.gymbuddy.api.Controllers
@@ -18,6 +20,7 @@ namespace justinobney.gymbuddy.api.Controllers
         }
 
         // GET: api/Users
+        [ResponseType(typeof(IEnumerable<ProfileListing>))]
         public IHttpActionResult GetUsers()
         {
             var users = _mediator.Send(new GetUsersQuery());
@@ -25,11 +28,11 @@ namespace justinobney.gymbuddy.api.Controllers
         }
 
         // GET: api/Users/5
-        [ResponseType(typeof(User))]
-        public async Task<IHttpActionResult> GetUser(long id)
+        [ResponseType(typeof(ProfileListing))]
+        public async Task<IHttpActionResult> GetUser(string id)
         {
             //var user = await _mediator.SendAsync(new GetByIdQuery<User> {Id = id});
-            var user = await _mediator.SendAsync(new GetUserQuery {Id = id});
+            var user = await _mediator.SendAsync(new GetUserQuery {DeviceId = id});
             if (user == null)
             {
                 return NotFound();

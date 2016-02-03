@@ -1,19 +1,23 @@
+using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using FluentValidation;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Decorators;
+using justinobney.gymbuddy.api.Responses;
 using MediatR;
 
 namespace justinobney.gymbuddy.api.Requests.Users
 {
-    public class GetUserQuery : IAsyncRequest<User>
+    public class GetUserQuery : IAsyncRequest<ProfileListing>
     {
-        public long Id { get; set; }
+        public string DeviceId { get; set; }
     }
 
     [Authorize]
-    public class GetUserQueryHandler : IAsyncRequestHandler<GetUserQuery, User>
+    public class GetUserQueryHandler : IAsyncRequestHandler<GetUserQuery, ProfileListing>
     {
         private readonly UserRepository _userRepo;
 
@@ -22,9 +26,14 @@ namespace justinobney.gymbuddy.api.Requests.Users
             _userRepo = userRepo;
         }
 
-        public Task<User> Handle(GetUserQuery message)
+        public Task<ProfileListing> Handle(GetUserQuery message)
         {
-            return _userRepo.GetByIdAsync(message.Id);
+            return _userRepo.Find(user =>
+                user.Devices
+                    .Any(device => device.DeviceId == message.DeviceId)
+                )
+                .ProjectTo<ProfileListing>(MappingConfig.Config)
+                .FirstOrDefaultAsync();
         }
     }
 
@@ -40,7 +49,7 @@ namespace justinobney.gymbuddy.api.Requests.Users
     {
         public GetUserQueryValidator()
         {
-            RuleFor(request => request.Id).GreaterThan(0);
+            RuleFor(request => request.DeviceId).NotEmpty();
         }
     }
 }
