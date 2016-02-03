@@ -219,6 +219,7 @@
     <Compile Include="Data\Users\UserRepository.cs" />
     <Compile Include="Data\AppContext.cs" />
     <Compile Include="DependencyResolution\DefaultRegistry.cs" />
+    <Compile Include="DependencyResolution\GenericCrudRequestsConvention.cs" />
     <Compile Include="DependencyResolution\IoC.cs" />
     <Compile Include="DependencyResolution\StructureMapDependencyScope.cs" />
     <Compile Include="DependencyResolution\StructureMapScopeModule.cs" />
@@ -246,6 +247,7 @@
     <Compile Include="Requests\Decorators\AuthorizeHandler.cs" />
     <Compile Include="Requests\Decorators\LoggingHandler.cs" />
     <Compile Include="Requests\Decorators\ValidateHandler.cs" />
+    <Compile Include="Requests\Generic\GetById.cs" />
     <Compile Include="Requests\Users\CreateUserCommand.cs" />
     <Compile Include="Requests\Users\DeleteUserCommand.cs" />
     <Compile Include="Requests\Users\GetUserQuery.cs" />

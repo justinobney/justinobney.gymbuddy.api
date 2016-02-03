@@ -40,8 +40,6 @@ namespace justinobney.gymbuddy.api.DependencyResolution
                 {
                     scan.TheCallingAssembly();
                     scan.AssemblyContainingType(typeof (LoggingHandler<,>));
-                    scan.WithDefaultConventions();
-
 
                     scan.AddAllTypesOf(typeof (IRequestHandler<,>));
                     scan.AddAllTypesOf(typeof (IAsyncRequestHandler<,>));
@@ -62,14 +60,16 @@ namespace justinobney.gymbuddy.api.DependencyResolution
                     asyncHandlerType.DecorateAllWith(typeof (AuthorizeHandlerAsync<,>), HasAttribute(typeof (Authorize)));
                     asyncHandlerType.DecorateAllWith(typeof (LoggingHandlerAsync<,>), DoesNotHaveAttribute(typeof (DoNotLog)));
 
+                    For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => ctx.GetInstance(t));
+                    For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => ctx.GetAllInstances(t));
+                    For<IMediator>().Use<Mediator>();
+
+                    MappingConfig.Register();
+                    For<IMapper>().Use(_ => MappingConfig.Instance);
+
+                    scan.Convention<GenericCrudRequestsConvention>();
+                    scan.WithDefaultConventions();
                 });
-
-            For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => ctx.GetInstance(t));
-            For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => ctx.GetAllInstances(t));
-            For<IMediator>().Use<Mediator>();
-
-            MappingConfig.Register();
-            For<IMapper>().Use(_ => MappingConfig.Instance);
         }
 
         private static Func<Instance, bool> DoesNotHaveAttribute(Type attr)
