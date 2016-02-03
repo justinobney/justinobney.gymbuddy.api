@@ -1,4 +1,4 @@
-using System;
+using System.Linq;
 using System.Threading.Tasks;
 using justinobney.gymbuddy.api.Data;
 using justinobney.gymbuddy.api.Interfaces;
@@ -12,7 +12,6 @@ namespace justinobney.gymbuddy.api.Requests.Generic
         public long Id { get; set; }
     }
 
-    [DoNotLog]
     [DoNotValidate]
     public class GetByIdQueryHandler<TEntity> : IAsyncRequestHandler<GetByIdQuery<TEntity>, TEntity> where TEntity : class, IEntity
     {
@@ -25,7 +24,7 @@ namespace justinobney.gymbuddy.api.Requests.Generic
 
         Task<TEntity> IAsyncRequestHandler<GetByIdQuery<TEntity>, TEntity>.Handle(GetByIdQuery<TEntity> message)
         {
-            throw new NotImplementedException();
+            return _repo.GetByIdAsync(message.Id);
         }
     }
 }

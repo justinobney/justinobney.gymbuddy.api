@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using AutoMapper.QueryableExtensions;
 using justinobney.gymbuddy.api.Data.Users;
+using justinobney.gymbuddy.api.Requests.Generic;
 using justinobney.gymbuddy.api.Requests.Users;
 using justinobney.gymbuddy.api.Responses;
 using MediatR;
@@ -23,16 +26,29 @@ namespace justinobney.gymbuddy.api.Controllers
         [ResponseType(typeof(IEnumerable<ProfileListing>))]
         public IHttpActionResult GetUsers()
         {
-            var users = _mediator.Send(new GetUsersQuery());
+            var request = new GetByPredicateQuery<User>
+            {
+                Predicate = u => true
+            };
+            var users = _mediator.Send(request)
+                .ProjectTo<ProfileListing>(MappingConfig.Config)
+                .ToList();
             return Ok(users);
         }
 
         // GET: api/Users/5
         [ResponseType(typeof(ProfileListing))]
-        public async Task<IHttpActionResult> GetUser(string id)
+        public IHttpActionResult GetUser(string id)
         {
-            //var user = await _mediator.SendAsync(new GetByIdQuery<User> {Id = id});
-            var user = await _mediator.SendAsync(new GetUserQuery {DeviceId = id});
+            var request = new GetByPredicateQuery<User>
+            {
+                Predicate = u => u.Devices.Any(device => device.DeviceId == id)
+            };
+
+            var user = _mediator.Send(request)
+                .ProjectTo<ProfileListing>(MappingConfig.Config)
+                .FirstOrDefault();
+
             if (user == null)
             {
                 return NotFound();

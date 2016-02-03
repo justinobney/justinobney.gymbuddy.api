@@ -248,10 +248,9 @@
     <Compile Include="Requests\Decorators\LoggingHandler.cs" />
     <Compile Include="Requests\Decorators\ValidateHandler.cs" />
     <Compile Include="Requests\Generic\GetById.cs" />
+    <Compile Include="Requests\Generic\GetByPredicateQuery.cs" />
     <Compile Include="Requests\Users\CreateUserCommand.cs" />
     <Compile Include="Requests\Users\DeleteUserCommand.cs" />
-    <Compile Include="Requests\Users\GetUserQuery.cs" />
-    <Compile Include="Requests\Users\GetUsersQuery.cs" />
     <Compile Include="Requests\Users\UpdateUserCommand.cs" />
     <Compile Include="Responses\ApiError.cs" />
     <Compile Include="Responses\ProfileListing.cs" />

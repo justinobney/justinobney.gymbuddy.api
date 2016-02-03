@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Generic;
@@ -24,12 +25,27 @@ namespace justinobney.gymbuddy.api.DependencyResolution
                 .ForEach(
                     t =>
                     {
-                        var getByIdOfEntity = typeof(GetByIdQuery<>).MakeGenericType(t);
-                        var requestingType = typeof(IAsyncRequestHandler<,>).MakeGenericType(getByIdOfEntity, t);
-                        var concreteType = typeof(GetByIdQueryHandler<>).MakeGenericType(t);
-                        registry.AddType(requestingType, concreteType);
+                        RegisterGetByIdQuery(registry, t);
+                        RegisterGetByPredicateQuery(registry, t);
                     }
                 );
+        }
+        
+        private static void RegisterGetByIdQuery(Registry registry, Type type)
+        {
+            var getByIdOfEntity = typeof (GetByIdQuery<>).MakeGenericType(type);
+            var requestingType = typeof (IAsyncRequestHandler<,>).MakeGenericType(getByIdOfEntity, type);
+            var concreteType = typeof (GetByIdQueryHandler<>).MakeGenericType(type);
+            registry.AddType(requestingType, concreteType);
+        }
+
+        private void RegisterGetByPredicateQuery(Registry registry, Type type)
+        {
+            var queryableType = typeof(IQueryable<>).MakeGenericType(type);
+            var getByPredicateQuery = typeof(GetByPredicateQuery<>).MakeGenericType(type);
+            var requestingType = typeof(IRequestHandler<,>).MakeGenericType(getByPredicateQuery, queryableType);
+            var concreteType = typeof(GetByPredicateQueryHandler<>).MakeGenericType(type);
+            registry.AddType(requestingType, concreteType);
         }
     }
 }
