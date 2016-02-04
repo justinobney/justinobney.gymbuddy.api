@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -42,7 +44,11 @@ namespace justinobney.gymbuddy.api.Controllers
         {
             var request = new GetByPredicateQuery<User>
             {
-                Predicate = u => u.Devices.Any(device => device.DeviceId == id)
+                Predicate = u => u.Devices.Any(device => device.DeviceId == id),
+                Includes = new List<Expression<Func<User, object>>>
+                {
+                    u => u.Devices
+                }
             };
 
             var user = _mediator.Send(request)
