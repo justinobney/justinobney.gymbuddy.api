@@ -26,7 +26,7 @@ namespace justinobney.gymbuddy.api.Controllers
         [ResponseType(typeof(IEnumerable<ProfileListing>))]
         public IHttpActionResult GetUsers()
         {
-            var users = _mediator.Send(new GetByPredicateQuery<User>())
+            var users = _mediator.Send(new GetAllByPredicateQuery<User>())
                 .ProjectTo<ProfileListing>(MappingConfig.Config)
                 .ToList();
 
@@ -38,7 +38,7 @@ namespace justinobney.gymbuddy.api.Controllers
         [Route("api/Users/{deviceId}")]
         public IHttpActionResult GetUser(string deviceId)
         {
-            var request = new GetByPredicateQuery<User>
+            var request = new GetAllByPredicateQuery<User>
             {
                 Predicate = u => u.Devices.Any(device => device.DeviceId == deviceId)
             };

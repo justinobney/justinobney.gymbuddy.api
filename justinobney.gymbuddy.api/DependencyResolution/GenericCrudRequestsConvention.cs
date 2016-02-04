@@ -42,9 +42,9 @@ namespace justinobney.gymbuddy.api.DependencyResolution
         private void RegisterGetByPredicateQuery(Registry registry, Type type)
         {
             var queryableType = typeof(IQueryable<>).MakeGenericType(type);
-            var getByPredicateQuery = typeof(GetByPredicateQuery<>).MakeGenericType(type);
+            var getByPredicateQuery = typeof(GetAllByPredicateQuery<>).MakeGenericType(type);
             var requestingType = typeof(IRequestHandler<,>).MakeGenericType(getByPredicateQuery, queryableType);
-            var concreteType = typeof(GetByPredicateQueryHandler<>).MakeGenericType(type);
+            var concreteType = typeof(GetAllByPredicateQueryHandler<>).MakeGenericType(type);
             registry.AddType(requestingType, concreteType);
         }
     }
