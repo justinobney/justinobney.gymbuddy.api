@@ -12,7 +12,6 @@ namespace justinobney.gymbuddy.api.Requests.Generic
     public class GetByPredicateQuery<TEntity> : IRequest<IQueryable<TEntity>>
     {
         public Expression<Func<TEntity, bool>> Predicate { get; set; } = (entity => true);
-        public IEnumerable<Expression<Func<TEntity, object>>> Includes { get; set; } = new List<Expression<Func<TEntity, object>>>();
     }
 
     [DoNotValidate]
@@ -27,12 +26,7 @@ namespace justinobney.gymbuddy.api.Requests.Generic
 
         public IQueryable<TEntity> Handle(GetByPredicateQuery<TEntity> message)
         {
-            return message.Includes
-                .Aggregate(
-                    _repo.GetAll(),
-                    (entities, expression) => entities.Include(expression)
-                )
-                .Where(message.Predicate);
+            return _repo.GetAll().Where(message.Predicate);
         }
     }
 }

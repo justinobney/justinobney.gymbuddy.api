@@ -42,11 +42,7 @@ namespace justinobney.gymbuddy.api.Controllers
         {
             var request = new GetByPredicateQuery<User>
             {
-                Predicate = u => u.Devices.Any(device => device.DeviceId == deviceId),
-                Includes = new List<Expression<Func<User, object>>>
-                {
-                    u => u.Devices
-                }
+                Predicate = u => u.Devices.Any(device => device.DeviceId == deviceId)
             };
 
             var user = _mediator.Send(request)
