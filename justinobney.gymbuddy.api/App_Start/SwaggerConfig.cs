@@ -12,6 +12,7 @@ namespace justinobney.gymbuddy.api
         public static void Register()
         {
             var thisAssembly = typeof(SwaggerConfig).Assembly;
+            var containingAssembly = typeof(WebApiApplication).Assembly;
 
             GlobalConfiguration.Configuration 
                 .EnableSwagger(c =>
@@ -173,7 +174,7 @@ namespace justinobney.gymbuddy.api
                         // The file must be included in your project as an "Embedded Resource", and then the resource's
                         // "Logical Name" is passed to the method as shown below.
                         //
-                        //c.InjectStylesheet(containingAssembly, "Swashbuckle.Dummy.SwaggerExtensions.testStyles1.css");
+                        c.InjectStylesheet(containingAssembly, "justinobney.swagger.ui.css");
 
                         // Use the "InjectJavaScript" option to invoke one or more custom JavaScripts after the swagger-ui
                         // has loaded. The file must be included in your project as an "Embedded Resource", and then the resource's

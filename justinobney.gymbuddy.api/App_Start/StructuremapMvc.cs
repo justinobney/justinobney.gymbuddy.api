@@ -17,18 +17,23 @@
 
 using System;
 using System.IO;
-using System.Web.Mvc;
-using justinobney.gymbuddy.api;
-using justinobney.gymbuddy.api.DependencyResolution;
-using Microsoft.Web.Infrastructure.DynamicModuleHelper;
-using StructureMap;
+using justinobney.gymbuddy.api.App_Start;
+
 using WebActivatorEx;
 
 [assembly: PreApplicationStartMethod(typeof(StructuremapMvc), "Start")]
 [assembly: ApplicationShutdownMethod(typeof(StructuremapMvc), "End")]
 
-namespace justinobney.gymbuddy.api {
-    public static class StructuremapMvc {
+namespace justinobney.gymbuddy.api.App_Start {
+	using System.Web.Mvc;
+
+    using Microsoft.Web.Infrastructure.DynamicModuleHelper;
+
+	using justinobney.gymbuddy.api.DependencyResolution;
+
+    using StructureMap;
+    
+	public static class StructuremapMvc {
         #region Public Properties
 
         public static StructureMapDependencyScope StructureMapDependencyScope { get; set; }
@@ -43,12 +48,12 @@ namespace justinobney.gymbuddy.api {
 		
         public static void Start() {
             IContainer container = IoC.Initialize();
-            File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "container.txt"), container.WhatDoIHave());
-            container.AssertConfigurationIsValid();
-
             StructureMapDependencyScope = new StructureMapDependencyScope(container);
             DependencyResolver.SetResolver(StructureMapDependencyScope);
             DynamicModuleUtility.RegisterModule(typeof(StructureMapScopeModule));
+
+            File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "container.txt"), container.WhatDoIHave());
+            container.AssertConfigurationIsValid();
         }
 
         #endregion

@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="StructuremapWebApi.cs" company="Web Advanced">
+// <copyright file="ControllerConvention.cs" company="Web Advanced">
 // Copyright 2012 Web Advanced (www.webadvanced.com)
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,23 +15,32 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.IO;
-using System.Web.Http;
-using justinobney.gymbuddy.api;
-using justinobney.gymbuddy.api.App_Start;
-using justinobney.gymbuddy.api.DependencyResolution;
+using StructureMap;
+using StructureMap.Graph.Scanning;
 
-[assembly: WebActivatorEx.PostApplicationStartMethod(typeof(StructuremapWebApi), "Start")]
+namespace justinobney.gymbuddy.api.DependencyResolution {
+    using System;
+    using System.Web.Mvc;
 
-namespace justinobney.gymbuddy.api {
-    public static class StructuremapWebApi {
-        public static void Start() {
-			var container = StructuremapMvc.StructureMapDependencyScope.Container;
-            GlobalConfiguration.Configuration.DependencyResolver = new StructureMapWebApiDependencyResolver(container);
+    using StructureMap.Configuration.DSL;
+    using StructureMap.Graph;
+    using StructureMap.Pipeline;
+    using StructureMap.TypeRules;
 
-            File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "container.txt"), container.WhatDoIHave());
-            container.AssertConfigurationIsValid();
+    public class ControllerConvention : IRegistrationConvention {
+        #region Public Methods and Operators
+
+        public void Process(Type type, Registry registry) {
+            if (type.CanBeCastTo<Controller>() && !type.IsAbstract) {
+                registry.For(type).LifecycleIs(new UniquePerRequestLifecycle());
+            }
+        }
+
+        #endregion
+
+        public void ScanTypes(TypeSet types, Registry registry)
+        {
+            throw new NotImplementedException();
         }
     }
 }

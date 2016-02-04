@@ -1,7 +1,10 @@
-using System.Web;
-using StructureMap.Web.Pipeline;
-
 namespace justinobney.gymbuddy.api.DependencyResolution {
+    using System.Web;
+
+    using justinobney.gymbuddy.api.App_Start;
+
+    using StructureMap.Web.Pipeline;
+
     public class StructureMapScopeModule : IHttpModule {
         #region Public Methods and Operators
 
