@@ -28,13 +28,10 @@ namespace justinobney.gymbuddy.api.Controllers
         [ResponseType(typeof(IEnumerable<ProfileListing>))]
         public IHttpActionResult GetUsers()
         {
-            var request = new GetByPredicateQuery<User>
-            {
-                Predicate = u => true
-            };
-            var users = _mediator.Send(request)
+            var users = _mediator.Send(new GetByPredicateQuery<User>())
                 .ProjectTo<ProfileListing>(MappingConfig.Config)
                 .ToList();
+
             return Ok(users);
         }
 

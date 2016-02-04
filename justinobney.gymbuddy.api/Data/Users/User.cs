@@ -8,7 +8,6 @@ namespace justinobney.gymbuddy.api.Data.Users
 {
     public class User :IEntity, IHasTouchedProperties
     {
-        private List<Device> _devices = new List<Device>();
         public long Id { get; set; }
         public string Name { get; set; }
         public FitnessLevel FitnessLevel { get; set; }
@@ -16,11 +15,7 @@ namespace justinobney.gymbuddy.api.Data.Users
         public Gender Gender { get; set; }
         public Gender FilterGender { get; set; }
 
-        public List<Device> Devices
-        {
-            get { return _devices; }
-            set { _devices = value; }
-        }
+        public List<Device> Devices { get; set; } = new List<Device>();
 
         public DateTime? CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
