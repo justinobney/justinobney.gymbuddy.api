@@ -214,6 +214,9 @@
     <Compile Include="Data\Devices\Device.cs" />
     <Compile Include="Data\Devices\DeviceConfiguration.cs" />
     <Compile Include="Data\Devices\DeviceRepository.cs" />
+    <Compile Include="Data\Gyms\Gym.cs" />
+    <Compile Include="Data\Gyms\GymConfiguration.cs" />
+    <Compile Include="Data\Gyms\GymRepository.cs" />
     <Compile Include="Data\Users\User.cs" />
     <Compile Include="Data\Users\UserConfiguration.cs" />
     <Compile Include="Data\Users\UserRepository.cs" />
@@ -241,6 +244,10 @@
     <Compile Include="Migrations\201602021812012_InitialUser.cs" />
     <Compile Include="Migrations\201602021812012_InitialUser.Designer.cs">
       <DependentUpon>201602021812012_InitialUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602040427028_Gym_InitialAdd.cs" />
+    <Compile Include="Migrations\201602040427028_Gym_InitialAdd.Designer.cs">
+      <DependentUpon>201602040427028_Gym_InitialAdd.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -276,6 +283,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201602021812012_InitialUser.resx">
       <DependentUpon>201602021812012_InitialUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602040427028_Gym_InitialAdd.resx">
+      <DependentUpon>201602040427028_Gym_InitialAdd.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
