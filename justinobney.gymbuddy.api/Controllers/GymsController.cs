@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using AutoMapper.QueryableExtensions;
 using justinobney.gymbuddy.api.Data.Gyms;
+using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Requests.Generic;
 using justinobney.gymbuddy.api.Responses;
 using MediatR;
@@ -25,32 +24,60 @@ namespace justinobney.gymbuddy.api.Controllers
         [ResponseType(typeof(IEnumerable<GymListing>))]
         public IHttpActionResult GetGyms()
         {
-            var users = _mediator.Send(new GetByPredicateQuery<Gym>())
+            var gyms = _mediator.Send(new GetAllByPredicateQuery<Gym>())
                 .ProjectTo<GymListing>(MappingConfig.Config)
                 .ToList();
 
-            return Ok(users);
+            return Ok(gyms);
         }
 
         // GET: api/Gyms/5
         [ResponseType(typeof(GymListing))]
         public IHttpActionResult GetGym(long id)
         {
-            var request = new GetByPredicateQuery<Gym>
+            var request = new GetAllByPredicateQuery<Gym>
             {
                 Predicate = u => u.Id == id
             };
 
-            var user = _mediator.Send(request)
+            var gym = _mediator.Send(request)
                 .ProjectTo<GymListing>(MappingConfig.Config)
                 .FirstOrDefault();
 
-            if (user == null)
+            if (gym == null)
             {
                 return NotFound();
             }
 
-            return Ok(user);
+            return Ok(gym);
+        }
+
+        // GET: api/Gyms/5/Peek-Users/12345
+        [ResponseType(typeof(IEnumerable<ProfileListing>))]
+        [Route("api/Gyms/{id}/Peek-Users/{deviceId}")]
+        public IHttpActionResult GetGymUsersPeek(long id, string deviceId)
+        {
+            var requestingUser = _mediator.Send(new GetAllByPredicateQuery<User>
+            {
+                Predicate = u => u.Devices.Any(d => d.DeviceId == deviceId)
+            })
+            .FirstOrDefault();
+
+            var users = _mediator.Send(new GetAllByPredicateQuery<User>
+            {
+                Predicate = u => u.Gyms.Any(g => g.Id == id)
+                                 && u.FitnessLevel >= requestingUser.FitnessLevel
+                                 && u.Gender == requestingUser.FilterGender
+                                 && u.Id != requestingUser.Id
+            })
+            .ProjectTo<ProfileListing>(MappingConfig.Config);
+
+            if (users == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(users);
         }
 
         // POST: api/Gyms
