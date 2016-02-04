@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
 using AutoMapper;
-using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Interfaces;
 
