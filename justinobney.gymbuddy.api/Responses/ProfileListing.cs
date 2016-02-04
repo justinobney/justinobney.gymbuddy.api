@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Interfaces;
 
@@ -12,6 +13,7 @@ namespace justinobney.gymbuddy.api.Responses
         public string Name { get; set; }
         public string FitnessLevel { get; set; }
         public string Gender { get; set; }
+        public List<GymListing> Gyms { get; set; }
     }
 
     public class ProfileListingMapper : IAutoMapperConfiguration
@@ -19,7 +21,7 @@ namespace justinobney.gymbuddy.api.Responses
         public void Configure(IMapperConfiguration cfg)
         {
             cfg.CreateMap<User, ProfileListing>()
-                .ForMember(dest=> dest.FitnessLevel, opts => opts.MapFrom(src => src.FitnessLevel.ToString()))
+                .ForMember(dest => dest.FitnessLevel, opts => opts.MapFrom(src => src.FitnessLevel.ToString()))
                 .ForMember(dest => dest.Gender, opts => opts.MapFrom(src => src.Gender.ToString()));
         }
     }
