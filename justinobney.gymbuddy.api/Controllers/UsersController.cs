@@ -37,11 +37,12 @@ namespace justinobney.gymbuddy.api.Controllers
 
         // GET: api/Users/5
         [ResponseType(typeof(ProfileListing))]
-        public IHttpActionResult GetUser(string id)
+        [Route("api/Users/{deviceId}")]
+        public IHttpActionResult GetUser(string deviceId)
         {
             var request = new GetByPredicateQuery<User>
             {
-                Predicate = u => u.Devices.Any(device => device.DeviceId == id),
+                Predicate = u => u.Devices.Any(device => device.DeviceId == deviceId),
                 Includes = new List<Expression<Func<User, object>>>
                 {
                     u => u.Devices
