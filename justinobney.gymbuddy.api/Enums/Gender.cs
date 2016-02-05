@@ -5,4 +5,11 @@ namespace justinobney.gymbuddy.api.Enums
         Female = 1,
         Male = 2
     }
+
+    public enum GenderFilter
+    {
+        Female = 1,
+        Male = 2,
+        Both = 3
+    }
 }

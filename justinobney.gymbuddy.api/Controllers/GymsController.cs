@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Web.Http;
 using System.Web.Http.Description;
 using AutoMapper.QueryableExtensions;
 using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Users;
+using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Requests.Generic;
 using justinobney.gymbuddy.api.Responses;
 using MediatR;
@@ -65,12 +68,14 @@ namespace justinobney.gymbuddy.api.Controllers
 
             var users = _mediator.Send(new GetAllByPredicateQuery<User>
             {
+                //FilterByGender(requestingUser, u)
+
                 Predicate = u => u.Gyms.Any(g => g.Id == id)
-                                 && u.FitnessLevel >= requestingUser.FitnessLevel
-                                 && u.Gender == requestingUser.FilterGender
+                                 && u.FilterFitnessLevel <= requestingUser.FitnessLevel
+                                 && u.FitnessLevel >= requestingUser.FilterFitnessLevel
                                  && u.Id != requestingUser.Id
             })
-            .ProjectTo<ProfileListing>(MappingConfig.Config);
+                .ProjectTo<ProfileListing>(MappingConfig.Config);
 
             if (users == null)
             {
@@ -79,6 +84,24 @@ namespace justinobney.gymbuddy.api.Controllers
 
             return Ok(users);
         }
+
+        //private bool FilterByGender(User requestingUser, User user)
+        //{
+        //    var LookingForOpposites = (int) requestingUser.FilterGender == (int) user.Gender &&
+        //                              (int) requestingUser.Gender == (int) user.FilterGender;
+
+        //    var MatchWhenRequestingBoth = requestingUser.FilterGender == GenderFilter.Both &&
+        //                                  (int)user.FilterGender == (int)requestingUser.Gender;
+
+        //    var MatchWhenUserBoth = user.FilterGender == GenderFilter.Both &&
+        //                                  (int)requestingUser.FilterGender == (int)user.Gender;
+
+        //    var BothAcceptBoth = user.FilterGender == GenderFilter.Both &&
+        //                         requestingUser.FilterGender == GenderFilter.Both;
+
+        //    return LookingForOpposites || MatchWhenRequestingBoth || MatchWhenUserBoth || BothAcceptBoth;
+        //}
+        
 
         // POST: api/Gyms
         //[ResponseType(typeof(Gym))]

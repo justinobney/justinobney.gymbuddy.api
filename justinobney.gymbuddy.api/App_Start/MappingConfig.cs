@@ -2,9 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using AutoMapper;
-using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Interfaces;
-using justinobney.gymbuddy.api.Requests.Users;
 using WebGrease.Css.Extensions;
 
 namespace justinobney.gymbuddy.api

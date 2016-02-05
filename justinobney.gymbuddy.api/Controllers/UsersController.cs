@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Requests.Generic;
@@ -35,12 +36,11 @@ namespace justinobney.gymbuddy.api.Controllers
 
         // GET: api/Users/5
         [ResponseType(typeof(ProfileListing))]
-        [Route("api/Users/{deviceId}")]
-        public IHttpActionResult GetUser(string deviceId)
+        public IHttpActionResult GetUser(int id)
         {
             var request = new GetAllByPredicateQuery<User>
             {
-                Predicate = u => u.Devices.Any(device => device.DeviceId == deviceId)
+                Predicate = u => u.Id == id
             };
 
             var user = _mediator.Send(request)
@@ -89,6 +89,20 @@ namespace justinobney.gymbuddy.api.Controllers
             var user = await _mediator.SendAsync(new DeleteUserCommand {Id = id});
             return Ok(user);
         }
-        
+
+        // POST: api/Users/1234/Add-Gym
+        [ResponseType(typeof(User))]
+        [HttpPost]
+        [Route("api/Users/Add-Gym")]
+        public async Task<IHttpActionResult> AddUserToGym(AddUserToGymCommand command)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _mediator.SendAsync(command);
+            return Ok(MappingConfig.Instance.Map<ProfileListing>(user));
+        }
     }
 }

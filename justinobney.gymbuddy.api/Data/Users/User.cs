@@ -14,7 +14,7 @@ namespace justinobney.gymbuddy.api.Data.Users
         public FitnessLevel FitnessLevel { get; set; }
         public FitnessLevel FilterFitnessLevel { get; set; }
         public Gender Gender { get; set; }
-        public Gender FilterGender { get; set; }
+        public GenderFilter FilterGender { get; set; }
 
         public List<Device> Devices { get; set; } = new List<Device>();
         public List<Gym> Gyms { get; set; } = new List<Gym>();
