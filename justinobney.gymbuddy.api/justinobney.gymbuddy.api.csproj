@@ -25,6 +25,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <ApplicationInsightsResourceId>/subscriptions/23dc2d58-c9f2-4b0c-90d9-b1b637f4bfa4/resourcegroups/Default-ApplicationInsights-CentralUS/providers/microsoft.insights/components/justinobney.gymbuddy.api</ApplicationInsightsResourceId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -291,6 +292,7 @@
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
     <None Include="Properties\PublishProfiles\GymBuddy.pubxml" />
+    <Content Include="Service References\Application Insights\ConnectedService.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201602021812012_InitialUser.resx">
@@ -302,6 +304,9 @@
     <EmbeddedResource Include="Migrations\201602040438512_User_AddGymNavigation.resx">
       <DependentUpon>201602040438512_User_AddGymNavigation.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
