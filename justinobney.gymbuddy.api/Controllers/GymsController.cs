@@ -1,19 +1,17 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Web.Http;
 using System.Web.Http.Description;
 using AutoMapper.QueryableExtensions;
 using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Users;
-using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Requests.Generic;
 using justinobney.gymbuddy.api.Responses;
 using MediatR;
 
 namespace justinobney.gymbuddy.api.Controllers
 {
+  
     public class GymsController : ApiController
     {
         private readonly Mediator _mediator;
