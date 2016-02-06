@@ -54,26 +54,30 @@ namespace justinobney.gymbuddy.api.Controllers
 
         // GET: api/Gyms/5/Peek-Users/12345
         [ResponseType(typeof(IEnumerable<ProfileListing>))]
-        [Route("api/Gyms/{id}/Peek-Users/{deviceId}")]
-        public IHttpActionResult GetGymUsersPeek(long id, string deviceId)
+        [Route("api/Gyms/{id}/Peek-Users")]
+        public IHttpActionResult GetGymUsersPeek(long id)
         {
-            // Request.Headers.GetValues("device-id").FirstOrDefault()
-            var requestingUser = _mediator.Send(new GetAllByPredicateQuery<User>
-            {
-                Predicate = u => u.Devices.Any(d => d.DeviceId == deviceId)
-            })
-            .FirstOrDefault();
+            IQueryable<ProfileListing> users = null;
 
-            var users = _mediator.Send(new GetAllByPredicateQuery<User>
+            if (Request.Headers.Contains("device-id"))
             {
-                //FilterByGender(requestingUser, u)
+                var deviceId = Request.Headers.GetValues("device-id").FirstOrDefault();
+                var requestingUser = _mediator.Send(new GetAllByPredicateQuery<User>
+                {
+                    Predicate = u => u.Devices.Any(d => d.DeviceId == deviceId)
+                })
+                    .FirstOrDefault();
 
-                Predicate = u => u.Gyms.Any(g => g.Id == id)
-                                 && u.FilterFitnessLevel <= requestingUser.FitnessLevel
-                                 && u.FitnessLevel >= requestingUser.FilterFitnessLevel
-                                 && u.Id != requestingUser.Id
-            })
-                .ProjectTo<ProfileListing>(MappingConfig.Config);
+                users = _mediator.Send(new GetAllByPredicateQuery<User>
+                {
+                    //FilterByGender(requestingUser, u)
+                    Predicate = u => u.Gyms.Any(g => g.Id == id)
+                                     && u.FilterFitnessLevel <= requestingUser.FitnessLevel
+                                     && u.FitnessLevel >= requestingUser.FilterFitnessLevel
+                                     && u.Id != requestingUser.Id
+                })
+                    .ProjectTo<ProfileListing>(MappingConfig.Config);
+            }
 
             if (users == null)
             {
