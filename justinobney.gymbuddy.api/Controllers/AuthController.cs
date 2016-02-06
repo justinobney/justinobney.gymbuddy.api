@@ -24,15 +24,19 @@ namespace justinobney.gymbuddy.api.Controllers
         [ResponseType(typeof(ProfileListing))]
         public IHttpActionResult Get()
         {
-            var deviceId = Request.Headers.GetValues("device-id").FirstOrDefault();
-            Expression<Func<User, bool>> predicate = u => u.Devices.Any(d => d.DeviceId == deviceId);
-            var request = new GetAllByPredicateQuery<User> {Predicate = predicate};
+            if (Request.Headers.Contains("device-id"))
+            {
+                var deviceId = Request.Headers.GetValues("device-id").FirstOrDefault();
+                Expression<Func<User, bool>> predicate = u => u.Devices.Any(d => d.DeviceId == deviceId);
+                var request = new GetAllByPredicateQuery<User> {Predicate = predicate};
 
-            var user = _mediator.Send(request)
-                .ProjectTo<ProfileListing>(MappingConfig.Config)
-                .FirstOrDefault();
+                var user = _mediator.Send(request)
+                    .ProjectTo<ProfileListing>(MappingConfig.Config)
+                    .FirstOrDefault();
 
-            return Ok(user);
+                return Ok(user);
+            }
+            return Ok();
         }
         
     }
