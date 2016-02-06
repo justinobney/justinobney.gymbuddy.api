@@ -11,7 +11,6 @@ using MediatR;
 
 namespace justinobney.gymbuddy.api.Controllers
 {
-  
     public class GymsController : ApiController
     {
         private readonly Mediator _mediator;
@@ -58,6 +57,7 @@ namespace justinobney.gymbuddy.api.Controllers
         [Route("api/Gyms/{id}/Peek-Users/{deviceId}")]
         public IHttpActionResult GetGymUsersPeek(long id, string deviceId)
         {
+            // Request.Headers.GetValues("device-id").FirstOrDefault()
             var requestingUser = _mediator.Send(new GetAllByPredicateQuery<User>
             {
                 Predicate = u => u.Devices.Any(d => d.DeviceId == deviceId)
