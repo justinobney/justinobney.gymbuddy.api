@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using AutoMapper.QueryableExtensions;
@@ -11,11 +13,11 @@ using MediatR;
 
 namespace justinobney.gymbuddy.api.Controllers
 {
-    public class GymsController : ApiController
+    public class GymsController : AuthenticatedController
     {
         private readonly Mediator _mediator;
 
-        public GymsController(Mediator mediator)
+        public GymsController(Mediator mediator):base(mediator)
         {
             _mediator = mediator;
         }
@@ -57,27 +59,20 @@ namespace justinobney.gymbuddy.api.Controllers
         [Route("api/Gyms/{id}/Peek-Users")]
         public IHttpActionResult GetGymUsersPeek(long id)
         {
-            IQueryable<ProfileListing> users = null;
-
-            if (Request.Headers.Contains("device-id"))
+            if (CurrentUser == null)
             {
-                var deviceId = Request.Headers.GetValues("device-id").FirstOrDefault();
-                var requestingUser = _mediator.Send(new GetAllByPredicateQuery<User>
-                {
-                    Predicate = u => u.Devices.Any(d => d.DeviceId == deviceId)
-                })
-                    .FirstOrDefault();
-
-                users = _mediator.Send(new GetAllByPredicateQuery<User>
-                {
-                    //FilterByGender(requestingUser, u)
-                    Predicate = u => u.Gyms.Any(g => g.Id == id)
-                                     && u.FilterFitnessLevel <= requestingUser.FitnessLevel
-                                     && u.FitnessLevel >= requestingUser.FilterFitnessLevel
-                                     && u.Id != requestingUser.Id
-                })
-                    .ProjectTo<ProfileListing>(MappingConfig.Config);
+                return Unauthorized();
             }
+
+            var users = _mediator.Send(new GetAllByPredicateQuery<User>
+            {
+                //FilterByGender(requestingUser, u)
+                Predicate = u => u.Gyms.Any(g => g.Id == id)
+                                 && u.FilterFitnessLevel <= CurrentUser.FitnessLevel
+                                 && u.FitnessLevel >= CurrentUser.FilterFitnessLevel
+                                 && u.Id != CurrentUser.Id
+            })
+                    .ProjectTo<ProfileListing>(MappingConfig.Config);
 
             if (users == null)
             {

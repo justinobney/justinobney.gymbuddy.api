@@ -4,7 +4,6 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Requests.Generic;
@@ -14,11 +13,11 @@ using MediatR;
 
 namespace justinobney.gymbuddy.api.Controllers
 {
-    public class UsersController : ApiController
+    public class UsersController : AuthenticatedController
     {
         private readonly Mediator _mediator;
 
-        public UsersController(Mediator mediator)
+        public UsersController(Mediator mediator):base(mediator)
         {
             _mediator = mediator;
         }
@@ -101,6 +100,12 @@ namespace justinobney.gymbuddy.api.Controllers
                 return BadRequest(ModelState);
             }
 
+            if (CurrentUser == null)
+            {
+                return Unauthorized();
+            }
+
+            command.UserId = CurrentUser.Id;
             var user = await _mediator.SendAsync(command);
             return Ok(MappingConfig.Instance.Map<ProfileListing>(user));
         }

@@ -12,7 +12,7 @@ namespace justinobney.gymbuddy.api.Requests.Users
 {
     public class AddUserToGymCommand : IAsyncRequest<User>
     {
-        public string DeviceId { get; set; }
+        public long UserId { get; set; }
         public long GymId { get; set; }
     }
 
@@ -29,14 +29,10 @@ namespace justinobney.gymbuddy.api.Requests.Users
 
         async Task<User> IAsyncRequestHandler<AddUserToGymCommand, User>.Handle(AddUserToGymCommand message)
         {
-            var user = _userRepo.GetAll()
-                .Include(u => u.Gyms)
-                .FirstOrDefault(u =>
-                    u.Devices.Any(d => d.DeviceId == message.DeviceId));
-
+            var user = await _userRepo.GetByIdAsync(message.UserId);
             var gym = await _gymRepo.GetByIdAsync(message.GymId);
 
-            EnsureEntitesExist(user, gym);
+            ValidateEntities(user, gym);
 
             user.Gyms.Add(gym);
             await _userRepo.UpdateAsync(user);
@@ -44,7 +40,7 @@ namespace justinobney.gymbuddy.api.Requests.Users
             return user;
         }
 
-        private void EnsureEntitesExist(User user, Gym gym)
+        private void ValidateEntities(User user, Gym gym)
         {
             if (user == null)
             {
@@ -75,7 +71,7 @@ namespace justinobney.gymbuddy.api.Requests.Users
         public AddUserToGymCommandValidator()
         {
             RuleFor(x => x.GymId).GreaterThan(0);
-            RuleFor(x => x.DeviceId).NotEmpty();
+            RuleFor(x => x.UserId).NotEmpty();
         }
     }
 }
