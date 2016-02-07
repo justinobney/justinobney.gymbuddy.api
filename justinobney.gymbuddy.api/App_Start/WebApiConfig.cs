@@ -31,6 +31,8 @@ namespace justinobney.gymbuddy.api
             // add exception filters
             config.Filters.Add(new ValidationExceptionFilter());
             config.Filters.Add(new AuthorizationExceptionFilter());
+
+            config.SuppressHostPrincipal();
         }
     }
 }
