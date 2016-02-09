@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Data.Devices;
 using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Enums;
@@ -18,6 +19,8 @@ namespace justinobney.gymbuddy.api.Data.Users
 
         public List<Device> Devices { get; set; } = new List<Device>();
         public List<Gym> Gyms { get; set; } = new List<Gym>();
+
+        public virtual List<Appointment> Appointments { get; set; }
 
         public DateTime? CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
