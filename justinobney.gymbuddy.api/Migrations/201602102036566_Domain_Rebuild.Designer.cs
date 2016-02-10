@@ -7,13 +7,13 @@ namespace justinobney.gymbuddy.api.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Gym_InitialAdd : IMigrationMetadata
+    public sealed partial class Domain_Rebuild : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Gym_InitialAdd));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Domain_Rebuild));
         
         string IMigrationMetadata.Id
         {
-            get { return "201602040427028_Gym_InitialAdd"; }
+            get { return "201602102036566_Domain_Rebuild"; }
         }
         
         string IMigrationMetadata.Source
