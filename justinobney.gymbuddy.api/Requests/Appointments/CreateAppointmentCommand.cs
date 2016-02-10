@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentValidation;
+using FluentValidation.Results;
 using justinobney.gymbuddy.api.Data.Appointments;
+using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
 using MediatR;
@@ -17,8 +20,10 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
         public long UserId { get; set; }
         public long? GymId { get; set; }
         public string Location { get; set; }
-        
-        public List<DateTime?> TimeSlots { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+
+        public List<DateTime?> TimeSlots { get; set; } = new List<DateTime?>();
     }
 
     public class CreateAppointmentCommandHandler : IAsyncRequestHandler<CreateAppointmentCommand, Appointment>
@@ -46,9 +51,28 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
 
     public class CreateAppointmentCommandValidator : AbstractValidator<CreateAppointmentCommand>
     {
-        public CreateAppointmentCommandValidator()
-        {
+        private readonly UserRepository _userRepo;
 
+        public CreateAppointmentCommandValidator(UserRepository userRepo)
+        {
+            _userRepo = userRepo;
+            
+
+            RuleFor(x => x.Title).NotEmpty();
+            RuleFor(x => x.UserId)
+                .NotEmpty();
+
+            RuleFor(x => x.TimeSlots).Must(list => list.Any())
+                .WithMessage("At least one time slow is required");
+            
+            Custom(command =>
+            {
+                if (command.GymId.HasValue == false && string.IsNullOrEmpty(command.Location))
+                {
+                    return new ValidationFailure("Location", "Gym or Location is requires");
+                }
+                return null;
+            });
         }
     }
 

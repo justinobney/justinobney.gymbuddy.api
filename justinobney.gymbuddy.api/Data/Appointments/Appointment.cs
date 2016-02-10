@@ -13,6 +13,8 @@ namespace justinobney.gymbuddy.api.Data.Appointments
         public long UserId { get; set; }
         public long? GymId { get; set; }
         public string Location { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
         public AppointmentStatus Status { get; set; }
         public DateTime? ConfirmedTime { get; set; }
         
