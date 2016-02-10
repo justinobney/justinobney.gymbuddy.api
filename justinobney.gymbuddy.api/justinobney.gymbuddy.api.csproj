@@ -217,11 +217,15 @@
     <Compile Include="App_Start\StructuremapWebApi.cs" />
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AppointmentsController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="Controllers\AuthenticatedController.cs" />
     <Compile Include="Controllers\GymsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="Data\Appointments\Appointment.cs" />
+    <Compile Include="Data\Appointments\AppointmentConfiguration.cs" />
+    <Compile Include="Data\Appointments\AppointmentRepository.cs" />
     <Compile Include="Data\BaseRepository.cs" />
     <Compile Include="Data\Devices\Device.cs" />
     <Compile Include="Data\Devices\DeviceConfiguration.cs" />
@@ -241,6 +245,7 @@
     <Compile Include="DependencyResolution\StructureMapScopeModule.cs" />
     <Compile Include="DependencyResolution\StructureMapWebApiDependencyResolver.cs" />
     <Compile Include="DependencyResolution\StructureMapWebApiDependencyScope.cs" />
+    <Compile Include="Enums\AppointmentStatus.cs" />
     <Compile Include="Enums\FitnessLevel.cs" />
     <Compile Include="Enums\Gender.cs" />
     <Compile Include="Exceptions\AuthorizationException.cs" />
@@ -266,8 +271,17 @@
     <Compile Include="Migrations\201602040438512_User_AddGymNavigation.Designer.cs">
       <DependentUpon>201602040438512_User_AddGymNavigation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602091424514_Appointment_InitialDomainCreate.cs" />
+    <Compile Include="Migrations\201602091424514_Appointment_InitialDomainCreate.Designer.cs">
+      <DependentUpon>201602091424514_Appointment_InitialDomainCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602100002132_Appointment_AddDescription.cs" />
+    <Compile Include="Migrations\201602100002132_Appointment_AddDescription.Designer.cs">
+      <DependentUpon>201602100002132_Appointment_AddDescription.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Requests\Appointments\CreateAppointmentCommand.cs" />
     <Compile Include="Requests\Decorators\AuthorizeHandler.cs" />
     <Compile Include="Requests\Decorators\LoggingHandler.cs" />
     <Compile Include="Requests\Decorators\ValidateHandler.cs" />
@@ -278,6 +292,7 @@
     <Compile Include="Requests\Users\DeleteUserCommand.cs" />
     <Compile Include="Requests\Users\UpdateUserCommand.cs" />
     <Compile Include="Responses\ApiError.cs" />
+    <Compile Include="Responses\AppointmentListing.cs" />
     <Compile Include="Responses\GymListing.cs" />
     <Compile Include="Responses\ProfileListing.cs" />
   </ItemGroup>
@@ -287,6 +302,12 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Migrations\201602091424514_Appointment_InitialDomainCreate.resx">
+      <DependentUpon>201602091424514_Appointment_InitialDomainCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602100002132_Appointment_AddDescription.resx">
+      <DependentUpon>201602100002132_Appointment_AddDescription.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>
     </EmbeddedResource>

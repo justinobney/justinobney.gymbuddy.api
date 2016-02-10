@@ -1,13 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentValidation;
+using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Data.Devices;
-using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
+using justinobney.gymbuddy.api.Requests.Appointments;
 using MediatR;
 
 namespace justinobney.gymbuddy.api.Requests.Users
@@ -72,5 +72,5 @@ namespace justinobney.gymbuddy.api.Requests.Users
         {
             cfg.CreateMap<CreateUserCommand, User>();
         }
-    }
+    }   
 }
