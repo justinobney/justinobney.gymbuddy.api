@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using AutoMapper.QueryableExtensions;
@@ -64,14 +62,8 @@ namespace justinobney.gymbuddy.api.Controllers
                 return Unauthorized();
             }
 
-            var users = _mediator.Send(new GetAllByPredicateQuery<User>
-            {
-                //FilterByGender(requestingUser, u)
-                Predicate = u => u.Gyms.Any(g => g.Id == id)
-                                 && u.FilterFitnessLevel <= CurrentUser.FitnessLevel
-                                 && u.FitnessLevel >= CurrentUser.FilterFitnessLevel
-                                 && u.Id != CurrentUser.Id
-            })
+            var request = new GetAllByPredicateQuery<User>(UserPredicates.RestrictMember(CurrentUser, id));
+            var users = _mediator.Send(request)
                     .ProjectTo<ProfileListing>(MappingConfig.Config);
 
             if (users == null)
@@ -81,60 +73,6 @@ namespace justinobney.gymbuddy.api.Controllers
 
             return Ok(users);
         }
-
-        //private bool FilterByGender(User requestingUser, User user)
-        //{
-        //    var LookingForOpposites = (int) requestingUser.FilterGender == (int) user.Gender &&
-        //                              (int) requestingUser.Gender == (int) user.FilterGender;
-
-        //    var MatchWhenRequestingBoth = requestingUser.FilterGender == GenderFilter.Both &&
-        //                                  (int)user.FilterGender == (int)requestingUser.Gender;
-
-        //    var MatchWhenUserBoth = user.FilterGender == GenderFilter.Both &&
-        //                                  (int)requestingUser.FilterGender == (int)user.Gender;
-
-        //    var BothAcceptBoth = user.FilterGender == GenderFilter.Both &&
-        //                         requestingUser.FilterGender == GenderFilter.Both;
-
-        //    return LookingForOpposites || MatchWhenRequestingBoth || MatchWhenUserBoth || BothAcceptBoth;
-        //}
         
-
-        // POST: api/Gyms
-        //[ResponseType(typeof(Gym))]
-        //public async Task<IHttpActionResult> PostGym(CreateGymCommand command)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    var user = await _mediator.SendAsync(command);
-        //    return CreatedAtRoute("DefaultApi", new { id = user.Id }, user);
-        //}
-
-
-        // PUT: api/Gyms/5
-        //[ResponseType(typeof(void))]
-        //public async Task<IHttpActionResult> PutGym(long id, UpdateGymCommand command)
-        //{
-        //    if (id != command.Id)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    await _mediator.SendAsync(command);
-        //    return StatusCode(HttpStatusCode.NoContent);
-        //}
-
-        //TODO: Create generic delete command
-        // DELETE: api/Gyms/5
-        //[ResponseType(typeof(Gym))]
-        //public async Task<IHttpActionResult> DeleteGym(long id)
-        //{
-        //    var user = await _mediator.SendAsync(new DeleteGymCommand { Id = id });
-        //    return Ok(user);
-        //}
-
     }
 }

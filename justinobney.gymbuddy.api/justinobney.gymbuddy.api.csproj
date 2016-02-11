@@ -233,8 +233,10 @@
     <Compile Include="Data\Gyms\Gym.cs" />
     <Compile Include="Data\Gyms\GymConfiguration.cs" />
     <Compile Include="Data\Gyms\GymRepository.cs" />
+    <Compile Include="Data\PredicateBuilder.cs" />
     <Compile Include="Data\Users\User.cs" />
     <Compile Include="Data\Users\UserConfiguration.cs" />
+    <Compile Include="Data\Users\UserPredicates.cs" />
     <Compile Include="Data\Users\UserRepository.cs" />
     <Compile Include="Data\AppContext.cs" />
     <Compile Include="DependencyResolution\ControllerConvention.cs" />
