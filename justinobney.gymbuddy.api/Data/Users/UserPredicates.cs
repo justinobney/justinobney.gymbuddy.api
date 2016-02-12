@@ -40,5 +40,10 @@ namespace justinobney.gymbuddy.api.Data.Users
             return user => user.FilterFitnessLevel <= currentUser.FitnessLevel
                         && user.FitnessLevel >= currentUser.FilterFitnessLevel;
         }
+
+        public static Expression<Func<User, bool>> RestrictByDeviceId(string deviceId)
+        {
+            return u => u.Devices.Any(d => d.DeviceId == deviceId);
+        }
     }
 }

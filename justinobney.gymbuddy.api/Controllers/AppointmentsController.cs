@@ -24,12 +24,13 @@ namespace justinobney.gymbuddy.api.Controllers
 
         // GET: api/Appointments
         [ResponseType(typeof(IEnumerable<AppointmentListing>))]
-        public IHttpActionResult GetUsers()
+        public IHttpActionResult GetAppointments()
         {
+            var gymIds = CurrentUser.Gyms.Select(g => g.Id).ToList();
             var request = new GetAllByPredicateQuery<Appointment>
             {
                 Predicate = appt =>
-                    appt.UserId == CurrentUser.Id
+                    gymIds.Contains(appt.GymId.Value)
                     && appt.TimeSlots.Any(ts => ts.Time > DateTime.UtcNow)
             };
 
@@ -42,12 +43,9 @@ namespace justinobney.gymbuddy.api.Controllers
 
         // GET: api/Appointments/5
         [ResponseType(typeof(AppointmentListing))]
-        public IHttpActionResult GetUser(int id)
+        public IHttpActionResult GetAppointment(int id)
         {
-            var request = new GetAllByPredicateQuery<Appointment>
-            {
-                Predicate = u => u.Id == id
-            };
+            var request = new GetAllByPredicateQuery<Appointment>(u => u.Id == id);
 
             var appointment = _mediator.Send(request)
                 .ProjectTo<AppointmentListing>(MappingConfig.Config)
@@ -71,7 +69,8 @@ namespace justinobney.gymbuddy.api.Controllers
 
             command.UserId = CurrentUser.Id;
             var appointment = await _mediator.SendAsync(command);
-            return CreatedAtRoute("DefaultApi", new { id = appointment.Id }, appointment);
+            var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
+            return CreatedAtRoute("DefaultApi", new { id = listing.Id }, listing);
         }
     }
 }
