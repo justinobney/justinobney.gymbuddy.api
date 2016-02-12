@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -25,7 +26,14 @@ namespace justinobney.gymbuddy.api.Controllers
         [ResponseType(typeof(IEnumerable<AppointmentListing>))]
         public IHttpActionResult GetUsers()
         {
-            var appointment = _mediator.Send(new GetAllByPredicateQuery<Appointment>())
+            var request = new GetAllByPredicateQuery<Appointment>
+            {
+                Predicate = appt =>
+                    appt.UserId == CurrentUser.Id
+                    && appt.TimeSlots.Any(ts => ts.Time > DateTime.UtcNow)
+            };
+
+            var appointment = _mediator.Send(request)
                 .ProjectTo<AppointmentListing>(MappingConfig.Config)
                 .ToList();
 

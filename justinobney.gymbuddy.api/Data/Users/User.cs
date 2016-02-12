@@ -17,10 +17,10 @@ namespace justinobney.gymbuddy.api.Data.Users
         public Gender Gender { get; set; }
         public GenderFilter FilterGender { get; set; }
 
-        public List<Device> Devices { get; set; } = new List<Device>();
-        public List<Gym> Gyms { get; set; } = new List<Gym>();
+        public ICollection<Device> Devices { get; set; } = new List<Device>();
+        public ICollection<Gym> Gyms { get; set; } = new List<Gym>();
 
-        public virtual List<Appointment> Appointments { get; set; }
+        public virtual ICollection<Appointment> Appointments { get; set; }
 
         public DateTime? CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }

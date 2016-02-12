@@ -9,9 +9,19 @@ namespace justinobney.gymbuddy.api.Requests.Generic
 {
     public class GetAllByPredicateQuery<TEntity> : IRequest<IQueryable<TEntity>>
     {
+        public GetAllByPredicateQuery()
+        {
+            
+        }
+
+        public GetAllByPredicateQuery(Expression<Func<TEntity, bool>> predicate)
+        {
+            Predicate = predicate;
+        }
+        
         public Expression<Func<TEntity, bool>> Predicate { get; set; } = (entity => true);
     }
-
+    
     [DoNotValidate]
     public class GetAllByPredicateQueryHandler<TEntity> : IRequestHandler<GetAllByPredicateQuery<TEntity>, IQueryable<TEntity>> where TEntity : class
     {

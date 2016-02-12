@@ -6,6 +6,15 @@ namespace justinobney.gymbuddy.api.Data.Users
     {
         public UserConfiguration()
         {
+
+            HasMany(u => u.Appointments)
+                .WithMany(a => a.GuestList)
+                .Map(configuration =>
+                {
+                    configuration.MapLeftKey("User_Id");
+                    configuration.MapRightKey("Appointment_Id");
+                    configuration.ToTable("UserAppointments");
+                });
             //Property(x => x.Email)
             //    .IsRequired()
             //    .HasMaxLength(100)

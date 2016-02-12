@@ -6,7 +6,9 @@ namespace justinobney.gymbuddy.api.Data.Appointments
     {
         public AppointmentConfiguration()
         {
-            
+            HasRequired(appt => appt.User)
+                .WithMany()
+                .WillCascadeOnDelete(false);
         }
     }
 }
