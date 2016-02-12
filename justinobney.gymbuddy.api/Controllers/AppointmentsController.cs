@@ -69,6 +69,7 @@ namespace justinobney.gymbuddy.api.Controllers
                 return BadRequest(ModelState);
             }
 
+            command.UserId = CurrentUser.Id;
             var appointment = await _mediator.SendAsync(command);
             return CreatedAtRoute("DefaultApi", new { id = appointment.Id }, appointment);
         }
