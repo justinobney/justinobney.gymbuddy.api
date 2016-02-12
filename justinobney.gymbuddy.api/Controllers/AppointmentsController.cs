@@ -69,7 +69,8 @@ namespace justinobney.gymbuddy.api.Controllers
 
             command.UserId = CurrentUser.Id;
             var appointment = await _mediator.SendAsync(command);
-            return CreatedAtRoute("DefaultApi", new { id = appointment.Id }, appointment);
+            var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
+            return CreatedAtRoute("DefaultApi", new { id = listing.Id }, listing);
         }
     }
 }

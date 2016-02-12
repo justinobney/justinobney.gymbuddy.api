@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -29,12 +30,12 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
     public class CreateAppointmentCommandHandler : IAsyncRequestHandler<CreateAppointmentCommand, Appointment>
     {
         private readonly IMapper _mapper;
-        private readonly AppointmentRepository _userRepo;
+        private readonly AppointmentRepository _apptRepo;
 
-        public CreateAppointmentCommandHandler(IMapper mapper, AppointmentRepository userRepo)
+        public CreateAppointmentCommandHandler(IMapper mapper, AppointmentRepository apptRepo)
         {
             _mapper = mapper;
-            _userRepo = userRepo;
+            _apptRepo = apptRepo;
         }
 
         public async Task<Appointment> Handle(CreateAppointmentCommand message)
@@ -44,8 +45,9 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
             appointment.CreatedAt = DateTime.UtcNow;
             appointment.ModifiedAt = DateTime.UtcNow;
 
-            await _userRepo.InsertAsync(appointment);
-            return appointment;
+            await _apptRepo.InsertAsync(appointment);
+            var newAppt = await _apptRepo.Find(appt => appt.Id == appointment.Id).Include(appt => appt.User).FirstAsync();
+            return newAppt;
         }
     }
 
