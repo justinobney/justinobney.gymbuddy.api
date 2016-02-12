@@ -1,3 +1,4 @@
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Http;
 using justinobney.gymbuddy.api.Data.Users;
@@ -18,10 +19,9 @@ namespace justinobney.gymbuddy.api.Controllers
                     return null;
 
                 var deviceId = Request.Headers.GetValues("device-id").FirstOrDefault();
-                return _mediator.Send(new GetAllByPredicateQuery<User>
-                {
-                    Predicate = u => u.Devices.Any(d => d.DeviceId == deviceId)
-                })
+                var request = new GetAllByPredicateQuery<User>(UserPredicates.RestrictByDeviceId(deviceId));
+                return _mediator.Send(request)
+                    .Include(u => u.Gyms)
                     .FirstOrDefault();
             }
         }
