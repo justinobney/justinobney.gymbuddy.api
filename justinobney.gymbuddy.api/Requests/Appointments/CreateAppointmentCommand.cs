@@ -65,13 +65,13 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
                 .NotEmpty();
 
             RuleFor(x => x.TimeSlots).Must(list => list.Any())
-                .WithMessage("At least one time slow is required");
+                .WithMessage("At least one time slot is required");
             
             Custom(command =>
             {
                 if (command.GymId.HasValue == false && string.IsNullOrEmpty(command.Location))
                 {
-                    return new ValidationFailure("Location", "Gym or Location is requires");
+                    return new ValidationFailure("Location", "Gym or Location is required");
                 }
                 return null;
             });
