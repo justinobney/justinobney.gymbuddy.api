@@ -18,18 +18,11 @@ namespace justinobney.gymbuddy.api.Data.Appointments
         public AppointmentStatus Status { get; set; }
         public DateTime? ConfirmedTime { get; set; }
         
-        public ICollection<User> GuestList { get; set; }
+        public ICollection<AppointmentGuest> GuestList { get; set; }
         public ICollection<AppointmentTimeSlot> TimeSlots { get; set; }
 
         public DateTime? CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
         public User User { get; set; }
-    }
-
-    public class AppointmentTimeSlot
-    {
-        public long Id { get; set; }
-        public long AppointmentId { get; set; }
-        public DateTime? Time { get; set; }
     }
 }

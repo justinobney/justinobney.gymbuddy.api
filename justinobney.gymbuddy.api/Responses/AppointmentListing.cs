@@ -19,8 +19,21 @@ namespace justinobney.gymbuddy.api.Responses
         public string Status { get; set; }
         public DateTime? ConfirmedTime { get; set; }
 
-        public List<ProfileListing> GuestList { get; set; }
+        public List<AppointmentGuestListing> GuestList { get; set; }
         public List<AppointmentTimeSlot> TimeSlots { get; set; }
+    }
+
+    public class AppointmentGuestListing
+    {
+        public long Id { get; set; }
+        public long UserId { get; set; }
+        public long AppointmentId { get; set; }
+        public long AppointmentTimeSlotId { get; set; }
+
+        public string UserName { get; set; }
+        public DateTime? Time { get; set; }
+
+        public string Status { get; set; }
     }
 
     public class AppointmentListingMapper : IAutoMapperConfiguration
@@ -30,6 +43,17 @@ namespace justinobney.gymbuddy.api.Responses
             cfg.CreateMap<Appointment, AppointmentListing>()
                 .ForMember(dest => dest.Status, opts => opts.MapFrom(src => src.Status.ToString()))
                 .ForMember(dest=>dest.UserName, opts => opts.MapFrom(src=>src.User.Name));
+        }
+    }
+
+    public class AppointmentGuestListingMapper : IAutoMapperConfiguration
+    {
+        public void Configure(IMapperConfiguration cfg)
+        {
+            cfg.CreateMap<AppointmentGuest, AppointmentGuestListing>()
+                .ForMember(dest => dest.Status, opts => opts.MapFrom(src => src.Status.ToString()))
+                .ForMember(dest => dest.UserName, opts => opts.MapFrom(src => src.User.Name))
+                .ForMember(dest => dest.Time, opts => opts.MapFrom(src => src.TimeSlot.Time));
         }
     }
 }
