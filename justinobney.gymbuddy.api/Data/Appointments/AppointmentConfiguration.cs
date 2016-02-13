@@ -6,7 +6,19 @@ namespace justinobney.gymbuddy.api.Data.Appointments
     {
         public AppointmentConfiguration()
         {
+
+        }
+    }
+
+    public class AppointmentGuestConfiguration : EntityTypeConfiguration<AppointmentGuest>
+    {
+        public AppointmentGuestConfiguration()
+        {
             HasRequired(appt => appt.User)
+                .WithMany()
+                .WillCascadeOnDelete(false);
+
+            HasRequired(appt => appt.TimeSlot)
                 .WithMany()
                 .WillCascadeOnDelete(false);
         }

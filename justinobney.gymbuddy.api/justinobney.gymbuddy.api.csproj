@@ -225,7 +225,9 @@
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Data\Appointments\Appointment.cs" />
     <Compile Include="Data\Appointments\AppointmentConfiguration.cs" />
+    <Compile Include="Data\Appointments\AppointmentGuest.cs" />
     <Compile Include="Data\Appointments\AppointmentRepository.cs" />
+    <Compile Include="Data\Appointments\AppointmentTimeSlot.cs" />
     <Compile Include="Data\BaseRepository.cs" />
     <Compile Include="Data\Devices\Device.cs" />
     <Compile Include="Data\Devices\DeviceConfiguration.cs" />
@@ -247,6 +249,7 @@
     <Compile Include="DependencyResolution\StructureMapScopeModule.cs" />
     <Compile Include="DependencyResolution\StructureMapWebApiDependencyResolver.cs" />
     <Compile Include="DependencyResolution\StructureMapWebApiDependencyScope.cs" />
+    <Compile Include="Enums\AppointmentGuestStatus.cs" />
     <Compile Include="Enums\AppointmentStatus.cs" />
     <Compile Include="Enums\FitnessLevel.cs" />
     <Compile Include="Enums\Gender.cs" />
@@ -265,8 +268,17 @@
     <Compile Include="Migrations\201602102036566_Domain_Rebuild.Designer.cs">
       <DependentUpon>201602102036566_Domain_Rebuild.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602131403362_Appointments_AdUserGuest.cs" />
+    <Compile Include="Migrations\201602131403362_Appointments_AdUserGuest.Designer.cs">
+      <DependentUpon>201602131403362_Appointments_AdUserGuest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602132102408_AppointmentGuest_AddTimeInfo.cs" />
+    <Compile Include="Migrations\201602132102408_AppointmentGuest_AddTimeInfo.Designer.cs">
+      <DependentUpon>201602132102408_AppointmentGuest_AddTimeInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Requests\Appointments\AddAppointmentGuestCommand.cs" />
     <Compile Include="Requests\Appointments\CreateAppointmentCommand.cs" />
     <Compile Include="Requests\Decorators\AuthorizeHandler.cs" />
     <Compile Include="Requests\Decorators\LoggingHandler.cs" />
@@ -290,6 +302,12 @@
     </Content>
     <EmbeddedResource Include="Migrations\201602102036566_Domain_Rebuild.resx">
       <DependentUpon>201602102036566_Domain_Rebuild.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602131403362_Appointments_AdUserGuest.resx">
+      <DependentUpon>201602131403362_Appointments_AdUserGuest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602132102408_AppointmentGuest_AddTimeInfo.resx">
+      <DependentUpon>201602132102408_AppointmentGuest_AddTimeInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>

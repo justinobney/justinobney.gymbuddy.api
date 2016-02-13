@@ -7,7 +7,6 @@ using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
 using justinobney.gymbuddy.api.Data.Appointments;
-using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
 using MediatR;
@@ -53,13 +52,8 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
 
     public class CreateAppointmentCommandValidator : AbstractValidator<CreateAppointmentCommand>
     {
-        private readonly UserRepository _userRepo;
-
-        public CreateAppointmentCommandValidator(UserRepository userRepo)
+        public CreateAppointmentCommandValidator()
         {
-            _userRepo = userRepo;
-            
-
             RuleFor(x => x.Title).NotEmpty();
             RuleFor(x => x.UserId)
                 .NotEmpty();

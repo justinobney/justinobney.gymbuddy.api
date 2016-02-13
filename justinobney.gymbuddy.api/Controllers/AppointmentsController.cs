@@ -72,5 +72,21 @@ namespace justinobney.gymbuddy.api.Controllers
             var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
             return CreatedAtRoute("DefaultApi", new { id = listing.Id }, listing);
         }
+
+        [ResponseType(typeof(AppointmentListing))]
+        [Route("api/Appointments/{id}/Add-Guest/{timeSlotId}")]
+        public async Task<IHttpActionResult> AddAppointmentGuest(long id, long timeSlotId)
+        {
+            var command = new AddAppointmentGuestCommand
+            {
+                UserId = CurrentUser.Id,
+                AppointmentId = id,
+                AppointmentTimeSlotId = timeSlotId
+            };
+
+            var appointment = await _mediator.SendAsync(command);
+            var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
+            return Ok(listing);
+        }
     }
 }
