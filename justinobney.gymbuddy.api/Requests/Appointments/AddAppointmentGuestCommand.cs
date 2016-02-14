@@ -27,7 +27,10 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
 
         public async Task<Appointment> Handle(AddAppointmentGuestCommand message)
         {
-            var appt = await _apptRepo.GetByIdAsync(message.AppointmentId);
+            var appt = await _apptRepo.Find(x => x.Id == message.AppointmentId)
+                .Include(x => x.GuestList)
+                .FirstOrDefaultAsync();
+
             appt.GuestList.Add(new AppointmentGuest
             {
                 UserId = message.UserId,

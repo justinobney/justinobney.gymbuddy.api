@@ -88,5 +88,19 @@ namespace justinobney.gymbuddy.api.Controllers
             var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
             return Ok(listing);
         }
+
+        [ResponseType(typeof(AppointmentListing))]
+        [Route("api/Appointments/{id}/Remove-Guest/{guestAppointmentId}")]
+        public async Task<IHttpActionResult> RemoveAppointmentGuest(long guestAppointmentId)
+        {
+            var command = new RemoveAppointmentGuestCommand
+            {
+                GuestAppointmentId = guestAppointmentId
+            };
+
+            var appointment = await _mediator.SendAsync(command);
+            var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
+            return Ok(listing);
+        }
     }
 }
