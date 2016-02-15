@@ -1,3 +1,4 @@
+using System.Data.Entity;
 using System.Threading.Tasks;
 using justinobney.gymbuddy.api.Data;
 using justinobney.gymbuddy.api.Interfaces;
@@ -14,16 +15,17 @@ namespace justinobney.gymbuddy.api.Requests.Generic
     [DoNotValidate]
     public class GetByIdQueryHandler<TEntity> : IAsyncRequestHandler<GetByIdQuery<TEntity>, TEntity> where TEntity : class, IEntity
     {
-        private readonly BaseRepository<TEntity> _repo;
+        private readonly IDbSet<TEntity> _dbSet;
 
-        public GetByIdQueryHandler(BaseRepository<TEntity> repo)
+
+        public GetByIdQueryHandler(IDbSet<TEntity> dbSet)
         {
-            _repo = repo;
+            _dbSet = dbSet;
         }
 
         Task<TEntity> IAsyncRequestHandler<GetByIdQuery<TEntity>, TEntity>.Handle(GetByIdQuery<TEntity> message)
         {
-            return _repo.GetByIdAsync(message.Id);
+            return _dbSet.FirstAsync(x => x.Id == message.Id);
         }
     }
 }

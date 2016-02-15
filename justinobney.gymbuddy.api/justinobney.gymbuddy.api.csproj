@@ -241,6 +241,7 @@
     <Compile Include="Data\Users\UserPredicates.cs" />
     <Compile Include="Data\Users\UserRepository.cs" />
     <Compile Include="Data\AppContext.cs" />
+    <Compile Include="DependencyResolution\ContainerExtensions.cs" />
     <Compile Include="DependencyResolution\ControllerConvention.cs" />
     <Compile Include="DependencyResolution\DefaultRegistry.cs" />
     <Compile Include="DependencyResolution\GenericCrudRequestsConvention.cs" />
