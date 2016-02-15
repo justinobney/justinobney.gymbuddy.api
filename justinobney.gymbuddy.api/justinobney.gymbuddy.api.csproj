@@ -285,7 +285,7 @@
     <Compile Include="Requests\Decorators\AuthorizeHandler.cs" />
     <Compile Include="Requests\Decorators\LoggingHandler.cs" />
     <Compile Include="Requests\Decorators\ValidateHandler.cs" />
-    <Compile Include="Requests\Generic\GetById.cs" />
+    <Compile Include="Requests\Generic\GetByIdQuery.cs" />
     <Compile Include="Requests\Generic\GetByPredicateQuery.cs" />
     <Compile Include="Requests\Users\AddUserToGymCommand.cs" />
     <Compile Include="Requests\Users\CreateUserCommand.cs" />
