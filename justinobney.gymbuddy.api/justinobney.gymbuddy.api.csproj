@@ -241,6 +241,7 @@
     <Compile Include="Data\Users\UserPredicates.cs" />
     <Compile Include="Data\Users\UserRepository.cs" />
     <Compile Include="Data\AppContext.cs" />
+    <Compile Include="DependencyResolution\ContainerExtensions.cs" />
     <Compile Include="DependencyResolution\ControllerConvention.cs" />
     <Compile Include="DependencyResolution\DefaultRegistry.cs" />
     <Compile Include="DependencyResolution\GenericCrudRequestsConvention.cs" />
@@ -280,10 +281,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Requests\Appointments\AddAppointmentGuestCommand.cs" />
     <Compile Include="Requests\Appointments\CreateAppointmentCommand.cs" />
+    <Compile Include="Requests\Appointments\RemoveAppointmentGuestCommand.cs" />
     <Compile Include="Requests\Decorators\AuthorizeHandler.cs" />
     <Compile Include="Requests\Decorators\LoggingHandler.cs" />
     <Compile Include="Requests\Decorators\ValidateHandler.cs" />
-    <Compile Include="Requests\Generic\GetById.cs" />
+    <Compile Include="Requests\Generic\GetByIdQuery.cs" />
     <Compile Include="Requests\Generic\GetByPredicateQuery.cs" />
     <Compile Include="Requests\Users\AddUserToGymCommand.cs" />
     <Compile Include="Requests\Users\CreateUserCommand.cs" />

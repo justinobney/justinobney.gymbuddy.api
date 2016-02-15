@@ -1,7 +1,7 @@
 using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using justinobney.gymbuddy.api.Data;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 
@@ -25,16 +25,17 @@ namespace justinobney.gymbuddy.api.Requests.Generic
     [DoNotValidate]
     public class GetAllByPredicateQueryHandler<TEntity> : IRequestHandler<GetAllByPredicateQuery<TEntity>, IQueryable<TEntity>> where TEntity : class
     {
-        private readonly BaseRepository<TEntity> _repo;
+        private readonly IDbSet<TEntity> _dbSet;
 
-        public GetAllByPredicateQueryHandler(BaseRepository<TEntity> repo)
+
+        public GetAllByPredicateQueryHandler(IDbSet<TEntity> dbSet)
         {
-            _repo = repo;
+            _dbSet = dbSet;
         }
 
         public IQueryable<TEntity> Handle(GetAllByPredicateQuery<TEntity> message)
         {
-            return _repo.GetAll().Where(message.Predicate);
+            return _dbSet.Where(message.Predicate);
         }
     }
 }
