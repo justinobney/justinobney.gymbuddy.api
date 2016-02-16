@@ -1,6 +1,8 @@
 using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using justinobney.gymbuddy.api.Data;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Requests.Decorators;
@@ -16,31 +18,46 @@ namespace justinobney.gymbuddy.api.Requests.Users
     [DoNotValidate]
     public class DeleteUserCommandHandler : IAsyncRequestHandler<DeleteUserCommand, User>
     {
-        private readonly UserRepository _userRepo;
-        private readonly AppointmentRepository _apptRepo;
+        private readonly AppContext _context;
+        private readonly IDbSet<User> _users;
+        private readonly IDbSet<Appointment> _appointments;
+        private readonly IDbSet<AppointmentGuest> _appointmentGuests;
 
-        public DeleteUserCommandHandler(UserRepository userRepo, AppointmentRepository apptRepo)
+        public DeleteUserCommandHandler(AppContext context, IDbSet<User> users, IDbSet<Appointment> appointments, IDbSet<AppointmentGuest> appointmentGuests)
         {
-            _userRepo = userRepo;
-            _apptRepo = apptRepo;
+            _context = context;
+            _users = users;
+            _appointments = appointments;
+            _appointmentGuests = appointmentGuests;
         }
 
         public async Task<User> Handle(DeleteUserCommand message)
         {
-            var appts = _apptRepo.GetAll().Where(appt => appt.UserId == message.Id).ToList();
+            var user = _users
+                .Include(x=>x.Appointments.Select(y=>y.GuestList))
+                .FirstOrDefault(x => x.Id == message.Id);
 
-            foreach (var appt in appts)
-            {
-                await _apptRepo.DeleteAsync(appt);
-            }
-
-            User user = await _userRepo.GetByIdAsync(message.Id);
             if (user == null)
             {
                 throw new ArgumentException("User not found");
             }
 
-            await _userRepo.DeleteAsync(user);
+            var guestEntry = _appointmentGuests.Where(x => x.UserId == user.Id).ToList();
+            foreach (var appointmentGuest in guestEntry)
+            {
+                _appointmentGuests.Attach(appointmentGuest);
+                _appointmentGuests.Remove(appointmentGuest);
+            }
+
+            foreach (var appt in user.Appointments.ToList())
+            {
+                _appointments.Attach(appt);
+                _appointments.Remove(appt);
+            }
+
+            _users.Attach(user);
+            _users.Remove(user);
+            await _context.SaveChangesAsync();
             return user;
         }
     }
