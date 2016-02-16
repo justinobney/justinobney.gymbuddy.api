@@ -51,11 +51,13 @@ namespace justinobney.gymbuddy.api.DependencyResolution
                     scan.AddAllTypesOf(typeof (BaseRepository<>));
 
                     var handlerType = For(typeof (IRequestHandler<,>));
+                    handlerType.DecorateAllWith(typeof (TransactionHandler<,>), HasAttribute(typeof (Commit)));
                     handlerType.DecorateAllWith(typeof (ValidateHandler<,>), DoesNotHaveAttribute(typeof (DoNotValidate)));
                     handlerType.DecorateAllWith(typeof (AuthorizeHandler<,>), HasAttribute(typeof (Authorize)));
                     handlerType.DecorateAllWith(typeof (LoggingHandler<,>), DoesNotHaveAttribute(typeof (DoNotLog)));
 
                     var asyncHandlerType = For(typeof (IAsyncRequestHandler<,>));
+                    asyncHandlerType.DecorateAllWith(typeof(TransactionHandlerAsync<,>), HasAttribute(typeof(Commit)));
                     asyncHandlerType.DecorateAllWith(typeof(ValidateHandlerAsync<,>), DoesNotHaveAttribute(typeof(DoNotValidate)));
                     asyncHandlerType.DecorateAllWith(typeof (AuthorizeHandlerAsync<,>), HasAttribute(typeof (Authorize)));
                     asyncHandlerType.DecorateAllWith(typeof (LoggingHandlerAsync<,>), DoesNotHaveAttribute(typeof (DoNotLog)));

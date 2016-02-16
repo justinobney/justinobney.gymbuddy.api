@@ -2,7 +2,6 @@ using System;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using justinobney.gymbuddy.api.Data;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Requests.Decorators;
@@ -16,16 +15,15 @@ namespace justinobney.gymbuddy.api.Requests.Users
     }
 
     [DoNotValidate]
+    [Commit]
     public class DeleteUserCommandHandler : IAsyncRequestHandler<DeleteUserCommand, User>
     {
-        private readonly AppContext _context;
         private readonly IDbSet<User> _users;
         private readonly IDbSet<Appointment> _appointments;
         private readonly IDbSet<AppointmentGuest> _appointmentGuests;
 
-        public DeleteUserCommandHandler(AppContext context, IDbSet<User> users, IDbSet<Appointment> appointments, IDbSet<AppointmentGuest> appointmentGuests)
+        public DeleteUserCommandHandler(IDbSet<User> users, IDbSet<Appointment> appointments, IDbSet<AppointmentGuest> appointmentGuests)
         {
-            _context = context;
             _users = users;
             _appointments = appointments;
             _appointmentGuests = appointmentGuests;
@@ -33,9 +31,9 @@ namespace justinobney.gymbuddy.api.Requests.Users
 
         public async Task<User> Handle(DeleteUserCommand message)
         {
-            var user = _users
+            var user = await _users
                 .Include(x=>x.Appointments.Select(y=>y.GuestList))
-                .FirstOrDefault(x => x.Id == message.Id);
+                .FirstOrDefaultAsync(x => x.Id == message.Id);
 
             if (user == null)
             {
@@ -54,7 +52,6 @@ namespace justinobney.gymbuddy.api.Requests.Users
             }
 
             _users.Remove(user);
-            await _context.SaveChangesAsync();
             return user;
         }
     }
