@@ -32,7 +32,7 @@ namespace justinobney.gymbuddy.api.Requests.Users
         public async Task<User> Handle(DeleteUserCommand message)
         {
             var user = await _users
-                .Include(x=>x.Appointments.Select(y=>y.GuestList))
+                .Include(x=>x.Appointments)
                 .FirstOrDefaultAsync(x => x.Id == message.Id);
 
             if (user == null)
