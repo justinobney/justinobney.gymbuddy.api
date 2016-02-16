@@ -45,17 +45,14 @@ namespace justinobney.gymbuddy.api.Requests.Users
             var guestEntry = _appointmentGuests.Where(x => x.UserId == user.Id).ToList();
             foreach (var appointmentGuest in guestEntry)
             {
-                _appointmentGuests.Attach(appointmentGuest);
                 _appointmentGuests.Remove(appointmentGuest);
             }
 
             foreach (var appt in user.Appointments.ToList())
             {
-                _appointments.Attach(appt);
                 _appointments.Remove(appt);
             }
 
-            _users.Attach(user);
             _users.Remove(user);
             await _context.SaveChangesAsync();
             return user;
