@@ -9,6 +9,7 @@ using FluentValidation.Results;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
+using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments
@@ -26,15 +27,16 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
         public List<DateTime?> TimeSlots { get; set; } = new List<DateTime?>();
     }
 
+    [Commit]
     public class CreateAppointmentCommandHandler : IAsyncRequestHandler<CreateAppointmentCommand, Appointment>
     {
         private readonly IMapper _mapper;
-        private readonly AppointmentRepository _apptRepo;
+        private readonly IDbSet<Appointment> _appointments;
 
-        public CreateAppointmentCommandHandler(IMapper mapper, AppointmentRepository apptRepo)
+        public CreateAppointmentCommandHandler(IMapper mapper, IDbSet<Appointment> appointments)
         {
             _mapper = mapper;
-            _apptRepo = apptRepo;
+            _appointments = appointments;
         }
 
         public async Task<Appointment> Handle(CreateAppointmentCommand message)
@@ -44,9 +46,9 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
             appointment.CreatedAt = DateTime.UtcNow;
             appointment.ModifiedAt = DateTime.UtcNow;
 
-            await _apptRepo.InsertAsync(appointment);
-            var newAppt = await _apptRepo.Find(appt => appt.Id == appointment.Id).Include(appt => appt.User).FirstAsync();
-            return newAppt;
+            _appointments.Add(appointment);
+            
+            return appointment;
         }
     }
 

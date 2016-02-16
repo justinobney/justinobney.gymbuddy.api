@@ -5,6 +5,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Enums;
+using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments
@@ -16,20 +17,21 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
         public long AppointmentTimeSlotId { get; set; }
     }
 
+    [Commit]
     public class AddAppointmentGuestCommandHandler : IAsyncRequestHandler<AddAppointmentGuestCommand, Appointment>
     {
-        private readonly AppointmentRepository _apptRepo;
+        private readonly IDbSet<Appointment> _appointments;
 
-        public AddAppointmentGuestCommandHandler(AppointmentRepository apptRepo)
+        public AddAppointmentGuestCommandHandler(IDbSet<Appointment> appointments)
         {
-            _apptRepo = apptRepo;
+            _appointments = appointments;
         }
 
         public async Task<Appointment> Handle(AddAppointmentGuestCommand message)
         {
-            var appt = await _apptRepo.Find(x => x.Id == message.AppointmentId)
+            var appt = await _appointments
                 .Include(x => x.GuestList)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(x => x.Id == message.AppointmentId);
 
             appt.GuestList.Add(new AppointmentGuest
             {
@@ -37,30 +39,22 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
                 AppointmentTimeSlotId = message.AppointmentTimeSlotId,
                 Status = AppointmentGuestStatus.Pending
             });
-
-            await _apptRepo.UpdateAsync(appt);
-
+            
             return appt;
         }
     }
 
     public class AddAppointmentGuestCommandValidator : AbstractValidator<AddAppointmentGuestCommand>
     {
-        private readonly AppointmentRepository _apptRepo;
 
-        public AddAppointmentGuestCommandValidator(AppointmentRepository apptRepo)
+        public AddAppointmentGuestCommandValidator(IDbSet<AppointmentGuest> appointmentGuests)
         {
-            _apptRepo = apptRepo;
-
             CustomAsync(async command =>
             {
-                var appt = await _apptRepo.Find(x => x.Id == command.AppointmentId).Include(x => x.GuestList).FirstAsync();
-                var isDuplicateGuest =
-                    appt.GuestList.Any(
-                        guest =>
+                var isDuplicateGuest = await appointmentGuests.AnyAsync(guest =>
                             guest.UserId == command.UserId &&
                             guest.AppointmentTimeSlotId == command.AppointmentTimeSlotId);
-
+                
                 return isDuplicateGuest ? new ValidationFailure("UserId", "This user is already registered for this time slot") : null;
             });
         }

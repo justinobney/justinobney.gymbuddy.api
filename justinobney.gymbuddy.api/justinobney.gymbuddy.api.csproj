@@ -226,7 +226,6 @@
     <Compile Include="Data\Appointments\Appointment.cs" />
     <Compile Include="Data\Appointments\AppointmentConfiguration.cs" />
     <Compile Include="Data\Appointments\AppointmentGuest.cs" />
-    <Compile Include="Data\Appointments\AppointmentRepository.cs" />
     <Compile Include="Data\Appointments\AppointmentTimeSlot.cs" />
     <Compile Include="Data\BaseRepository.cs" />
     <Compile Include="Data\Devices\Device.cs" />
