@@ -58,11 +58,6 @@ namespace justinobney.gymbuddy.api.Controllers
         [ResponseType(typeof(User))]
         public async Task<IHttpActionResult> PostUser(CreateUserCommand command)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var user = await _mediator.SendAsync(command);
             return CreatedAtRoute("DefaultApi", new { id = user.Id }, user);
         }
@@ -95,11 +90,6 @@ namespace justinobney.gymbuddy.api.Controllers
         [Route("api/Users/Add-Gym")]
         public async Task<IHttpActionResult> AddUserToGym(AddUserToGymCommand command)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             if (CurrentUser == null)
             {
                 return Unauthorized();

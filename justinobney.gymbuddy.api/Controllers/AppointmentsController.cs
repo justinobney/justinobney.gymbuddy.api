@@ -62,11 +62,6 @@ namespace justinobney.gymbuddy.api.Controllers
         [ResponseType(typeof(AppointmentListing))]
         public async Task<IHttpActionResult> PostAppointment(CreateAppointmentCommand command)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             command.UserId = CurrentUser.Id;
             var appointment = await _mediator.SendAsync(command);
             var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
