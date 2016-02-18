@@ -23,6 +23,7 @@ namespace justinobney.gymbuddy.api.tests
             registry.IncludeRegistry<FakeEntityFrameworkRegistry>();
 
             _container = new Container(registry);
+            _container.AssertConfigurationIsValid();
             Context = new CoreTestContext(_container);
 
             Mediator = _container.GetInstance<IMediator>();
