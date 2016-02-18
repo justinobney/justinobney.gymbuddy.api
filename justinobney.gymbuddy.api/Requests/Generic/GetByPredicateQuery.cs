@@ -11,7 +11,6 @@ namespace justinobney.gymbuddy.api.Requests.Generic
     {
         public GetAllByPredicateQuery()
         {
-            
         }
 
         public GetAllByPredicateQuery(Expression<Func<TEntity, bool>> predicate)

@@ -1,3 +1,4 @@
+using System;
 using System.Data.Entity;
 using System.Linq;
 using justinobney.gymbuddy.api.Interfaces;
@@ -24,7 +25,11 @@ namespace justinobney.gymbuddy.api.Requests.Generic
 
         TEntity IRequestHandler<GetByIdQuery<TEntity>, TEntity>.Handle(GetByIdQuery<TEntity> message)
         {
-            return _dbSet.First(x => x.Id == message.Id);
+            var user = _dbSet.FirstOrDefault(x => x.Id == message.Id);
+            if(user == null)
+                throw new NullReferenceException("Entity does not exist");
+
+            return user;
         }
     }
 }
