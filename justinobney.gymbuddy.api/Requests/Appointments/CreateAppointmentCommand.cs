@@ -9,11 +9,12 @@ using FluentValidation.Results;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
+using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments
 {
-    public class CreateAppointmentCommand : IAsyncRequest<Appointment>
+    public class CreateAppointmentCommand : IRequest<Appointment>
     {
         public long Id { get; set; }
 
@@ -26,27 +27,27 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
         public List<DateTime?> TimeSlots { get; set; } = new List<DateTime?>();
     }
 
-    public class CreateAppointmentCommandHandler : IAsyncRequestHandler<CreateAppointmentCommand, Appointment>
+    public class CreateAppointmentCommandHandler : IRequestHandler<CreateAppointmentCommand, Appointment>
     {
         private readonly IMapper _mapper;
-        private readonly AppointmentRepository _apptRepo;
+        private readonly IDbSet<Appointment> _appointments;
 
-        public CreateAppointmentCommandHandler(IMapper mapper, AppointmentRepository apptRepo)
+        public CreateAppointmentCommandHandler(IMapper mapper, IDbSet<Appointment> appointments)
         {
             _mapper = mapper;
-            _apptRepo = apptRepo;
+            _appointments = appointments;
         }
 
-        public async Task<Appointment> Handle(CreateAppointmentCommand message)
+        public Appointment Handle(CreateAppointmentCommand message)
         {
             var appointment = _mapper.Map(message, new Appointment());
             appointment.Status = AppointmentStatus.AwaitingGuests;
             appointment.CreatedAt = DateTime.UtcNow;
             appointment.ModifiedAt = DateTime.UtcNow;
 
-            await _apptRepo.InsertAsync(appointment);
-            var newAppt = await _apptRepo.Find(appt => appt.Id == appointment.Id).Include(appt => appt.User).FirstAsync();
-            return newAppt;
+            _appointments.Add(appointment);
+            
+            return appointment;
         }
     }
 

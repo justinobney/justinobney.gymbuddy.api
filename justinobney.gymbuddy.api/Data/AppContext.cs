@@ -28,6 +28,5 @@ namespace justinobney.gymbuddy.api.Data
         public DbSet<Device> Devices { get; set; }
         public DbSet<Gym> Gyms { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
-        public DbSet<AppointmentGuest> AppointmentGuests { get; set; }
     }
 }

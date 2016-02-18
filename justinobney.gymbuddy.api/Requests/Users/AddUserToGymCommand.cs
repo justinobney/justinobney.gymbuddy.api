@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.Results;
 using justinobney.gymbuddy.api.Data.Gyms;
@@ -9,35 +9,36 @@ using MediatR;
 
 namespace justinobney.gymbuddy.api.Requests.Users
 {
-    public class AddUserToGymCommand : IAsyncRequest<User>
+    public class AddUserToGymCommand : IRequest<User>
     {
         public long UserId { get; set; }
         public long GymId { get; set; }
     }
 
-    public class AddUserToGymCommandHandler : IAsyncRequestHandler<AddUserToGymCommand, User>
+    public class AddUserToGymCommandHandler : IRequestHandler<AddUserToGymCommand, User>
     {
-        private readonly UserRepository _userRepo;
-        private readonly GymRepository _gymRepo;
+        private readonly IDbSet<User> _users;
+        private readonly IDbSet<Gym> _gyms;
 
-        public AddUserToGymCommandHandler(UserRepository userRepo, GymRepository gymRepo)
+        public AddUserToGymCommandHandler(IDbSet<User> users, IDbSet<Gym> gyms)
         {
-            _userRepo = userRepo;
-            _gymRepo = gymRepo;
+            _users = users;
+            _gyms = gyms;
         }
 
-        async Task<User> IAsyncRequestHandler<AddUserToGymCommand, User>.Handle(AddUserToGymCommand message)
+        public User Handle(AddUserToGymCommand message)
         {
-            var user = await _userRepo.GetByIdAsync(message.UserId);
-            var gym = await _gymRepo.GetByIdAsync(message.GymId);
+            var user = _users.Find(message.UserId);
+            var gym = _gyms.Find(message.GymId);
 
+            // todo: move to validator
             ValidateEntities(user, gym);
 
             user.Gyms.Add(gym);
-            await _userRepo.UpdateAsync(user);
 
             return user;
         }
+        
 
         private void ValidateEntities(User user, Gym gym)
         {

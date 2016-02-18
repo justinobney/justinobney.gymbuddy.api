@@ -127,7 +127,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Swashbuckle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cd1bb07a5ac7c7bc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Swashbuckle.Core.5.2.2\lib\net40\Swashbuckle.Core.dll</HintPath>
+      <HintPath>..\packages\Swashbuckle.Core.5.3.1\lib\net40\Swashbuckle.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -226,24 +226,23 @@
     <Compile Include="Data\Appointments\Appointment.cs" />
     <Compile Include="Data\Appointments\AppointmentConfiguration.cs" />
     <Compile Include="Data\Appointments\AppointmentGuest.cs" />
-    <Compile Include="Data\Appointments\AppointmentRepository.cs" />
     <Compile Include="Data\Appointments\AppointmentTimeSlot.cs" />
     <Compile Include="Data\BaseRepository.cs" />
     <Compile Include="Data\Devices\Device.cs" />
     <Compile Include="Data\Devices\DeviceConfiguration.cs" />
-    <Compile Include="Data\Devices\DeviceRepository.cs" />
     <Compile Include="Data\Gyms\Gym.cs" />
     <Compile Include="Data\Gyms\GymConfiguration.cs" />
-    <Compile Include="Data\Gyms\GymRepository.cs" />
     <Compile Include="Data\PredicateBuilder.cs" />
     <Compile Include="Data\Users\User.cs" />
     <Compile Include="Data\Users\UserConfiguration.cs" />
     <Compile Include="Data\Users\UserPredicates.cs" />
-    <Compile Include="Data\Users\UserRepository.cs" />
     <Compile Include="Data\AppContext.cs" />
     <Compile Include="DependencyResolution\ContainerExtensions.cs" />
     <Compile Include="DependencyResolution\ControllerConvention.cs" />
     <Compile Include="DependencyResolution\DefaultRegistry.cs" />
+    <Compile Include="DependencyResolution\EntityFrameworkConvention.cs" />
+    <Compile Include="DependencyResolution\EntityFrameworkRegistry.cs" />
+    <Compile Include="DependencyResolution\GenericCrudRegistry.cs" />
     <Compile Include="DependencyResolution\GenericCrudRequestsConvention.cs" />
     <Compile Include="DependencyResolution\IoC.cs" />
     <Compile Include="DependencyResolution\StructureMapDependencyScope.cs" />
@@ -284,6 +283,7 @@
     <Compile Include="Requests\Appointments\RemoveAppointmentGuestCommand.cs" />
     <Compile Include="Requests\Decorators\AuthorizeHandler.cs" />
     <Compile Include="Requests\Decorators\LoggingHandler.cs" />
+    <Compile Include="Requests\Decorators\TransactionHandler.cs" />
     <Compile Include="Requests\Decorators\ValidateHandler.cs" />
     <Compile Include="Requests\Generic\GetByIdQuery.cs" />
     <Compile Include="Requests\Generic\GetByPredicateQuery.cs" />

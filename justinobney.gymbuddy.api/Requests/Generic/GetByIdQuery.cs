@@ -1,19 +1,18 @@
 using System.Data.Entity;
-using System.Threading.Tasks;
-using justinobney.gymbuddy.api.Data;
+using System.Linq;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 
 namespace justinobney.gymbuddy.api.Requests.Generic
 {
-    public class GetByIdQuery<TEntity> : IAsyncRequest<TEntity> where TEntity : IEntity
+    public class GetByIdQuery<TEntity> : IRequest<TEntity> where TEntity : IEntity
     {
         public long Id { get; set; }
     }
 
     [DoNotValidate]
-    public class GetByIdQueryHandler<TEntity> : IAsyncRequestHandler<GetByIdQuery<TEntity>, TEntity> where TEntity : class, IEntity
+    public class GetByIdQueryHandler<TEntity> : IRequestHandler<GetByIdQuery<TEntity>, TEntity> where TEntity : class, IEntity
     {
         private readonly IDbSet<TEntity> _dbSet;
 
@@ -23,9 +22,9 @@ namespace justinobney.gymbuddy.api.Requests.Generic
             _dbSet = dbSet;
         }
 
-        Task<TEntity> IAsyncRequestHandler<GetByIdQuery<TEntity>, TEntity>.Handle(GetByIdQuery<TEntity> message)
+        TEntity IRequestHandler<GetByIdQuery<TEntity>, TEntity>.Handle(GetByIdQuery<TEntity> message)
         {
-            return _dbSet.FirstAsync(x => x.Id == message.Id);
+            return _dbSet.First(x => x.Id == message.Id);
         }
     }
 }

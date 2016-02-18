@@ -1,9 +1,10 @@
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
+using justinobney.gymbuddy.api.Interfaces;
 
 namespace justinobney.gymbuddy.api.Data.Appointments
 {
-    public class AppointmentGuest
+    public class AppointmentGuest : IEntity
     {
         public long Id { get; set; }
         public long UserId { get; set; }

@@ -14,7 +14,7 @@ namespace justinobney.gymbuddy.api
             Config = new MapperConfiguration(cfg =>
             {
                 Assembly
-                    .GetExecutingAssembly()
+                    .GetAssembly(typeof (IAutoMapperConfiguration))
                     .GetExportedTypes()
                     .Where(t => t.IsAbstract == false && typeof (IAutoMapperConfiguration).IsAssignableFrom(t))
                     .ForEach(t =>

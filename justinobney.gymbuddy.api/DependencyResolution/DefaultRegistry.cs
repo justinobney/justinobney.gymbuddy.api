@@ -51,14 +51,10 @@ namespace justinobney.gymbuddy.api.DependencyResolution
                     scan.AddAllTypesOf(typeof (BaseRepository<>));
 
                     var handlerType = For(typeof (IRequestHandler<,>));
+                    handlerType.DecorateAllWith(typeof (TransactionHandler<,>), DoesNotHaveAttribute(typeof (DoNotCommit)));
                     handlerType.DecorateAllWith(typeof (ValidateHandler<,>), DoesNotHaveAttribute(typeof (DoNotValidate)));
                     handlerType.DecorateAllWith(typeof (AuthorizeHandler<,>), HasAttribute(typeof (Authorize)));
                     handlerType.DecorateAllWith(typeof (LoggingHandler<,>), DoesNotHaveAttribute(typeof (DoNotLog)));
-
-                    var asyncHandlerType = For(typeof (IAsyncRequestHandler<,>));
-                    asyncHandlerType.DecorateAllWith(typeof(ValidateHandlerAsync<,>), DoesNotHaveAttribute(typeof(DoNotValidate)));
-                    asyncHandlerType.DecorateAllWith(typeof (AuthorizeHandlerAsync<,>), HasAttribute(typeof (Authorize)));
-                    asyncHandlerType.DecorateAllWith(typeof (LoggingHandlerAsync<,>), DoesNotHaveAttribute(typeof (DoNotLog)));
 
                     For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => ctx.GetInstance(t));
                     For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => ctx.GetAllInstances(t));
@@ -67,7 +63,6 @@ namespace justinobney.gymbuddy.api.DependencyResolution
                     MappingConfig.Register();
                     For<IMapper>().Use(_ => MappingConfig.Instance);
 
-                    scan.Convention<GenericCrudRequestsConvention>();
                     scan.WithDefaultConventions();
                 });
         }

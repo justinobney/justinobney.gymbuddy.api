@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using AutoMapper.QueryableExtensions;
@@ -56,36 +55,31 @@ namespace justinobney.gymbuddy.api.Controllers
 
         // POST: api/Users
         [ResponseType(typeof(User))]
-        public async Task<IHttpActionResult> PostUser(CreateUserCommand command)
+        public IHttpActionResult PostUser(CreateUserCommand command)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var user = await _mediator.SendAsync(command);
+            var user = _mediator.Send(command);
             return CreatedAtRoute("DefaultApi", new { id = user.Id }, user);
         }
 
 
         // PUT: api/Users/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutUser(long id, UpdateUserCommand command)
+        public IHttpActionResult PutUser(long id, UpdateUserCommand command)
         {
             if (id != command.Id)
             {
                 return BadRequest();
             }
 
-            await _mediator.SendAsync(command);
+            _mediator.Send(command);
             return StatusCode(HttpStatusCode.NoContent);
         }
 
         // DELETE: api/Users/5
         [ResponseType(typeof(User))]
-        public async Task<IHttpActionResult> DeleteUser(long id)
+        public IHttpActionResult DeleteUser(long id)
         {
-            var user = await _mediator.SendAsync(new DeleteUserCommand {Id = id});
+            var user = _mediator.Send(new DeleteUserCommand {Id = id});
             return Ok(user);
         }
 
@@ -93,20 +87,15 @@ namespace justinobney.gymbuddy.api.Controllers
         [ResponseType(typeof(User))]
         [HttpPost]
         [Route("api/Users/Add-Gym")]
-        public async Task<IHttpActionResult> AddUserToGym(AddUserToGymCommand command)
+        public IHttpActionResult AddUserToGym(AddUserToGymCommand command)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             if (CurrentUser == null)
             {
                 return Unauthorized();
             }
 
             command.UserId = CurrentUser.Id;
-            var user = await _mediator.SendAsync(command);
+            var user = _mediator.Send(command);
             return Ok(MappingConfig.Instance.Map<ProfileListing>(user));
         }
     }

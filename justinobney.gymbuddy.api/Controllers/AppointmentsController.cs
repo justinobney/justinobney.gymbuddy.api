@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using AutoMapper.QueryableExtensions;
@@ -60,22 +59,17 @@ namespace justinobney.gymbuddy.api.Controllers
         }
 
         [ResponseType(typeof(AppointmentListing))]
-        public async Task<IHttpActionResult> PostAppointment(CreateAppointmentCommand command)
+        public IHttpActionResult PostAppointment(CreateAppointmentCommand command)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             command.UserId = CurrentUser.Id;
-            var appointment = await _mediator.SendAsync(command);
+            var appointment =  _mediator.Send(command);
             var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
             return CreatedAtRoute("DefaultApi", new { id = listing.Id }, listing);
         }
 
         [ResponseType(typeof(AppointmentListing))]
         [Route("api/Appointments/{id}/Add-Guest/{timeSlotId}")]
-        public async Task<IHttpActionResult> AddAppointmentGuest(long id, long timeSlotId)
+        public IHttpActionResult AddAppointmentGuest(long id, long timeSlotId)
         {
             var command = new AddAppointmentGuestCommand
             {
@@ -84,21 +78,21 @@ namespace justinobney.gymbuddy.api.Controllers
                 AppointmentTimeSlotId = timeSlotId
             };
 
-            var appointment = await _mediator.SendAsync(command);
+            var appointment = _mediator.Send(command);
             var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
             return Ok(listing);
         }
 
         [ResponseType(typeof(AppointmentListing))]
         [Route("api/Appointments/{id}/Remove-Guest/{guestAppointmentId}")]
-        public async Task<IHttpActionResult> RemoveAppointmentGuest(long guestAppointmentId)
+        public IHttpActionResult RemoveAppointmentGuest(long guestAppointmentId)
         {
             var command = new RemoveAppointmentGuestCommand
             {
                 GuestAppointmentId = guestAppointmentId
             };
 
-            var appointment = await _mediator.SendAsync(command);
+            var appointment = _mediator.Send(command);
             var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
             return Ok(listing);
         }
