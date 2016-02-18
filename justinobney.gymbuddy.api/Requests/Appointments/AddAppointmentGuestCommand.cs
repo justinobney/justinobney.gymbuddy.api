@@ -1,6 +1,5 @@
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.Results;
 using justinobney.gymbuddy.api.Data.Appointments;
@@ -39,7 +38,9 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
                 AppointmentTimeSlotId = message.AppointmentTimeSlotId,
                 Status = AppointmentGuestStatus.Pending
             });
-            
+
+            appt.Status = AppointmentStatus.PendingGuestConfirmation;
+
             return appt;
         }
     }
@@ -58,9 +59,16 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
 
             Custom(command =>
             {
-                var isDuplicateGuest = appointmentGuests.Any(guest =>
-                            guest.UserId == command.UserId &&
-                            guest.AppointmentTimeSlotId == command.AppointmentTimeSlotId);
+                var isDuplicateGuest = appointments
+                    .Include(x => x.GuestList)
+                    .Any(appt =>
+                        appt.Id == command.AppointmentId
+                        && appt.GuestList.Any(guest =>
+                            guest.UserId == command.UserId
+                            && guest.AppointmentTimeSlotId == command.AppointmentTimeSlotId
+                            )
+                    );
+
                 
                 return isDuplicateGuest ? new ValidationFailure("UserId", "This user is already registered for this time slot") : null;
             });

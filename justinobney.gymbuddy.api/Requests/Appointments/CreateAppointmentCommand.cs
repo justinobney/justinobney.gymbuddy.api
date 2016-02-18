@@ -14,7 +14,7 @@ using MediatR;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments
 {
-    public class CreateAppointmentCommand : IAsyncRequest<Appointment>
+    public class CreateAppointmentCommand : IRequest<Appointment>
     {
         public long Id { get; set; }
 
@@ -28,7 +28,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
     }
 
     [Commit]
-    public class CreateAppointmentCommandHandler : IAsyncRequestHandler<CreateAppointmentCommand, Appointment>
+    public class CreateAppointmentCommandHandler : IRequestHandler<CreateAppointmentCommand, Appointment>
     {
         private readonly IMapper _mapper;
         private readonly IDbSet<Appointment> _appointments;
@@ -39,7 +39,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
             _appointments = appointments;
         }
 
-        public async Task<Appointment> Handle(CreateAppointmentCommand message)
+        public Appointment Handle(CreateAppointmentCommand message)
         {
             var appointment = _mapper.Map(message, new Appointment());
             appointment.Status = AppointmentStatus.AwaitingGuests;

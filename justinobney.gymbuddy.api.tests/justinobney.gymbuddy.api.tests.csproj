@@ -95,7 +95,7 @@
     <Compile Include="Helpers\TestExtensions.cs" />
     <Compile Include="BaseTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Requests\Appointments\AddAppointmentGuestCommandTests.cs" />
+    <Compile Include="Requests\AppointmentTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\justinobney.gymbuddy.api\justinobney.gymbuddy.api.csproj">
