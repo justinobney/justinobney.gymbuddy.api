@@ -63,15 +63,10 @@ namespace justinobney.gymbuddy.api.tests.Requests
         public void AddAppointmentGuestCommand_ThrowsOnDuplicateGuestEntriesPerTimeSlot()
         {
             var appointments = Context.GetSet<Appointment>();
+            var appointmentGuests = Context.GetSet<AppointmentGuest>();
             appointments.Attach(new Appointment {Id = 1, GuestList = new List<AppointmentGuest>()});
-
-            var appt = Mediator.Send(new AddAppointmentGuestCommand
-            {
-                AppointmentId = 1,
-                UserId = 1, // todo: should throw on null
-                AppointmentTimeSlotId = 1 // todo: should throw on null
-            });
-
+            appointmentGuests.Attach(new AppointmentGuest {AppointmentId = 1, AppointmentTimeSlotId = 1, UserId = 1});
+            
             Action invalidCommand = () => Mediator.Send(new AddAppointmentGuestCommand
             {
                 AppointmentId = 1,

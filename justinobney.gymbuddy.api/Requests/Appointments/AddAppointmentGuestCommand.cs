@@ -58,15 +58,10 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
 
             Custom(command =>
             {
-                var isDuplicateGuest = appointments
-                    .Include(x => x.GuestList)
-                    .Any(appt =>
-                        appt.Id == command.AppointmentId
-                        && appt.GuestList.Any(guest =>
-                            guest.UserId == command.UserId
-                            && guest.AppointmentTimeSlotId == command.AppointmentTimeSlotId
-                            )
-                    );
+                var isDuplicateGuest = appointmentGuests
+                    .Any(guest =>
+                        guest.UserId == command.UserId
+                        && guest.AppointmentTimeSlotId == command.AppointmentTimeSlotId);
 
                 
                 return isDuplicateGuest ? new ValidationFailure("UserId", "This user is already registered for this time slot") : null;
