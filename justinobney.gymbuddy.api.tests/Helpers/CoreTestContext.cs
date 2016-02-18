@@ -25,7 +25,7 @@ namespace justinobney.gymbuddy.api.tests.Helpers
         {
             Assembly
                 .GetAssembly(typeof(IEntity))
-                .GetExportedTypes().ToList()
+                .GetExportedTypes()
                 .Where(t => t.IsAbstract == false && typeof(IEntity).IsAssignableFrom(t))
                 .Distinct()
                 .ToList()
