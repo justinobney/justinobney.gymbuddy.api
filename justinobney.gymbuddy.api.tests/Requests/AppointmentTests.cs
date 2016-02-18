@@ -27,7 +27,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 Id = 0,
                 UserId = 1, // TODO: should throw on invalid user
                 GymId = 1, // TODO: should throw on invalid gym
-                TimeSlots = new List<DateTime?> { DateTime.Now },
+                TimeSlots = new List<DateTime?> {DateTime.Now},
                 Title = "Back Day"
             });
 
@@ -54,7 +54,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 UserId = 1, // todo: should throw on null
                 AppointmentTimeSlotId = 1 // todo: should throw on null
             });
-            
+
             appt.GuestList.Count.ShouldBe(1);
             appt.Status.ShouldBe(AppointmentStatus.PendingGuestConfirmation);
         }
@@ -63,7 +63,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
         public void AddAppointmentGuestCommand_ThrowsOnDuplicateGuestEntriesPerTimeSlot()
         {
             var appointments = Context.GetSet<Appointment>();
-            appointments.Attach(new Appointment { Id = 1, GuestList = new List<AppointmentGuest>() });
+            appointments.Attach(new Appointment {Id = 1, GuestList = new List<AppointmentGuest>()});
 
             var appt = Mediator.Send(new AddAppointmentGuestCommand
             {
@@ -71,7 +71,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 UserId = 1, // todo: should throw on null
                 AppointmentTimeSlotId = 1 // todo: should throw on null
             });
-            
+
             Action invalidCommand = () => Mediator.Send(new AddAppointmentGuestCommand
             {
                 AppointmentId = 1,

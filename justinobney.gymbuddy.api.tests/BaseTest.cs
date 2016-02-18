@@ -14,7 +14,7 @@ namespace justinobney.gymbuddy.api.tests
         protected CoreTestContext Context;
         private Container _container;
 
-        [SetUp]
+        [TestFixtureSetUp]
         public void SetUp()
         {
             var registry = new Registry();
@@ -24,10 +24,11 @@ namespace justinobney.gymbuddy.api.tests
 
             _container = new Container(registry);
             Context = new CoreTestContext(_container);
+
             Mediator = _container.GetInstance<IMediator>();
         }
 
-        [TearDown]
+        [SetUp]
         public void TearDown()
         {
             Context.ClearAll();
