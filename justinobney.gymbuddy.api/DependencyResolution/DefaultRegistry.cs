@@ -69,7 +69,6 @@ namespace justinobney.gymbuddy.api.DependencyResolution
                     MappingConfig.Register();
                     For<IMapper>().Use(_ => MappingConfig.Instance);
 
-                    scan.Convention<GenericCrudRequestsConvention>();
                     scan.WithDefaultConventions();
                 });
         }
