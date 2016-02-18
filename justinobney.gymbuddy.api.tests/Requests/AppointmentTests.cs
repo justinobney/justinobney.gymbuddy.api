@@ -77,5 +77,24 @@ namespace justinobney.gymbuddy.api.tests.Requests
             invalidCommand.ShouldThrow<ValidationException>(@"Validation failed: 
  -- This user is already registered for this time slot");
         }
+
+        [Test]
+        public void AddAppointmentGuestCommand_ThrowsWhenOwnerRegistersAsGuest()
+        {
+            var appointments = Context.GetSet<Appointment>();
+            var appointmentGuests = Context.GetSet<AppointmentGuest>();
+            appointments.Attach(new Appointment { Id = 1, UserId = 1, GuestList = new List<AppointmentGuest>() });
+            appointmentGuests.Attach(new AppointmentGuest { AppointmentId = 1, AppointmentTimeSlotId = 1, UserId = 2 });
+
+            Action invalidCommand = () => Mediator.Send(new AddAppointmentGuestCommand
+            {
+                AppointmentId = 1,
+                UserId = 1, // todo: should throw on null
+                AppointmentTimeSlotId = 1 // todo: should throw on null
+            });
+
+            invalidCommand.ShouldThrow<ValidationException>(@"Validation failed: 
+ -- You can not be your own guest");
+        }
     }
 }

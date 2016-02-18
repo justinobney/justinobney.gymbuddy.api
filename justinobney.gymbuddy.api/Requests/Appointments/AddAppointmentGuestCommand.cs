@@ -51,6 +51,13 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
         {
             Custom(command =>
             {
+                var exists = appointments.Any(appt => appt.Id == command.AppointmentId && appt.UserId == command.UserId);
+
+                return exists ? new ValidationFailure("UserId", "You can not be your own guest") : null;
+            });
+
+            Custom(command =>
+            {
                 var exists = appointments.Any(appt =>appt.Id == command.AppointmentId);
 
                 return !exists ? new ValidationFailure("AppointmentId", "This appointment does not exist") : null;
