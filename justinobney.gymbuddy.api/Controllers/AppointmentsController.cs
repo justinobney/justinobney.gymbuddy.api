@@ -79,7 +79,7 @@ namespace justinobney.gymbuddy.api.Controllers
                 AppointmentTimeSlotId = timeSlotId
             };
 
-            var appointment = await _mediator.SendAsync(command);
+            var appointment = _mediator.Send(command);
             var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
             return Ok(listing);
         }

@@ -10,7 +10,7 @@ using MediatR;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments
 {
-    public class AddAppointmentGuestCommand : IAsyncRequest<Appointment>
+    public class AddAppointmentGuestCommand : IRequest<Appointment>
     {
         public long UserId { get; set; }
         public long AppointmentId { get; set; }
@@ -18,7 +18,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
     }
 
     [Commit]
-    public class AddAppointmentGuestCommandHandler : IAsyncRequestHandler<AddAppointmentGuestCommand, Appointment>
+    public class AddAppointmentGuestCommandHandler : IRequestHandler<AddAppointmentGuestCommand, Appointment>
     {
         private readonly IDbSet<Appointment> _appointments;
 
@@ -27,11 +27,11 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
             _appointments = appointments;
         }
 
-        public async Task<Appointment> Handle(AddAppointmentGuestCommand message)
+        public Appointment Handle(AddAppointmentGuestCommand message)
         {
-            var appt = await _appointments
+            var appt = _appointments
                 .Include(x => x.GuestList)
-                .FirstOrDefaultAsync(x => x.Id == message.AppointmentId);
+                .FirstOrDefault(x => x.Id == message.AppointmentId);
 
             appt.GuestList.Add(new AppointmentGuest
             {
@@ -47,11 +47,18 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
     public class AddAppointmentGuestCommandValidator : AbstractValidator<AddAppointmentGuestCommand>
     {
 
-        public AddAppointmentGuestCommandValidator(IDbSet<AppointmentGuest> appointmentGuests)
+        public AddAppointmentGuestCommandValidator(IDbSet<Appointment> appointments, IDbSet<AppointmentGuest> appointmentGuests)
         {
-            CustomAsync(async command =>
+            Custom(command =>
             {
-                var isDuplicateGuest = await appointmentGuests.AnyAsync(guest =>
+                var exists = appointments.Any(appt =>appt.Id == command.AppointmentId);
+
+                return !exists ? new ValidationFailure("AppointmentId", "This appointment does not exist") : null;
+            });
+
+            Custom(command =>
+            {
+                var isDuplicateGuest = appointmentGuests.Any(guest =>
                             guest.UserId == command.UserId &&
                             guest.AppointmentTimeSlotId == command.AppointmentTimeSlotId);
                 
