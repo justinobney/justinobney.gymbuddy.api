@@ -16,7 +16,6 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
         public long AppointmentTimeSlotId { get; set; }
     }
 
-    [Commit]
     public class AddAppointmentGuestCommandHandler : IRequestHandler<AddAppointmentGuestCommand, Appointment>
     {
         private readonly IDbSet<Appointment> _appointments;

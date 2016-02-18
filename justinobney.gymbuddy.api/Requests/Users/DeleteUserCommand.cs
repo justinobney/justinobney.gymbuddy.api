@@ -9,14 +9,13 @@ using MediatR;
 
 namespace justinobney.gymbuddy.api.Requests.Users
 {
-    public class DeleteUserCommand : IAsyncRequest<User>
+    public class DeleteUserCommand : IRequest<User>
     {
         public long Id { get; set; }
     }
 
     [DoNotValidate]
-    [Commit]
-    public class DeleteUserCommandHandler : IAsyncRequestHandler<DeleteUserCommand, User>
+    public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, User>
     {
         private readonly IDbSet<User> _users;
         private readonly IDbSet<Appointment> _appointments;
@@ -29,11 +28,11 @@ namespace justinobney.gymbuddy.api.Requests.Users
             _appointmentGuests = appointmentGuests;
         }
 
-        public async Task<User> Handle(DeleteUserCommand message)
+        public User Handle(DeleteUserCommand message)
         {
-            var user = await _users
+            var user = _users
                 .Include(x=>x.Appointments)
-                .FirstOrDefaultAsync(x => x.Id == message.Id);
+                .FirstOrDefault(x => x.Id == message.Id);
 
             if (user == null)
             {

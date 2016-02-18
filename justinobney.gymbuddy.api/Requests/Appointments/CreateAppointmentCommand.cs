@@ -27,7 +27,6 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
         public List<DateTime?> TimeSlots { get; set; } = new List<DateTime?>();
     }
 
-    [Commit]
     public class CreateAppointmentCommandHandler : IRequestHandler<CreateAppointmentCommand, Appointment>
     {
         private readonly IMapper _mapper;

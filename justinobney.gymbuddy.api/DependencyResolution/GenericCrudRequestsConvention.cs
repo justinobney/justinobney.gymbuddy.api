@@ -34,7 +34,7 @@ namespace justinobney.gymbuddy.api.DependencyResolution
         private static void RegisterGetByIdQuery(Registry registry, Type type)
         {
             var getByIdOfEntity = typeof (GetByIdQuery<>).MakeGenericType(type);
-            var requestingType = typeof (IAsyncRequestHandler<,>).MakeGenericType(getByIdOfEntity, type);
+            var requestingType = typeof (IRequestHandler<,>).MakeGenericType(getByIdOfEntity, type);
             var concreteType = typeof (GetByIdQueryHandler<>).MakeGenericType(type);
             registry.AddType(requestingType, concreteType);
         }

@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using FluentValidation;
 using MediatR;
 
@@ -27,33 +26,6 @@ namespace justinobney.gymbuddy.api.Requests.Decorators
         }
 
         public TResponse Handle(TRequest message)
-        {
-            var result = _validator.Validate(message);
-            if (result.IsValid)
-            {
-                return _inner.Handle(message);
-            }
-
-            throw new ValidationException(result.Errors);
-        }
-    }
-
-    public class ValidateHandlerAsync<TRequest, TResponse> : IAsyncRequestHandler<TRequest, TResponse>
-        where TRequest : IAsyncRequest<TResponse>
-    {
-        private readonly IAsyncRequestHandler<TRequest, TResponse> _inner;
-        private readonly AbstractValidator<TRequest> _validator;
-
-        public ValidateHandlerAsync(
-            IAsyncRequestHandler<TRequest, TResponse> inner,
-            AbstractValidator<TRequest> validator
-            )
-        {
-            _inner = inner;
-            _validator = validator;
-        }
-
-        public Task<TResponse> Handle(TRequest message)
         {
             var result = _validator.Validate(message);
             if (result.IsValid)

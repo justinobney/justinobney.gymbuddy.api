@@ -14,7 +14,7 @@ namespace justinobney.gymbuddy.api.tests
         protected CoreTestContext Context;
         private Container _container;
 
-        [OneTimeSetUp]
+        [SetUp]
         public void SetUp()
         {
             var registry = new Registry();

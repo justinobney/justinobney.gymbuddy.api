@@ -1,5 +1,5 @@
 using System;
-using System.Threading.Tasks;
+using System.Data.Entity;
 using AutoMapper;
 using FluentValidation;
 using justinobney.gymbuddy.api.Data.Devices;
@@ -10,7 +10,7 @@ using MediatR;
 
 namespace justinobney.gymbuddy.api.Requests.Users
 {
-    public class CreateUserCommand : IAsyncRequest<User>
+    public class CreateUserCommand : IRequest<User>
     {
         public long Id { get; set; }
         public string Name { get; set; }
@@ -21,18 +21,18 @@ namespace justinobney.gymbuddy.api.Requests.Users
         public string DeviceId { get; set; }
     }
 
-    public class CreateUserCommandHandler : IAsyncRequestHandler<CreateUserCommand, User>
+    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, User>
     {
         private readonly IMapper _mapper;
-        private readonly UserRepository _userRepo;
+        private readonly IDbSet<User> _users;
 
-        public CreateUserCommandHandler(IMapper mapper, UserRepository userRepo)
+        public CreateUserCommandHandler(IMapper mapper, IDbSet<User> users)
         {
             _mapper = mapper;
-            _userRepo = userRepo;
+            _users = users;
         }
 
-        public async Task<User> Handle(CreateUserCommand message)
+        public User Handle(CreateUserCommand message)
         {
             var user = _mapper.Map<User>(message);
             user.CreatedAt = DateTime.UtcNow;
@@ -45,7 +45,7 @@ namespace justinobney.gymbuddy.api.Requests.Users
                 ModifiedAt = DateTime.UtcNow
             });
 
-            await _userRepo.InsertAsync(user);
+            _users.Add(user);
 
             return user;
         }

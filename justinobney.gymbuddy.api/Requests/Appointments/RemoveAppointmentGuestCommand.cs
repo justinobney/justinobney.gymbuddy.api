@@ -1,19 +1,18 @@
 using System.Data.Entity;
-using System.Threading.Tasks;
+using System.Linq;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments
 {
-    public class RemoveAppointmentGuestCommand : IAsyncRequest<Appointment>
+    public class RemoveAppointmentGuestCommand : IRequest<Appointment>
     {
         public long GuestAppointmentId { get; set; }
     }
 
     [DoNotValidate]
-    [Commit]
-    public class RemoveAppointmentGuestCommandHandler : IAsyncRequestHandler<RemoveAppointmentGuestCommand, Appointment>
+    public class RemoveAppointmentGuestCommandHandler : IRequestHandler<RemoveAppointmentGuestCommand, Appointment>
     {
         private readonly IDbSet<Appointment> _appointments;
         private readonly IDbSet<AppointmentGuest> _appointmentGuests;
@@ -24,15 +23,15 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
             _appointmentGuests = appointmentGuests;
         }
 
-        public async Task<Appointment> Handle(RemoveAppointmentGuestCommand message)
+        public Appointment Handle(RemoveAppointmentGuestCommand message)
         {
-            var guestAppt = await _appointmentGuests.FirstOrDefaultAsync(x=> x.Id == message.GuestAppointmentId);
+            var guestAppt = _appointmentGuests.FirstOrDefault(x=> x.Id == message.GuestAppointmentId);
             _appointmentGuests.Remove(guestAppt);
 
 
-            var appt = await _appointments
+            var appt = _appointments
                 .Include(x => x.GuestList)
-                .FirstOrDefaultAsync(appointment => appointment.Id == guestAppt.AppointmentId);
+                .FirstOrDefault(appointment => appointment.Id == guestAppt.AppointmentId);
 
             return appt;
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Data.Entity;
 using System.Threading.Tasks;
 using AutoMapper;
 using justinobney.gymbuddy.api.Data.Users;
@@ -9,7 +10,7 @@ using MediatR;
 
 namespace justinobney.gymbuddy.api.Requests.Users
 {
-    public class UpdateUserCommand : IAsyncRequest
+    public class UpdateUserCommand : IRequest
     {
         public long Id { get; set; }
         public string Name { get; set; }
@@ -20,23 +21,22 @@ namespace justinobney.gymbuddy.api.Requests.Users
     }
 
     [DoNotValidate]
-    public class UpdateUserCommandHandler : AsyncRequestHandler<UpdateUserCommand>
+    public class UpdateUserCommandHandler : RequestHandler<UpdateUserCommand>
     {
         private readonly IMapper _mapper;
-        private readonly UserRepository _userRepo;
+        private readonly IDbSet<User> _users;
 
-        public UpdateUserCommandHandler(IMapper mapper, UserRepository userRepo)
+        public UpdateUserCommandHandler(IMapper mapper, IDbSet<User> users)
         {
             _mapper = mapper;
-            _userRepo = userRepo;
+            _users = users;
         }
 
-        protected override async Task HandleCore(UpdateUserCommand message)
+        protected override void HandleCore(UpdateUserCommand message)
         {
-            var user = await _userRepo.GetByIdAsync(message.Id);
+            var user = _users.Find(message.Id);
             _mapper.Map(message, user);
             user.ModifiedAt = DateTime.UtcNow;
-            await _userRepo.UpdateAsync(user);
         }
     }
 
