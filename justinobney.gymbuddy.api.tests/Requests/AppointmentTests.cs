@@ -9,6 +9,7 @@ using NUnit.Framework;
 
 namespace justinobney.gymbuddy.api.tests.Requests
 {
+    [TestFixture]
     public class AppointmentTests : BaseTest
     {
         [Test]
