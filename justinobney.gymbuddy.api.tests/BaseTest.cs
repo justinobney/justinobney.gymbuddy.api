@@ -30,9 +30,10 @@ namespace justinobney.gymbuddy.api.tests
         }
 
         [SetUp]
-        public void TearDown()
+        public void TestSetup()
         {
             Context.ClearAll();
+            Context.ResetIoC();
         }
 
     }

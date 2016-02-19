@@ -108,6 +108,7 @@
     <Compile Include="DependencyResolution\FakeEntityFrameworkRegistry.cs" />
     <Compile Include="DependencyResolution\TestContainerExtensions.cs" />
     <Compile Include="Helpers\CoreTestContext.cs" />
+    <Compile Include="Helpers\IoCTests.cs" />
     <Compile Include="Helpers\TestExtensions.cs" />
     <Compile Include="BaseTest.cs" />
     <Compile Include="Predicates\UserPredicatesTests.cs" />
