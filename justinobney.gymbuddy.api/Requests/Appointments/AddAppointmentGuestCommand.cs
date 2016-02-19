@@ -4,7 +4,6 @@ using FluentValidation;
 using FluentValidation.Results;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Enums;
-using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments
@@ -51,6 +50,13 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
         {
             Custom(command =>
             {
+                var exists = appointments.Any(appt => appt.Id == command.AppointmentId && appt.UserId == command.UserId);
+
+                return exists ? new ValidationFailure("UserId", "You can not be your own guest") : null;
+            });
+
+            Custom(command =>
+            {
                 var exists = appointments.Any(appt =>appt.Id == command.AppointmentId);
 
                 return !exists ? new ValidationFailure("AppointmentId", "This appointment does not exist") : null;
@@ -58,15 +64,10 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
 
             Custom(command =>
             {
-                var isDuplicateGuest = appointments
-                    .Include(x => x.GuestList)
-                    .Any(appt =>
-                        appt.Id == command.AppointmentId
-                        && appt.GuestList.Any(guest =>
-                            guest.UserId == command.UserId
-                            && guest.AppointmentTimeSlotId == command.AppointmentTimeSlotId
-                            )
-                    );
+                var isDuplicateGuest = appointmentGuests
+                    .Any(guest =>
+                        guest.UserId == command.UserId
+                        && guest.AppointmentTimeSlotId == command.AppointmentTimeSlotId);
 
                 
                 return isDuplicateGuest ? new ValidationFailure("UserId", "This user is already registered for this time slot") : null;

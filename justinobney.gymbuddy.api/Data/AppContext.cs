@@ -1,8 +1,4 @@
 ﻿using System.Data.Entity;
-using justinobney.gymbuddy.api.Data.Appointments;
-using justinobney.gymbuddy.api.Data.Devices;
-using justinobney.gymbuddy.api.Data.Gyms;
-using justinobney.gymbuddy.api.Data.Users;
 
 namespace justinobney.gymbuddy.api.Data
 {
@@ -15,7 +11,7 @@ namespace justinobney.gymbuddy.api.Data
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Configurations.AddFromAssembly(typeof(AppContext).Assembly);
+            modelBuilder.Configurations.AddFromAssembly(assembly: typeof(AppContext).Assembly);
         }
 
         //This is here only for unit testing purposes
@@ -23,10 +19,5 @@ namespace justinobney.gymbuddy.api.Data
         {
             Entry(entity).State = EntityState.Modified;
         }
-
-        public DbSet<User> Users { get; set; }
-        public DbSet<Device> Devices { get; set; }
-        public DbSet<Gym> Gyms { get; set; }
-        public DbSet<Appointment> Appointments { get; set; }
     }
 }

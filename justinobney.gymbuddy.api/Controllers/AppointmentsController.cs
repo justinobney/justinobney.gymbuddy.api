@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -26,11 +25,27 @@ namespace justinobney.gymbuddy.api.Controllers
         public IHttpActionResult GetAppointments()
         {
             var gymIds = CurrentUser.Gyms.Select(g => g.Id).ToList();
-            var request = new GetAllByPredicateQuery<Appointment>
+            var request = new GetAvailableAppointmentsForUserQuery
             {
-                Predicate = appt =>
-                    gymIds.Contains(appt.GymId.Value)
-                    && appt.TimeSlots.Any(ts => ts.Time > DateTime.UtcNow)
+                UserId = CurrentUser.Id,
+                GymIds = gymIds
+            };
+
+            var appointment = _mediator.Send(request)
+                .ProjectTo<AppointmentListing>(MappingConfig.Config)
+                .ToList();
+
+            return Ok(appointment);
+        }
+
+        [HttpGet]
+        [Route("api/Appointments/My-Schedule")]
+        [ResponseType(typeof(IEnumerable<AppointmentListing>))]
+        public IHttpActionResult GetMySchedule()
+        {
+            var request = new GetScheduledAppointmentsForUserQuery
+            {
+                UserId = CurrentUser.Id
             };
 
             var appointment = _mediator.Send(request)
@@ -67,8 +82,8 @@ namespace justinobney.gymbuddy.api.Controllers
             return CreatedAtRoute("DefaultApi", new { id = listing.Id }, listing);
         }
 
-        [ResponseType(typeof(AppointmentListing))]
         [Route("api/Appointments/{id}/Add-Guest/{timeSlotId}")]
+        [ResponseType(typeof(AppointmentListing))]
         public IHttpActionResult AddAppointmentGuest(long id, long timeSlotId)
         {
             var command = new AddAppointmentGuestCommand
@@ -83,14 +98,25 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(listing);
         }
 
-        [ResponseType(typeof(AppointmentListing))]
         [Route("api/Appointments/{id}/Remove-Guest/{guestAppointmentId}")]
+        [ResponseType(typeof(AppointmentListing))]
         public IHttpActionResult RemoveAppointmentGuest(long guestAppointmentId)
         {
             var command = new RemoveAppointmentGuestCommand
             {
                 GuestAppointmentId = guestAppointmentId
             };
+
+            var appointment = _mediator.Send(command);
+            var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
+            return Ok(listing);
+        }
+
+        [Route("api/Appointments/{id}/Confirm")]
+        [ResponseType(typeof(AppointmentListing))]
+        public IHttpActionResult ConfirmAppointment(long id, ConfirmAppointmentCommand command)
+        {
+            command.AppointmentId = id;
 
             var appointment = _mediator.Send(command);
             var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
