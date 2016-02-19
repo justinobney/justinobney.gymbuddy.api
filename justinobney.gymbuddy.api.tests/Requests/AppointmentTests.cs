@@ -121,6 +121,41 @@ namespace justinobney.gymbuddy.api.tests.Requests
         }
 
         [Test]
+        public void ConfirmAppointmentCommand_UpdatesAppointment()
+        {
+            var timeslot = new AppointmentTimeSlot {Id = 1, AppointmentId = 1, Time = DateTime.Now};
+            var apptGuest = new AppointmentGuest {AppointmentId = 1, AppointmentTimeSlotId = 1, UserId = 2};
+            var appt = new Appointment
+            {
+                Id = 1,
+                UserId = 1,
+                GuestList = new List<AppointmentGuest> {apptGuest},
+                TimeSlots = new List<AppointmentTimeSlot> {timeslot}
+            };
+            var appointments = Context.GetSet<Appointment>();
+            var appointmentGuests = Context.GetSet<AppointmentGuest>();
+            appointments.Attach(appt);
+            appointmentGuests.Attach(apptGuest);
+
+            var result = Mediator.Send(new ConfirmAppointmentCommand
+            {
+                AppointmentId = appt.Id,
+                AppointmentGuestIds = new List<long> {apptGuest.Id}
+            });
+
+            result.ConfirmedTime.ShouldBe(timeslot.Time);
+            result.GuestList.First().Status.ShouldBe(AppointmentGuestStatus.Confirmed);
+            result.Status.ShouldBe(AppointmentStatus.Confirmed);
+        }
+
+        [Test]
+        public void ConfirmAppointmentCommand_ThrowsValidationOnInvalidParams()
+        {
+            Action execute = () => Mediator.Send(new ConfirmAppointmentCommand());
+            execute.ShouldThrow<ValidationException>();
+        }
+
+        [Test]
         public void GetAvailableAppointmentsForUserQuery_FiltersAppointments()
         {
             Context.GetSet<Appointment>().Attach(new Appointment
