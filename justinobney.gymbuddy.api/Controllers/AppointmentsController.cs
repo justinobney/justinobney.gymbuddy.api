@@ -39,6 +39,23 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(appointment);
         }
 
+        [ResponseType(typeof(IEnumerable<AppointmentListing>))]
+        [Route("api/Appointments/My-Schedule")]
+        [HttpGet]
+        public IHttpActionResult GetMySchedule()
+        {
+            var request = new GetScheduledAppointmentsForUserQuery
+            {
+                UserId = CurrentUser.Id
+            };
+
+            var appointment = _mediator.Send(request)
+                .ProjectTo<AppointmentListing>(MappingConfig.Config)
+                .ToList();
+
+            return Ok(appointment);
+        }
+
         // GET: api/Appointments/5
         [ResponseType(typeof(AppointmentListing))]
         public IHttpActionResult GetAppointment(int id)

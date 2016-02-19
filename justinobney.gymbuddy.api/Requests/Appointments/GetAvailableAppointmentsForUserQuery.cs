@@ -29,7 +29,6 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
             return _appointments.Where(appt =>
                 message.GymIds.Contains(appt.GymId.Value)
                 && appt.TimeSlots.Any(ts => ts.Time > DateTime.UtcNow));
-
         }
     }
 }

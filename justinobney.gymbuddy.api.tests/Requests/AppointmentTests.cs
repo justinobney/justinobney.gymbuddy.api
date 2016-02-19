@@ -15,6 +15,26 @@ namespace justinobney.gymbuddy.api.tests.Requests
     [TestFixture]
     public class AppointmentTests : BaseTest
     {
+        public User CurrentUser { get; set; }
+        public Gym DefaultGym { get; set; }
+
+        [SetUp]
+        public void Setup()
+        {
+            DefaultGym = new Gym { Id = 1, Name = "GloboGym" };
+            CurrentUser = new User
+            {
+                Id = 1,
+                Gender = Gender.Male,
+                FilterGender = GenderFilter.Both,
+                FitnessLevel = FitnessLevel.Brotege,
+                FilterFitnessLevel = FitnessLevel.Tadpole,
+                Gyms = new List<Gym> { DefaultGym }
+            };
+            Context.GetSet<User>().Attach(CurrentUser);
+            Context.GetSet<Gym>().Attach(DefaultGym);
+        }
+
         [Test]
         public void CreateAppointmentCommand_ThrowsValidationException_OnMissingParameters()
         {
@@ -103,24 +123,11 @@ namespace justinobney.gymbuddy.api.tests.Requests
         [Test]
         public void GetAvailableAppointmentsForUserQuery_FiltersAppointments()
         {
-            var gym = new Gym {Id = 1, Name = "GloboGym"};
-            var currentUser = new User
-            {
-                Id = 1,
-                Gender = Gender.Male,
-                FilterGender = GenderFilter.Both,
-                FitnessLevel = FitnessLevel.Brotege,
-                FilterFitnessLevel = FitnessLevel.Tadpole,
-                Gyms = new List<Gym> { gym }
-            };
-
-            Context.GetSet<User>().Attach(currentUser);
-            Context.GetSet<Gym>().Attach(gym);
             Context.GetSet<Appointment>().Attach(new Appointment
             {
                 Id = 1,
-                GymId = gym.Id,
-                UserId = currentUser.Id,
+                GymId = DefaultGym.Id,
+                UserId = CurrentUser.Id,
                 TimeSlots = new List<AppointmentTimeSlot> {new AppointmentTimeSlot {Time = DateTime.Now.AddDays(1)}}
             });
 
@@ -134,11 +141,59 @@ namespace justinobney.gymbuddy.api.tests.Requests
 
             var appts = Mediator.Send(new GetAvailableAppointmentsForUserQuery
             {
-                UserId = currentUser.Id,
-                GymIds = new List<long> {gym.Id}
+                UserId = CurrentUser.Id,
+                GymIds = new List<long> {DefaultGym.Id}
             });
 
             appts.Count().ShouldBe(1);
+        }
+
+        [Test]
+        public void GetScheduledAppointmentsForUserQuery_FiltersAppointments()
+        {
+            Context.GetSet<Appointment>().Attach(new Appointment
+            {
+                Id = 1,
+                GymId = DefaultGym.Id,
+                GuestList = new List<AppointmentGuest>(),
+                UserId = CurrentUser.Id,
+                TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.Now.AddDays(1) } }
+            });
+
+            Context.GetSet<Appointment>().Attach(new Appointment
+            {
+                Id = 2,
+                GymId = 2,
+                GuestList = new List<AppointmentGuest>(),
+                UserId = 2,
+                TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.Now.AddDays(1) } }
+            });
+
+            Context.GetSet<Appointment>().Attach(new Appointment
+            {
+                Id = 3,
+                GymId = DefaultGym.Id,
+                GuestList = new List<AppointmentGuest>(),
+                UserId = 2,
+                TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.Now.AddDays(1) } }
+            });
+
+            var timeslot = new AppointmentTimeSlot {Id = 1, Time = DateTime.Now.AddDays(1)};
+            Context.GetSet<Appointment>().Attach(new Appointment
+            {
+                Id = 4,
+                GymId = DefaultGym.Id,
+                UserId = 2,
+                TimeSlots = new List<AppointmentTimeSlot> { timeslot },
+                GuestList = new List<AppointmentGuest> { new AppointmentGuest {UserId = CurrentUser.Id, AppointmentTimeSlotId = timeslot.Id, AppointmentId = 4} }
+            });
+
+            var appts = Mediator.Send(new GetScheduledAppointmentsForUserQuery
+            {
+                UserId = CurrentUser.Id
+            });
+
+            appts.Count().ShouldBe(2);
         }
     }
 }

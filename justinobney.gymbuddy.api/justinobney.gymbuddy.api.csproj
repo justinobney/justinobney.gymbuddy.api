@@ -281,6 +281,7 @@
     <Compile Include="Requests\Appointments\AddAppointmentGuestCommand.cs" />
     <Compile Include="Requests\Appointments\CreateAppointmentCommand.cs" />
     <Compile Include="Requests\Appointments\GetAvailableAppointmentsForUserQuery.cs" />
+    <Compile Include="Requests\Appointments\GetScheduledAppointmentsForUserQuery.cs" />
     <Compile Include="Requests\Appointments\RemoveAppointmentGuestCommand.cs" />
     <Compile Include="Requests\Decorators\AuthorizeHandler.cs" />
     <Compile Include="Requests\Decorators\LoggingHandler.cs" />
