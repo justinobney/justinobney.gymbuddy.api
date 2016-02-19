@@ -38,9 +38,9 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(appointment);
         }
 
-        [ResponseType(typeof(IEnumerable<AppointmentListing>))]
-        [Route("api/Appointments/My-Schedule")]
         [HttpGet]
+        [Route("api/Appointments/My-Schedule")]
+        [ResponseType(typeof(IEnumerable<AppointmentListing>))]
         public IHttpActionResult GetMySchedule()
         {
             var request = new GetScheduledAppointmentsForUserQuery
@@ -82,8 +82,8 @@ namespace justinobney.gymbuddy.api.Controllers
             return CreatedAtRoute("DefaultApi", new { id = listing.Id }, listing);
         }
 
-        [ResponseType(typeof(AppointmentListing))]
         [Route("api/Appointments/{id}/Add-Guest/{timeSlotId}")]
+        [ResponseType(typeof(AppointmentListing))]
         public IHttpActionResult AddAppointmentGuest(long id, long timeSlotId)
         {
             var command = new AddAppointmentGuestCommand
@@ -98,8 +98,8 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(listing);
         }
 
-        [ResponseType(typeof(AppointmentListing))]
         [Route("api/Appointments/{id}/Remove-Guest/{guestAppointmentId}")]
+        [ResponseType(typeof(AppointmentListing))]
         public IHttpActionResult RemoveAppointmentGuest(long guestAppointmentId)
         {
             var command = new RemoveAppointmentGuestCommand
@@ -112,8 +112,8 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(listing);
         }
 
-        [ResponseType(typeof(AppointmentListing))]
         [Route("api/Appointments/{id}/Confirm")]
+        [ResponseType(typeof(AppointmentListing))]
         public IHttpActionResult ConfirmAppointment(long id, ConfirmAppointmentCommand command)
         {
             command.AppointmentId = id;

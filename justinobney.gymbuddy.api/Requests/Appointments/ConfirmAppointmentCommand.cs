@@ -16,16 +16,16 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
 
     public class ConfirmAppointmentCommandHandler : IRequestHandler<ConfirmAppointmentCommand, Appointment>
     {
-        private readonly IDbSet<Appointment> _appontments;
+        private readonly IDbSet<Appointment> _appointments;
 
-        public ConfirmAppointmentCommandHandler(IDbSet<Appointment> appontments)
+        public ConfirmAppointmentCommandHandler(IDbSet<Appointment> appointments)
         {
-            _appontments = appontments;
+            _appointments = appointments;
         }
-
+        
         public Appointment Handle(ConfirmAppointmentCommand message)
         {
-            var appt = _appontments
+            var appt = _appointments
                 .Include(x=>x.GuestList)
                 .Include(x=>x.TimeSlots)
                 .First(x=>x.Id == message.AppointmentId);
