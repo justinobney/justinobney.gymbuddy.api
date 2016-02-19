@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -107,6 +106,17 @@ namespace justinobney.gymbuddy.api.Controllers
             {
                 GuestAppointmentId = guestAppointmentId
             };
+
+            var appointment = _mediator.Send(command);
+            var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
+            return Ok(listing);
+        }
+
+        [ResponseType(typeof(AppointmentListing))]
+        [Route("api/Appointments/{id}/Confirm")]
+        public IHttpActionResult ConfirmAppointment(long id, ConfirmAppointmentCommand command)
+        {
+            command.AppointmentId = id;
 
             var appointment = _mediator.Send(command);
             var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
