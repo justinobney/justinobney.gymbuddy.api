@@ -5,7 +5,6 @@ using FluentValidation;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Enums;
 using MediatR;
-using WebGrease.Css.Extensions;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments
 {

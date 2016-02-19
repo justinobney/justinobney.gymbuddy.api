@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using justinobney.gymbuddy.api.Data.Appointments;
+using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 
@@ -28,6 +29,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
         {
             return _appointments.Where(appt =>
                 message.GymIds.Contains(appt.GymId.Value)
+                && appt.Status != AppointmentStatus.Confirmed
                 && appt.TimeSlots.Any(ts => ts.Time > DateTime.UtcNow));
         }
     }

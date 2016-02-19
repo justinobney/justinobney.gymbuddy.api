@@ -168,6 +168,15 @@ namespace justinobney.gymbuddy.api.tests.Requests
 
             Context.GetSet<Appointment>().Attach(new Appointment
             {
+                Id = 1,
+                GymId = DefaultGym.Id,
+                UserId = CurrentUser.Id,
+                Status = AppointmentStatus.Confirmed,
+                TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.Now.AddDays(1) } }
+            });
+
+            Context.GetSet<Appointment>().Attach(new Appointment
+            {
                 Id = 2,
                 GymId = 2,
                 UserId = 2,
