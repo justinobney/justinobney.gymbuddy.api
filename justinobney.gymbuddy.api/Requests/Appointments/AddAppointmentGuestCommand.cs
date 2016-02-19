@@ -4,7 +4,6 @@ using FluentValidation;
 using FluentValidation.Results;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Enums;
-using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments

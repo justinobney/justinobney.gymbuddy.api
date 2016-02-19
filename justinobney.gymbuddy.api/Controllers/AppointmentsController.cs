@@ -26,11 +26,10 @@ namespace justinobney.gymbuddy.api.Controllers
         public IHttpActionResult GetAppointments()
         {
             var gymIds = CurrentUser.Gyms.Select(g => g.Id).ToList();
-            var request = new GetAllByPredicateQuery<Appointment>
+            var request = new GetAvailableAppointmentsForUserQuery
             {
-                Predicate = appt =>
-                    gymIds.Contains(appt.GymId.Value)
-                    && appt.TimeSlots.Any(ts => ts.Time > DateTime.UtcNow)
+                UserId = CurrentUser.Id,
+                GymIds = gymIds
             };
 
             var appointment = _mediator.Send(request)
