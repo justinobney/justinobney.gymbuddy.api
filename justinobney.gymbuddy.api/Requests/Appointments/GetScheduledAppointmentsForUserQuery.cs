@@ -2,6 +2,7 @@ using System;
 using System.Data.Entity;
 using System.Linq;
 using justinobney.gymbuddy.api.Data.Appointments;
+using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 
@@ -13,7 +14,8 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
     }
 
     [DoNotValidate]
-    public class GetScheduledAppointmentsForUserQueryHandler : IRequestHandler<GetScheduledAppointmentsForUserQuery, IQueryable<Appointment>>
+    public class GetScheduledAppointmentsForUserQueryHandler :
+        IRequestHandler<GetScheduledAppointmentsForUserQuery, IQueryable<Appointment>>
     {
         private readonly IDbSet<Appointment> _appointments;
 
@@ -29,10 +31,25 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
                     appt.TimeSlots.Any(ts => ts.Time > DateTime.UtcNow)
                     && (
                         appt.UserId == message.UserId
-                        || appt.GuestList.Any(guest => guest.UserId == message.UserId)
+                        ||
+                        appt.GuestList.Any(
+                            guest =>
+                                guest.UserId == message.UserId
+                                &&
+                                (
+                                    (
+                                        appt.Status == AppointmentStatus.Confirmed &&
+                                        guest.Status == AppointmentGuestStatus.Confirmed
+                                    )
+                                    ||
+                                    (
+                                        appt.Status == AppointmentStatus.PendingGuestConfirmation &&
+                                        guest.Status == AppointmentGuestStatus.Pending
+                                    )
+                                )
+                            )
                         )
                 );
-
         }
     }
 }
