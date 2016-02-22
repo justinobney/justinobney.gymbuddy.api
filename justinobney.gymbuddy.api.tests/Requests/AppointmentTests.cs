@@ -201,6 +201,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 GymId = DefaultGym.Id,
                 GuestList = new List<AppointmentGuest>(),
                 UserId = CurrentUser.Id,
+                Status = AppointmentStatus.PendingGuestConfirmation,
                 TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.Now.AddDays(1) } }
             });
 
@@ -229,7 +230,8 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 GymId = DefaultGym.Id,
                 UserId = 2,
                 TimeSlots = new List<AppointmentTimeSlot> { timeslot },
-                GuestList = new List<AppointmentGuest> { new AppointmentGuest {UserId = CurrentUser.Id, AppointmentTimeSlotId = timeslot.Id, AppointmentId = 4} }
+                Status = AppointmentStatus.PendingGuestConfirmation,
+                GuestList = new List<AppointmentGuest> { new AppointmentGuest {UserId = CurrentUser.Id, AppointmentTimeSlotId = timeslot.Id, AppointmentId = 4, Status = AppointmentGuestStatus.Pending} }
             });
 
             var appts = Mediator.Send(new GetScheduledAppointmentsForUserQuery
@@ -238,6 +240,56 @@ namespace justinobney.gymbuddy.api.tests.Requests
             });
 
             appts.Count().ShouldBe(2);
+        }
+
+        [Test]
+        public void GetScheduledAppointmentsForUserQuery_HandlesStatus()
+        {
+            Context.GetSet<Appointment>().Attach(new Appointment
+            {
+                Id = 1,
+                GymId = DefaultGym.Id,
+                GuestList = new List<AppointmentGuest>(),
+                UserId = CurrentUser.Id,
+                Status = AppointmentStatus.Confirmed,
+                TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.Now.AddDays(1) } }
+            });
+
+            Context.GetSet<Appointment>().Attach(new Appointment
+            {
+                Id = 2,
+                GymId = 2,
+                GuestList = new List<AppointmentGuest>(),
+                UserId = 2,
+                TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.Now.AddDays(1) } }
+            });
+
+            Context.GetSet<Appointment>().Attach(new Appointment
+            {
+                Id = 3,
+                GymId = DefaultGym.Id,
+                GuestList = new List<AppointmentGuest>(),
+                UserId = 2,
+                TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.Now.AddDays(1) } }
+            });
+
+            var timeslot = new AppointmentTimeSlot { Id = 1, Time = DateTime.Now.AddDays(1) };
+            Context.GetSet<Appointment>().Attach(new Appointment
+            {
+                Id = 4,
+                GymId = DefaultGym.Id,
+                UserId = 2,
+                TimeSlots = new List<AppointmentTimeSlot> { timeslot },
+                Status = AppointmentStatus.Confirmed,
+                GuestList = new List<AppointmentGuest> { new AppointmentGuest { UserId = CurrentUser.Id, AppointmentTimeSlotId = timeslot.Id, AppointmentId = 4, Status = AppointmentGuestStatus.Pending} }
+            });
+
+            var appts = Mediator.Send(new GetScheduledAppointmentsForUserQuery
+            {
+                UserId = CurrentUser.Id
+            });
+
+            appts.Count().ShouldBe(1);
         }
     }
 }
