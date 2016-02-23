@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
-using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Interfaces;
-using justinobney.gymbuddy.api.Requests.Appointments;
+using justinobney.gymbuddy.api.Requests.Decorators;
+using MediatR;
 using NSubstitute;
 using NUnit.Framework;
 using StructureMap;
@@ -15,28 +13,38 @@ namespace justinobney.gymbuddy.api.tests.Requests
         [Test]
         public void MediatorShouldNotifyAllRegisteredNotifiersForCommand()
         {
-            var notifier = Substitute.For<IPostRequestHandler<CreateAppointmentCommand, Appointment>>();
-            Context.Container.Configure(container => container.AddRegistry(new FakeRegistry(notifier)));
-
-            var request = new CreateAppointmentCommand
+            var notifier = Substitute.For<IPostRequestHandler<FakeCommand, bool>>();
+            Context.Container.Configure(container =>
             {
-                Id = 0,
-                UserId = 1,
-                GymId = 1,
-                TimeSlots = new List<DateTime?> {DateTime.Now},
-                Title = "Back Day"
-            };
+                container.AddRegistry(new FakeRegistry(notifier));
+            });
+
+            var request = new FakeCommand();
             var appt = Mediator.Send(request);
 
             notifier.Received(1).Notify(request,appt);
             SetUp();
         }
 
+        public class FakeCommand : IRequest<bool>
+        {    
+        }
+
+        [DoNotValidate]
+        public class FakeCommandHandler : IRequestHandler<FakeCommand,bool>
+        {
+            public bool Handle(FakeCommand message)
+            {
+                return true;
+            }
+        }
+
         public class FakeRegistry : Registry
         {
-            public FakeRegistry(IPostRequestHandler<CreateAppointmentCommand, Appointment> notifier)
+            public FakeRegistry(IPostRequestHandler<FakeCommand, bool> notifier)
             {
-                For<IPostRequestHandler<CreateAppointmentCommand, Appointment>>().Use(notifier);
+                For<IRequestHandler<FakeCommand, bool>>().Use<FakeCommandHandler>();
+                For<IPostRequestHandler<FakeCommand, bool>>().Use(notifier);
             }
         }
     }

@@ -42,7 +42,6 @@ namespace justinobney.gymbuddy.api.DependencyResolution
                     scan.AssemblyContainingType(typeof (LoggingHandler<,>));
 
                     scan.AddAllTypesOf(typeof (IRequestHandler<,>));
-                    scan.AddAllTypesOf(typeof (IPostRequestHandler<,>));
                     scan.AddAllTypesOf(typeof (INotificationHandler<>));
 
                     scan.AddAllTypesOf(typeof (IAuthorizer<>));
@@ -51,10 +50,14 @@ namespace justinobney.gymbuddy.api.DependencyResolution
 
                     var handlerType = For(typeof (IRequestHandler<,>));
                     handlerType.DecorateAllWith(typeof (TransactionHandler<,>), DoesNotHaveAttribute(typeof (DoNotCommit)));
-                    handlerType.DecorateAllWith(typeof (PostRequestHandler<,>));
                     handlerType.DecorateAllWith(typeof (ValidateHandler<,>), DoesNotHaveAttribute(typeof (DoNotValidate)));
                     handlerType.DecorateAllWith(typeof (AuthorizeHandler<,>), HasAttribute(typeof (Authorize)));
                     handlerType.DecorateAllWith(typeof (LoggingHandler<,>), DoesNotHaveAttribute(typeof (DoNotLog)));
+
+                    //todo: move to different registry
+                    scan.AddAllTypesOf(typeof(IPostRequestHandler<,>));
+                    var handlerType2 = For(typeof(IRequestHandler<,>));
+                    handlerType2.DecorateAllWith(typeof (PostRequestHandler<,>));
 
                     For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => ctx.GetInstance(t));
                     For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => ctx.GetAllInstances(t));
