@@ -20,6 +20,7 @@ namespace justinobney.gymbuddy.api.tests
             var registry = new Registry();
             registry.IncludeRegistry<DefaultRegistry>();
             registry.IncludeRegistry<GenericCrudRegistry>();
+            registry.IncludeRegistry<FakeNotificationRegistry>();
             registry.IncludeRegistry<FakeEntityFrameworkRegistry>();
 
             _container = new Container(registry);

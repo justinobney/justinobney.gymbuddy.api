@@ -53,12 +53,7 @@ namespace justinobney.gymbuddy.api.DependencyResolution
                     handlerType.DecorateAllWith(typeof (ValidateHandler<,>), DoesNotHaveAttribute(typeof (DoNotValidate)));
                     handlerType.DecorateAllWith(typeof (AuthorizeHandler<,>), HasAttribute(typeof (Authorize)));
                     handlerType.DecorateAllWith(typeof (LoggingHandler<,>), DoesNotHaveAttribute(typeof (DoNotLog)));
-
-                    //todo: move to different registry
-                    scan.AddAllTypesOf(typeof(IPostRequestHandler<,>));
-                    var handlerType2 = For(typeof(IRequestHandler<,>));
-                    handlerType2.DecorateAllWith(typeof (PostRequestHandler<,>));
-
+                    
                     For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => ctx.GetInstance(t));
                     For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => ctx.GetAllInstances(t));
                     For<IMediator>().Use<Mediator>();

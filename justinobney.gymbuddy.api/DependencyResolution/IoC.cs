@@ -15,7 +15,6 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-
 namespace justinobney.gymbuddy.api.DependencyResolution {
     using StructureMap;
 	
@@ -24,6 +23,7 @@ namespace justinobney.gymbuddy.api.DependencyResolution {
             return new Container(c =>
             {
                 c.AddRegistry<DefaultRegistry>();
+                c.AddRegistry<NotificationRegistry>();
                 c.AddRegistry<GenericCrudRegistry>();
                 c.AddRegistry<EntityFrameworkRegistry>();
             });
