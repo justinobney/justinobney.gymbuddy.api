@@ -42,9 +42,8 @@ namespace justinobney.gymbuddy.api.DependencyResolution
                     scan.AssemblyContainingType(typeof (LoggingHandler<,>));
 
                     scan.AddAllTypesOf(typeof (IRequestHandler<,>));
-                    scan.AddAllTypesOf(typeof (IAsyncRequestHandler<,>));
+                    scan.AddAllTypesOf(typeof (IPostRequestHandler<,>));
                     scan.AddAllTypesOf(typeof (INotificationHandler<>));
-                    scan.AddAllTypesOf(typeof (IAsyncNotificationHandler<>));
 
                     scan.AddAllTypesOf(typeof (IAuthorizer<>));
                     scan.AddAllTypesOf(typeof (AbstractValidator<>));
@@ -52,6 +51,7 @@ namespace justinobney.gymbuddy.api.DependencyResolution
 
                     var handlerType = For(typeof (IRequestHandler<,>));
                     handlerType.DecorateAllWith(typeof (TransactionHandler<,>), DoesNotHaveAttribute(typeof (DoNotCommit)));
+                    handlerType.DecorateAllWith(typeof (PostRequestHandler<,>));
                     handlerType.DecorateAllWith(typeof (ValidateHandler<,>), DoesNotHaveAttribute(typeof (DoNotValidate)));
                     handlerType.DecorateAllWith(typeof (AuthorizeHandler<,>), HasAttribute(typeof (Authorize)));
                     handlerType.DecorateAllWith(typeof (LoggingHandler<,>), DoesNotHaveAttribute(typeof (DoNotLog)));

@@ -15,6 +15,8 @@ namespace justinobney.gymbuddy.api.tests.Helpers
         private readonly Container _container;
         private readonly List<Type> _overriddenTypes = new List<Type>();
 
+        public IContainer Container => _container;
+
         public CoreTestContext(Container container)
         {
             _container = container;
@@ -65,6 +67,8 @@ namespace justinobney.gymbuddy.api.tests.Helpers
                 var typedEjectMethod = ejectMethod.MakeGenericMethod(type);
                 typedEjectMethod.Invoke(nestedContainer, new object[] {});
             }
+
+            nestedContainer.Dispose();
 
             _overriddenTypes.Clear();
         }

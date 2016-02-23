@@ -263,6 +263,7 @@
     <Compile Include="Interfaces\IAutoMapperConfiguration.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Interfaces\IHasTouchedProperties.cs" />
+    <Compile Include="Interfaces\IPostRequestHandler.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Migrations\201602102036566_Domain_Rebuild.cs" />
     <Compile Include="Migrations\201602102036566_Domain_Rebuild.Designer.cs">
@@ -286,6 +287,7 @@
     <Compile Include="Requests\Appointments\RemoveAppointmentGuestCommand.cs" />
     <Compile Include="Requests\Decorators\AuthorizeHandler.cs" />
     <Compile Include="Requests\Decorators\LoggingHandler.cs" />
+    <Compile Include="Requests\Decorators\PostRequestHandler.cs" />
     <Compile Include="Requests\Decorators\TransactionHandler.cs" />
     <Compile Include="Requests\Decorators\ValidateHandler.cs" />
     <Compile Include="Requests\Generic\GetByIdQuery.cs" />

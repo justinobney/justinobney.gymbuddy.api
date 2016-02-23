@@ -115,6 +115,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Requests\AppointmentTests.cs" />
     <Compile Include="Requests\GenericQueryTests.cs" />
+    <Compile Include="Requests\PostRequestHandlerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\justinobney.gymbuddy.api\justinobney.gymbuddy.api.csproj">

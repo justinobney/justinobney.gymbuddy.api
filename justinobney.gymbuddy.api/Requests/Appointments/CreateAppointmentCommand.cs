@@ -82,4 +82,13 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
                 .ForMember(dest => dest.Time, opts => opts.MapFrom(src => src));
         }
     }
+
+    // todo: implement this
+    //public class CreateAppointmentNotifier : IPostRequestHandler<CreateAppointmentCommand, Appointment>
+    //{
+    //    public void Notify(CreateAppointmentCommand request, Appointment response)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
 }
