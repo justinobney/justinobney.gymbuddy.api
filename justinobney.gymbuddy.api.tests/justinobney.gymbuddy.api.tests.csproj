@@ -106,6 +106,7 @@
   <ItemGroup>
     <Compile Include="DependencyResolution\FakeEntityFrameworkConvention.cs" />
     <Compile Include="DependencyResolution\FakeEntityFrameworkRegistry.cs" />
+    <Compile Include="DependencyResolution\FakeNotificationRegistry.cs" />
     <Compile Include="DependencyResolution\TestContainerExtensions.cs" />
     <Compile Include="Helpers\CoreTestContext.cs" />
     <Compile Include="Helpers\IoCTests.cs" />
