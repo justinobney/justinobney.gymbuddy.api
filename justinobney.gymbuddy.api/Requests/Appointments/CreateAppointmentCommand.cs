@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
-using justinobney.gymbuddy.api.Requests.Decorators;
+using justinobney.gymbuddy.api.Requests.External;
 using MediatR;
+using RestSharp;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments
 {
@@ -83,12 +83,30 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
         }
     }
 
-    // todo: implement this
-    //public class CreateAppointmentNotifier : IPostRequestHandler<CreateAppointmentCommand, Appointment>
-    //{
-    //    public void Notify(CreateAppointmentCommand request, Appointment response)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-    //}
+    public class CreateAppointmentNotifier : IPostRequestHandler<CreateAppointmentCommand, Appointment>
+    {
+        private readonly IRestClient _client;
+
+        public CreateAppointmentNotifier(IRestClient client)
+        {
+            _client = client;
+        }
+
+        public void Notify(CreateAppointmentCommand request, Appointment response)
+        {
+            var message = new NotificationPayload<object>(null)
+            {
+                Alert = "New Appointment Available",
+                Title = "Gym Buddy"
+            };
+
+            var notification = new IonicPushNotification<object>(message)
+            {
+                Tokens = new List<string> { "" } // todo: lookup notification tokens
+            };
+
+            notification.Send(_client);
+        }
+        
+    }
 }

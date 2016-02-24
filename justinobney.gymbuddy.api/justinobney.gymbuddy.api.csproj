@@ -295,6 +295,7 @@
     <Compile Include="Requests\Decorators\PostRequestHandler.cs" />
     <Compile Include="Requests\Decorators\TransactionHandler.cs" />
     <Compile Include="Requests\Decorators\ValidateHandler.cs" />
+    <Compile Include="Requests\External\CamelCaseSerializer.cs" />
     <Compile Include="Requests\External\IonicPushNotification.cs" />
     <Compile Include="Requests\Generic\GetByIdQuery.cs" />
     <Compile Include="Requests\Generic\GetByPredicateQuery.cs" />

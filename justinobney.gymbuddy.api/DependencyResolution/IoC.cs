@@ -15,6 +15,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using RestSharp;
+
 namespace justinobney.gymbuddy.api.DependencyResolution {
     using StructureMap;
 	
@@ -26,6 +28,7 @@ namespace justinobney.gymbuddy.api.DependencyResolution {
                 c.AddRegistry<NotificationRegistry>();
                 c.AddRegistry<GenericCrudRegistry>();
                 c.AddRegistry<EntityFrameworkRegistry>();
+                c.For<IRestClient>().Use(context => new RestClient());
             });
         }
     }

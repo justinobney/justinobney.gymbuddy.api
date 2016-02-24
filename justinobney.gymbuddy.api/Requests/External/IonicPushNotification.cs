@@ -1,26 +1,38 @@
+using System;
 using System.Collections.Generic;
+using System.Configuration;
+using RestSharp;
+using RestSharp.Authenticators;
 
 namespace justinobney.gymbuddy.api.Requests.External
 {
-
-    public interface IIonicNotification
-    {
-    }
-
-    public class IonicPushNotification
+    public class IonicPushNotification<T>
     {
 
-        public IonicPushNotification(IIonicNotification notification)
+        public IonicPushNotification(NotificationPayload<T> notification)
         {
             Notification = notification;
         }
 
         public List<string> Tokens { get; set; }
         public bool Production { get; set; }
-        public IIonicNotification Notification { get; set; }
+        public NotificationPayload<T> Notification { get; set; }
+
+        public void Send(IRestClient client)
+        {
+            var ionicRequest = new RestRequest("/push", Method.POST);
+            ionicRequest.AddHeader("X-Ionic-Application-Id", ConfigurationManager.AppSettings["Ionic-Application-Id"]);
+            ionicRequest.AddHeader("Content-Type", "application/json");
+            ionicRequest.JsonSerializer = new CamelCaseSerializer();
+            ionicRequest.AddJsonBody(this);
+
+            client.BaseUrl = new Uri("https://push.ionic.io/api/v1");
+            client.Authenticator = new HttpBasicAuthenticator(ConfigurationManager.AppSettings["Ionic-Api-Key"], "");
+            client.Execute(ionicRequest);
+        }
     }
     
-    public class NotificationPayload<T> : IIonicNotification
+    public class NotificationPayload<T>
     {
         public NotificationPayload(T payload)
         {
@@ -44,10 +56,10 @@ namespace justinobney.gymbuddy.api.Requests.External
     {
         public T Payload { get; set; }
     }
-
-
+    
     public class Ios<T>
     {
         public T Payload { get; set; }
+        public int? Badge { get; set; }
     }
 }
