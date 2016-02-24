@@ -48,13 +48,13 @@ namespace justinobney.gymbuddy.api.tests.Helpers
                 );
         }
 
-        public void Register<T, T2>() where T2 : T
+        public void Register<TType, TImplementation>() where TImplementation : TType
         {
             var nestedContainer = _container.GetProfile("Test");
             nestedContainer.Configure(ctx =>
             {
-                _overriddenTypes.Add(typeof(T));
-                ctx.For<T>().Use<T2>();
+                _overriddenTypes.Add(typeof(TType));
+                ctx.For<TType>().Use<TImplementation>();
             });
         }
 
@@ -71,6 +71,11 @@ namespace justinobney.gymbuddy.api.tests.Helpers
             nestedContainer.Dispose();
 
             _overriddenTypes.Clear();
+        }
+
+        public T GetInstance<T>()
+        {
+            return (T) _container.GetProfile("Test").GetInstance(typeof (T));
         }
     }
 }

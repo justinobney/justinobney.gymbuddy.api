@@ -15,7 +15,7 @@ namespace justinobney.gymbuddy.api.tests
         private Container _container;
 
         [TestFixtureSetUp]
-        public void SetUp()
+        public void ConfigIoC()
         {
             var registry = new Registry();
             registry.IncludeRegistry<DefaultRegistry>();

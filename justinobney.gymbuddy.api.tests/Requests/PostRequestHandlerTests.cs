@@ -23,7 +23,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
             var appt = Mediator.Send(request);
 
             notifier.Received(1).Notify(request,appt);
-            SetUp();
+            ConfigIoC();
         }
 
         public class FakeCommand : IRequest<bool>
