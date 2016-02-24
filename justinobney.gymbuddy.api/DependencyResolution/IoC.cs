@@ -15,6 +15,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using justinobney.gymbuddy.api.DependencyResolution.Registries;
 using RestSharp;
 
 namespace justinobney.gymbuddy.api.DependencyResolution {

@@ -1,4 +1,5 @@
 ﻿using justinobney.gymbuddy.api.DependencyResolution;
+using justinobney.gymbuddy.api.DependencyResolution.Registries;
 using justinobney.gymbuddy.api.tests.DependencyResolution;
 using justinobney.gymbuddy.api.tests.Helpers;
 using MediatR;

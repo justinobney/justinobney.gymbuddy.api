@@ -1,22 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using justinobney.gymbuddy.api.Helpers;
+using justinobney.gymbuddy.api.Interfaces;
 using RestSharp;
 using RestSharp.Authenticators;
 
-namespace justinobney.gymbuddy.api.Requests.External
+namespace justinobney.gymbuddy.api.Notifications
 {
-    public class IonicPushNotification<T>
+    public class IonicPushNotification
     {
 
-        public IonicPushNotification(NotificationPayload<T> notification)
+        public IonicPushNotification(INotificationPayload notification)
         {
             Notification = notification;
         }
 
         public List<string> Tokens { get; set; }
         public bool Production { get; set; }
-        public NotificationPayload<T> Notification { get; set; }
+        public INotificationPayload Notification { get; set; }
 
         public void Send(IRestClient client)
         {
@@ -31,35 +33,12 @@ namespace justinobney.gymbuddy.api.Requests.External
             client.Execute(ionicRequest);
         }
     }
-    
-    public class NotificationPayload<T>
-    {
-        public NotificationPayload(T payload)
-        {
-            Android = new Android<T>
-            {
-                Payload = payload
-            };
 
-            Ios = new Ios<T>
-            {
-                Payload = payload
-            };
+    // Used to be able to properly deserialize into a typed NotificationPayload from JSON when known
+    public class IonicPushNotification<T> : IonicPushNotification
+    {
+        public IonicPushNotification(NotificationPayload<T> notification) : base(notification)
+        {
         }
-        public string Alert { get; set; }
-        public string Title { get; set; }
-        public Android<T> Android { get; set; }
-        public Ios<T> Ios { get; set; }
-    }
-    
-    public class Android<T>
-    {
-        public T Payload { get; set; }
-    }
-    
-    public class Ios<T>
-    {
-        public T Payload { get; set; }
-        public int? Badge { get; set; }
     }
 }

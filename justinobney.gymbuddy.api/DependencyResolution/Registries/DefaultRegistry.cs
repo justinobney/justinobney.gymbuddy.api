@@ -27,7 +27,7 @@ using StructureMap;
 using StructureMap.Graph;
 using StructureMap.Pipeline;
 
-namespace justinobney.gymbuddy.api.DependencyResolution
+namespace justinobney.gymbuddy.api.DependencyResolution.Registries
 {
     public class DefaultRegistry : Registry
     {

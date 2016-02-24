@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using RestSharp.Serializers;
 
-namespace justinobney.gymbuddy.api.Requests.External
+namespace justinobney.gymbuddy.api.Helpers
 {
     public class CamelCaseSerializer : ISerializer
     {

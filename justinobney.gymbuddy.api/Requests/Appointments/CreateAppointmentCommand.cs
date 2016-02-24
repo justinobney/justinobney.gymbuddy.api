@@ -8,7 +8,7 @@ using FluentValidation.Results;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
-using justinobney.gymbuddy.api.Requests.External;
+using justinobney.gymbuddy.api.Notifications;
 using MediatR;
 using RestSharp;
 
@@ -83,11 +83,11 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
         }
     }
 
-    public class CreateAppointmentNotifier : IPostRequestHandler<CreateAppointmentCommand, Appointment>
+    public class CreateAppointmentPushNotifier : IPostRequestHandler<CreateAppointmentCommand, Appointment>
     {
         private readonly IRestClient _client;
 
-        public CreateAppointmentNotifier(IRestClient client)
+        public CreateAppointmentPushNotifier(IRestClient client)
         {
             _client = client;
         }
@@ -100,7 +100,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
                 Title = "Gym Buddy"
             };
 
-            var notification = new IonicPushNotification<object>(message)
+            var notification = new IonicPushNotification(message)
             {
                 Tokens = new List<string> { "" } // todo: lookup notification tokens
             };

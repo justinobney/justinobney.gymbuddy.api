@@ -4,7 +4,7 @@ using MediatR;
 using StructureMap;
 using StructureMap.Graph;
 
-namespace justinobney.gymbuddy.api.DependencyResolution
+namespace justinobney.gymbuddy.api.DependencyResolution.Registries
 {
     public class NotificationRegistry : Registry
     {

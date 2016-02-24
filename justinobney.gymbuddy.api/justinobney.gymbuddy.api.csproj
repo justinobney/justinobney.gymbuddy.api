@@ -243,13 +243,11 @@
     <Compile Include="Data\AppContext.cs" />
     <Compile Include="DependencyResolution\ContainerExtensions.cs" />
     <Compile Include="DependencyResolution\ControllerConvention.cs" />
-    <Compile Include="DependencyResolution\DefaultRegistry.cs" />
-    <Compile Include="DependencyResolution\EntityFrameworkConvention.cs" />
-    <Compile Include="DependencyResolution\EntityFrameworkRegistry.cs" />
-    <Compile Include="DependencyResolution\GenericCrudRegistry.cs" />
-    <Compile Include="DependencyResolution\GenericCrudRequestsConvention.cs" />
+    <Compile Include="DependencyResolution\Registries\DefaultRegistry.cs" />
+    <Compile Include="DependencyResolution\Registries\EntityFrameworkRegistry.cs" />
+    <Compile Include="DependencyResolution\Registries\GenericCrudRegistry.cs" />
     <Compile Include="DependencyResolution\IoC.cs" />
-    <Compile Include="DependencyResolution\NotificationRegistry.cs" />
+    <Compile Include="DependencyResolution\Registries\NotificationRegistry.cs" />
     <Compile Include="DependencyResolution\StructureMapDependencyScope.cs" />
     <Compile Include="DependencyResolution\StructureMapScopeModule.cs" />
     <Compile Include="DependencyResolution\StructureMapWebApiDependencyResolver.cs" />
@@ -264,10 +262,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\CamelCaseSerializer.cs" />
     <Compile Include="Interfaces\IAuthorize.cs" />
     <Compile Include="Interfaces\IAutoMapperConfiguration.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Interfaces\IHasTouchedProperties.cs" />
+    <Compile Include="Interfaces\INotificationPayload.cs" />
     <Compile Include="Interfaces\IPostRequestHandler.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Migrations\201602102036566_Domain_Rebuild.cs" />
@@ -283,6 +283,8 @@
       <DependentUpon>201602132102408_AppointmentGuest_AddTimeInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Notifications\IonicPushNotification.cs" />
+    <Compile Include="Notifications\NotificationPayload.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Requests\Appointments\AddAppointmentGuestCommand.cs" />
     <Compile Include="Requests\Appointments\ConfirmAppointmentCommand.cs" />
@@ -295,8 +297,6 @@
     <Compile Include="Requests\Decorators\PostRequestHandler.cs" />
     <Compile Include="Requests\Decorators\TransactionHandler.cs" />
     <Compile Include="Requests\Decorators\ValidateHandler.cs" />
-    <Compile Include="Requests\External\CamelCaseSerializer.cs" />
-    <Compile Include="Requests\External\IonicPushNotification.cs" />
     <Compile Include="Requests\Generic\GetByIdQuery.cs" />
     <Compile Include="Requests\Generic\GetByPredicateQuery.cs" />
     <Compile Include="Requests\Gyms\GymPeekUsersCommand.cs" />
