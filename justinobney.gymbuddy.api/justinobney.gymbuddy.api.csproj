@@ -286,6 +286,10 @@
     <Compile Include="Migrations\201602250336070_Device_AddPushToken.Designer.cs">
       <DependentUpon>201602250336070_Device_AddPushToken.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602251319243_Device_AddPlatform.cs" />
+    <Compile Include="Migrations\201602251319243_Device_AddPlatform.Designer.cs">
+      <DependentUpon>201602251319243_Device_AddPlatform.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
     <Compile Include="Notifications\NotificationPayload.cs" />
@@ -331,6 +335,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602250336070_Device_AddPushToken.resx">
       <DependentUpon>201602250336070_Device_AddPushToken.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602251319243_Device_AddPlatform.resx">
+      <DependentUpon>201602251319243_Device_AddPlatform.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>

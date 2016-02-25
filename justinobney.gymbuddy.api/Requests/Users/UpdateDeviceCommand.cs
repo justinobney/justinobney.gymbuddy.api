@@ -10,6 +10,7 @@ namespace justinobney.gymbuddy.api.Requests.Users
     {
         public string DeviceId { get; set; }
         public string PushToken { get; set; }
+        public string Platform { get; set; }
     }
 
     [DoNotValidate]

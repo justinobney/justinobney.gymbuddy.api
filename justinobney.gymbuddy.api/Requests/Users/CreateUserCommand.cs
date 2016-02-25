@@ -19,6 +19,7 @@ namespace justinobney.gymbuddy.api.Requests.Users
         public Gender Gender { get; set; }
         public Gender FilterGender { get; set; }
         public string DeviceId { get; set; }
+        public string Platform { get; set; }
     }
 
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, User>
@@ -41,6 +42,7 @@ namespace justinobney.gymbuddy.api.Requests.Users
             user.Devices.Add(new Device
             {
                 DeviceId = message.DeviceId,
+                Platform = message.Platform,
                 CreatedAt = DateTime.UtcNow,
                 ModifiedAt = DateTime.UtcNow
             });
