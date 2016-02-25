@@ -27,6 +27,7 @@ namespace justinobney.gymbuddy.api.Requests.Users
         {
             var device = _devices.First(x => x.DeviceId == message.DeviceId);
             device.PushToken = message.PushToken;
+            device.Platform = message.Platform;
         }
     }
 }
