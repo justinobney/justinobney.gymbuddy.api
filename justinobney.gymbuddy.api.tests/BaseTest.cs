@@ -1,7 +1,9 @@
-﻿using justinobney.gymbuddy.api.DependencyResolution;
+﻿using justinobney.gymbuddy.api.Data;
+using justinobney.gymbuddy.api.DependencyResolution.Registries;
 using justinobney.gymbuddy.api.tests.DependencyResolution;
 using justinobney.gymbuddy.api.tests.Helpers;
 using MediatR;
+using NSubstitute;
 using NUnit.Framework;
 using StructureMap;
 
@@ -15,11 +17,12 @@ namespace justinobney.gymbuddy.api.tests
         private Container _container;
 
         [TestFixtureSetUp]
-        public void SetUp()
+        public void ConfigIoC()
         {
             var registry = new Registry();
             registry.IncludeRegistry<DefaultRegistry>();
             registry.IncludeRegistry<GenericCrudRegistry>();
+            registry.IncludeRegistry<FakeNotificationRegistry>();
             registry.IncludeRegistry<FakeEntityFrameworkRegistry>();
 
             _container = new Container(registry);
@@ -34,7 +37,7 @@ namespace justinobney.gymbuddy.api.tests
         {
             Context.ClearAll();
             Context.ResetIoC();
+            Context.GetInstance<AppContext>().ClearReceivedCalls();
         }
-
     }
 }

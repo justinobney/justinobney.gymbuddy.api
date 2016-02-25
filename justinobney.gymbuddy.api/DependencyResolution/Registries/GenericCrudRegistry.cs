@@ -8,18 +8,31 @@ using StructureMap.Graph;
 using StructureMap.Graph.Scanning;
 using WebGrease.Css.Extensions;
 
-namespace justinobney.gymbuddy.api.DependencyResolution
+namespace justinobney.gymbuddy.api.DependencyResolution.Registries
 {
+    public class GenericCrudRegistry : Registry
+    {
+        public GenericCrudRegistry()
+        {
+            Scan(scan =>
+            {
+                scan.TheCallingAssembly();
+                scan.AssemblyContainingType(typeof(GetByIdQuery<>));
+                scan.Convention<GenericCrudRequestsConvention>();
+            });
+        }
+    }
+
     public class GenericCrudRequestsConvention : IRegistrationConvention
     {
-        
+
         public void ScanTypes(TypeSet types, Registry registry)
         {
 
             types.FindTypes(TypeClassification.Concretes)
                 .Where(
                     t =>
-                        t.IsAbstract == false && typeof (IEntity).IsAssignableFrom(t)
+                        t.IsAbstract == false && typeof(IEntity).IsAssignableFrom(t)
                 )
                 .Distinct()
                 .ForEach(
@@ -30,12 +43,12 @@ namespace justinobney.gymbuddy.api.DependencyResolution
                     }
                 );
         }
-        
+
         private static void RegisterGetByIdQuery(Registry registry, Type type)
         {
-            var getByIdOfEntity = typeof (GetByIdQuery<>).MakeGenericType(type);
-            var requestingType = typeof (IRequestHandler<,>).MakeGenericType(getByIdOfEntity, type);
-            var concreteType = typeof (GetByIdQueryHandler<>).MakeGenericType(type);
+            var getByIdOfEntity = typeof(GetByIdQuery<>).MakeGenericType(type);
+            var requestingType = typeof(IRequestHandler<,>).MakeGenericType(getByIdOfEntity, type);
+            var concreteType = typeof(GetByIdQueryHandler<>).MakeGenericType(type);
             registry.AddType(requestingType, concreteType);
         }
 

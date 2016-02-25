@@ -27,7 +27,7 @@ using StructureMap;
 using StructureMap.Graph;
 using StructureMap.Pipeline;
 
-namespace justinobney.gymbuddy.api.DependencyResolution
+namespace justinobney.gymbuddy.api.DependencyResolution.Registries
 {
     public class DefaultRegistry : Registry
     {
@@ -42,9 +42,7 @@ namespace justinobney.gymbuddy.api.DependencyResolution
                     scan.AssemblyContainingType(typeof (LoggingHandler<,>));
 
                     scan.AddAllTypesOf(typeof (IRequestHandler<,>));
-                    scan.AddAllTypesOf(typeof (IAsyncRequestHandler<,>));
                     scan.AddAllTypesOf(typeof (INotificationHandler<>));
-                    scan.AddAllTypesOf(typeof (IAsyncNotificationHandler<>));
 
                     scan.AddAllTypesOf(typeof (IAuthorizer<>));
                     scan.AddAllTypesOf(typeof (AbstractValidator<>));
@@ -55,7 +53,7 @@ namespace justinobney.gymbuddy.api.DependencyResolution
                     handlerType.DecorateAllWith(typeof (ValidateHandler<,>), DoesNotHaveAttribute(typeof (DoNotValidate)));
                     handlerType.DecorateAllWith(typeof (AuthorizeHandler<,>), HasAttribute(typeof (Authorize)));
                     handlerType.DecorateAllWith(typeof (LoggingHandler<,>), DoesNotHaveAttribute(typeof (DoNotLog)));
-
+                    
                     For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => ctx.GetInstance(t));
                     For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => ctx.GetAllInstances(t));
                     For<IMediator>().Use<Mediator>();

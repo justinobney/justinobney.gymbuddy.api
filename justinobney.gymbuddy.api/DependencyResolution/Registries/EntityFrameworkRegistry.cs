@@ -9,8 +9,21 @@ using StructureMap.Graph;
 using StructureMap.Graph.Scanning;
 using WebGrease.Css.Extensions;
 
-namespace justinobney.gymbuddy.api.DependencyResolution
+namespace justinobney.gymbuddy.api.DependencyResolution.Registries
 {
+    public class EntityFrameworkRegistry : Registry
+    {
+        public EntityFrameworkRegistry()
+        {
+            Scan(scan =>
+            {
+                scan.TheCallingAssembly();
+                scan.AssemblyContainingType(typeof(IEntity));
+                scan.Convention<EntityFrameworkConvention>();
+            });
+        }
+    }
+
     public class EntityFrameworkConvention : IRegistrationConvention
     {
 

@@ -83,7 +83,7 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(user);
         }
 
-        // POST: api/Users/1234/Add-Gym
+        // POST: api/Users/Add-Gym
         [ResponseType(typeof(User))]
         [HttpPost]
         [Route("api/Users/Add-Gym")]
@@ -98,5 +98,21 @@ namespace justinobney.gymbuddy.api.Controllers
             var user = _mediator.Send(command);
             return Ok(MappingConfig.Instance.Map<ProfileListing>(user));
         }
+
+        // POST: api/Users/Update-Device
+        [ResponseType(typeof(object))]
+        [HttpPost]
+        [Route("api/Users/Update-Device")]
+        public IHttpActionResult UpdateDevice(UpdateDeviceCommand command)
+        {
+            if (CurrentUser == null || CurrentUser.Devices.All(d => d.DeviceId != command.DeviceId))
+            {
+                return Unauthorized();
+            }
+            
+            _mediator.Send(command);
+            return Ok();
+        }
+
     }
 }

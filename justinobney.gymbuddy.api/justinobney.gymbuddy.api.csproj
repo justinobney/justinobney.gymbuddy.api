@@ -114,6 +114,10 @@
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net452\RestSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="StructureMap, Version=4.0.1.318, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\structuremap.4.0.1.318\lib\net40\StructureMap.dll</HintPath>
       <Private>True</Private>
@@ -239,12 +243,11 @@
     <Compile Include="Data\AppContext.cs" />
     <Compile Include="DependencyResolution\ContainerExtensions.cs" />
     <Compile Include="DependencyResolution\ControllerConvention.cs" />
-    <Compile Include="DependencyResolution\DefaultRegistry.cs" />
-    <Compile Include="DependencyResolution\EntityFrameworkConvention.cs" />
-    <Compile Include="DependencyResolution\EntityFrameworkRegistry.cs" />
-    <Compile Include="DependencyResolution\GenericCrudRegistry.cs" />
-    <Compile Include="DependencyResolution\GenericCrudRequestsConvention.cs" />
+    <Compile Include="DependencyResolution\Registries\DefaultRegistry.cs" />
+    <Compile Include="DependencyResolution\Registries\EntityFrameworkRegistry.cs" />
+    <Compile Include="DependencyResolution\Registries\GenericCrudRegistry.cs" />
     <Compile Include="DependencyResolution\IoC.cs" />
+    <Compile Include="DependencyResolution\Registries\NotificationRegistry.cs" />
     <Compile Include="DependencyResolution\StructureMapDependencyScope.cs" />
     <Compile Include="DependencyResolution\StructureMapScopeModule.cs" />
     <Compile Include="DependencyResolution\StructureMapWebApiDependencyResolver.cs" />
@@ -259,10 +262,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\CamelCaseSerializer.cs" />
     <Compile Include="Interfaces\IAuthorize.cs" />
     <Compile Include="Interfaces\IAutoMapperConfiguration.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Interfaces\IHasTouchedProperties.cs" />
+    <Compile Include="Interfaces\INotificationPayload.cs" />
+    <Compile Include="Interfaces\IPostRequestHandler.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Migrations\201602102036566_Domain_Rebuild.cs" />
     <Compile Include="Migrations\201602102036566_Domain_Rebuild.Designer.cs">
@@ -276,7 +282,13 @@
     <Compile Include="Migrations\201602132102408_AppointmentGuest_AddTimeInfo.Designer.cs">
       <DependentUpon>201602132102408_AppointmentGuest_AddTimeInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602250336070_Device_AddPushToken.cs" />
+    <Compile Include="Migrations\201602250336070_Device_AddPushToken.Designer.cs">
+      <DependentUpon>201602250336070_Device_AddPushToken.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Notifications\IonicPushNotification.cs" />
+    <Compile Include="Notifications\NotificationPayload.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Requests\Appointments\AddAppointmentGuestCommand.cs" />
     <Compile Include="Requests\Appointments\ConfirmAppointmentCommand.cs" />
@@ -286,6 +298,7 @@
     <Compile Include="Requests\Appointments\RemoveAppointmentGuestCommand.cs" />
     <Compile Include="Requests\Decorators\AuthorizeHandler.cs" />
     <Compile Include="Requests\Decorators\LoggingHandler.cs" />
+    <Compile Include="Requests\Decorators\PostRequestHandler.cs" />
     <Compile Include="Requests\Decorators\TransactionHandler.cs" />
     <Compile Include="Requests\Decorators\ValidateHandler.cs" />
     <Compile Include="Requests\Generic\GetByIdQuery.cs" />
@@ -294,6 +307,7 @@
     <Compile Include="Requests\Users\AddUserToGymCommand.cs" />
     <Compile Include="Requests\Users\CreateUserCommand.cs" />
     <Compile Include="Requests\Users\DeleteUserCommand.cs" />
+    <Compile Include="Requests\Users\UpdateDeviceCommand.cs" />
     <Compile Include="Requests\Users\UpdateUserCommand.cs" />
     <Compile Include="Responses\ApiError.cs" />
     <Compile Include="Responses\AppointmentListing.cs" />
@@ -314,6 +328,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602132102408_AppointmentGuest_AddTimeInfo.resx">
       <DependentUpon>201602132102408_AppointmentGuest_AddTimeInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602250336070_Device_AddPushToken.resx">
+      <DependentUpon>201602250336070_Device_AddPushToken.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>

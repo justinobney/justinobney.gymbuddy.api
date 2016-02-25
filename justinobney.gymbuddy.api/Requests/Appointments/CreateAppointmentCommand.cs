@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
-using justinobney.gymbuddy.api.Requests.Decorators;
+using justinobney.gymbuddy.api.Notifications;
 using MediatR;
+using RestSharp;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments
 {
@@ -81,5 +81,32 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
             cfg.CreateMap<DateTime?, AppointmentTimeSlot>()
                 .ForMember(dest => dest.Time, opts => opts.MapFrom(src => src));
         }
+    }
+
+    public class CreateAppointmentPushNotifier : IPostRequestHandler<CreateAppointmentCommand, Appointment>
+    {
+        private readonly IRestClient _client;
+
+        public CreateAppointmentPushNotifier(IRestClient client)
+        {
+            _client = client;
+        }
+
+        public void Notify(CreateAppointmentCommand request, Appointment response)
+        {
+            var message = new NotificationPayload<object>(null)
+            {
+                Alert = "New Appointment Available",
+                Title = "Gym Buddy"
+            };
+
+            var notification = new IonicPushNotification(message)
+            {
+                Tokens = new List<string> { "" } // todo: lookup notification tokens
+            };
+
+            notification.Send(_client);
+        }
+        
     }
 }
