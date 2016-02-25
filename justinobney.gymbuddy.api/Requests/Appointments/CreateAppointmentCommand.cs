@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using AutoMapper;
 using FluentValidation;
@@ -130,13 +131,15 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
             if (iosNotification.Tokens.Any())
             {
                 //todo: log response
-                iosNotification.Send(_client);
+                var iosPushResponse = iosNotification.Send(_client);
+                Debug.WriteLine(iosPushResponse.Content);
             }
 
             if (androidNotification.Tokens.Any())
             {
                 //todo: log response
-                androidNotification.Send(_client);
+                var androidPushResponse = androidNotification.Send(_client);
+                Debug.WriteLine(androidPushResponse.Content);
             }
         }
         

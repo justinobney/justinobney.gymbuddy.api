@@ -20,7 +20,7 @@ namespace justinobney.gymbuddy.api.Notifications
         public bool Production { get; set; }
         public INotificationPayload Notification { get; set; }
 
-        public void Send(IRestClient client)
+        public IRestResponse Send(IRestClient client)
         {
             var ionicRequest = new RestRequest("/push", Method.POST);
             ionicRequest.AddHeader("X-Ionic-Application-Id", ConfigurationManager.AppSettings["Ionic-Application-Id"]);
@@ -30,7 +30,7 @@ namespace justinobney.gymbuddy.api.Notifications
 
             client.BaseUrl = new Uri("https://push.ionic.io/api/v1");
             client.Authenticator = new HttpBasicAuthenticator(ConfigurationManager.AppSettings["Ionic-Api-Key"], "");
-            client.Execute(ionicRequest);
+            return client.Execute(ionicRequest);
         }
     }
 
