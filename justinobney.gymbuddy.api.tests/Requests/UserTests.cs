@@ -20,10 +20,12 @@ namespace justinobney.gymbuddy.api.tests.Requests
             Mediator.Send(new UpdateDeviceCommand
             {
                 DeviceId = "12345",
-                PushToken = "foo-bar"
+                PushToken = "foo-bar",
+                Platform = "iOS"
             });
 
             devices.First(d=>d.DeviceId == "12345").PushToken.ShouldBe("foo-bar");
+            devices.First(d=>d.DeviceId == "12345").Platform.ShouldBe("iOS");
             context.Received(1).SaveChanges();
         }
     }
