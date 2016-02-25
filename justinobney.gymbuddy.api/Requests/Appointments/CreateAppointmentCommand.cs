@@ -6,6 +6,8 @@ using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
 using justinobney.gymbuddy.api.Data.Appointments;
+using justinobney.gymbuddy.api.Data.Gyms;
+using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Notifications;
@@ -85,27 +87,56 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
 
     public class CreateAppointmentPushNotifier : IPostRequestHandler<CreateAppointmentCommand, Appointment>
     {
+        private readonly IDbSet<User> _users;
         private readonly IRestClient _client;
 
-        public CreateAppointmentPushNotifier(IRestClient client)
+        public CreateAppointmentPushNotifier(IDbSet<User> users , IRestClient client)
         {
+            _users = users;
             _client = client;
         }
 
         public void Notify(CreateAppointmentCommand request, Appointment response)
         {
+            var notifyUsers = _users
+                .Include(x => x.Devices)
+                .Include(x => x.Gyms)
+                .Where(x => x.Gyms.Any(y => y.Id == request.GymId))
+                .Where(x => x.Id != request.UserId);
+
             var message = new NotificationPayload<object>(null)
             {
-                Alert = "New Appointment Available",
-                Title = "Gym Buddy"
+                Alert = $"{response.User.Name} wants to work: {request.Description}",
+                Title = "New Appointment Available"
             };
 
-            var notification = new IonicPushNotification(message)
+            var iosNotification = new IonicPushNotification(message)
             {
-                Tokens = new List<string> { "" } // todo: lookup notification tokens
+                Tokens = notifyUsers.SelectMany(x => x.Devices
+                    .Where(y => y.Platform == "Ios" && !string.IsNullOrEmpty(y.PushToken))
+                    .Select(y => y.PushToken))
+                    .ToList()
             };
 
-            notification.Send(_client);
+            var androidNotification = new IonicPushNotification(message)
+            {
+                Tokens = notifyUsers.SelectMany(x => x.Devices
+                    .Where(y => y.Platform == "Android" && !string.IsNullOrEmpty(y.PushToken))
+                    .Select(y => y.PushToken))
+                    .ToList()
+            };
+
+            if (iosNotification.Tokens.Any())
+            {
+                //todo: log response
+                iosNotification.Send(_client);
+            }
+
+            if (androidNotification.Tokens.Any())
+            {
+                //todo: log response
+                androidNotification.Send(_client);
+            }
         }
         
     }
