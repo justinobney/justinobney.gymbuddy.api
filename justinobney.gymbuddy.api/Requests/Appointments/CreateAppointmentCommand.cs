@@ -112,8 +112,9 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
 
             var iosNotification = new IonicPushNotification(message)
             {
+                Production = true,
                 Tokens = notifyUsers.SelectMany(x => x.Devices
-                    .Where(y => y.Platform == "Ios" && !string.IsNullOrEmpty(y.PushToken))
+                    .Where(y => y.Platform == "iOS" && !string.IsNullOrEmpty(y.PushToken))
                     .Select(y => y.PushToken))
                     .ToList()
             };

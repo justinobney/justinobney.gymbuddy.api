@@ -56,7 +56,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 Gyms = new List<Gym> { gym },
                 Devices = new List<Device>
                 {
-                    new Device {PushToken = "123456", Platform = "Ios"}
+                    new Device {PushToken = "123456", Platform = "iOS"}
                 }
             });
 
