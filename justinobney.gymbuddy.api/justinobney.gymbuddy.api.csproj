@@ -282,6 +282,10 @@
     <Compile Include="Migrations\201602132102408_AppointmentGuest_AddTimeInfo.Designer.cs">
       <DependentUpon>201602132102408_AppointmentGuest_AddTimeInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602250336070_Device_AddPushToken.cs" />
+    <Compile Include="Migrations\201602250336070_Device_AddPushToken.Designer.cs">
+      <DependentUpon>201602250336070_Device_AddPushToken.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
     <Compile Include="Notifications\NotificationPayload.cs" />
@@ -303,6 +307,7 @@
     <Compile Include="Requests\Users\AddUserToGymCommand.cs" />
     <Compile Include="Requests\Users\CreateUserCommand.cs" />
     <Compile Include="Requests\Users\DeleteUserCommand.cs" />
+    <Compile Include="Requests\Users\UpdateDeviceCommand.cs" />
     <Compile Include="Requests\Users\UpdateUserCommand.cs" />
     <Compile Include="Responses\ApiError.cs" />
     <Compile Include="Responses\AppointmentListing.cs" />
@@ -323,6 +328,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602132102408_AppointmentGuest_AddTimeInfo.resx">
       <DependentUpon>201602132102408_AppointmentGuest_AddTimeInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602250336070_Device_AddPushToken.resx">
+      <DependentUpon>201602250336070_Device_AddPushToken.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>

@@ -1,8 +1,9 @@
-﻿using justinobney.gymbuddy.api.DependencyResolution;
+﻿using justinobney.gymbuddy.api.Data;
 using justinobney.gymbuddy.api.DependencyResolution.Registries;
 using justinobney.gymbuddy.api.tests.DependencyResolution;
 using justinobney.gymbuddy.api.tests.Helpers;
 using MediatR;
+using NSubstitute;
 using NUnit.Framework;
 using StructureMap;
 
@@ -36,7 +37,7 @@ namespace justinobney.gymbuddy.api.tests
         {
             Context.ClearAll();
             Context.ResetIoC();
+            Context.GetInstance<AppContext>().ClearReceivedCalls();
         }
-
     }
 }

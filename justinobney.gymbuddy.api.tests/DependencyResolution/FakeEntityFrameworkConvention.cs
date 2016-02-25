@@ -2,7 +2,9 @@
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
+using justinobney.gymbuddy.api.Data;
 using justinobney.gymbuddy.api.Interfaces;
+using NSubstitute;
 using StructureMap;
 using StructureMap.Graph;
 using StructureMap.Graph.Scanning;
@@ -28,6 +30,9 @@ namespace justinobney.gymbuddy.api.tests.DependencyResolution
                         RegisterIDbSets(registry, t);
                     }
                 );
+
+            var context = Substitute.For<AppContext>();
+            registry.For<AppContext>().Use(context);
         }
 
         private void RegisterIDbSets(Registry registry, Type type)

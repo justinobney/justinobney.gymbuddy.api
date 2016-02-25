@@ -21,7 +21,8 @@ namespace justinobney.gymbuddy.api.Controllers
                 var deviceId = Request.Headers.GetValues("device-id").FirstOrDefault();
                 var request = new GetAllByPredicateQuery<User>(UserPredicates.RestrictByDeviceId(deviceId));
                 return _mediator.Send(request)
-                    .Include(u => u.Gyms)
+                    .Include(x=>x.Devices)
+                    .Include(x => x.Gyms)
                     .FirstOrDefault();
             }
         }

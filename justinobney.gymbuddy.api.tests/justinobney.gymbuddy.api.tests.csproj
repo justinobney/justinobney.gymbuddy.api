@@ -126,6 +126,7 @@
     <Compile Include="Requests\GenericQueryTests.cs" />
     <Compile Include="Requests\IonicPushNotifierTests.cs" />
     <Compile Include="Requests\PostRequestHandlerTests.cs" />
+    <Compile Include="Requests\UserTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\justinobney.gymbuddy.api\justinobney.gymbuddy.api.csproj">
