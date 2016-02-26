@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
+using System.Linq;
+using System.Net;
 using justinobney.gymbuddy.api.Helpers;
 using justinobney.gymbuddy.api.Interfaces;
 using RestSharp;
@@ -22,6 +25,11 @@ namespace justinobney.gymbuddy.api.Notifications
 
         public IRestResponse Send(IRestClient client)
         {
+            if (!Tokens.Any())
+            {
+                return new RestResponse {StatusCode = HttpStatusCode.BadRequest, Content = "No Tokens Provided"};
+            }
+
             var ionicRequest = new RestRequest("/push", Method.POST);
             ionicRequest.AddHeader("X-Ionic-Application-Id", ConfigurationManager.AppSettings["Ionic-Application-Id"]);
             ionicRequest.AddHeader("Content-Type", "application/json");
@@ -30,7 +38,9 @@ namespace justinobney.gymbuddy.api.Notifications
 
             client.BaseUrl = new Uri("https://push.ionic.io/api/v1");
             client.Authenticator = new HttpBasicAuthenticator(ConfigurationManager.AppSettings["Ionic-Api-Key"], "");
-            return client.Execute(ionicRequest);
+            var response = client.Execute(ionicRequest);
+            Debug.WriteLine(response.Content);
+            return response;
         }
     }
 
