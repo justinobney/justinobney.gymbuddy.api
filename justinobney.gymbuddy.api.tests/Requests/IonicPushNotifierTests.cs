@@ -4,6 +4,7 @@ using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Data.Devices;
 using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Users;
+using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Notifications;
 using justinobney.gymbuddy.api.Requests.Appointments;
@@ -107,6 +108,134 @@ namespace justinobney.gymbuddy.api.tests.Requests
             androidCalled.ShouldBe(true);
             ConfigIoC();
         }
+
+        [Test]
+        public void AddAppointmentGuestPushNotifier_CallsRestSharpMethod()
+        {
+            var users = Context.GetSet<User>();
+            var appts = Context.GetSet<Appointment>();
+            
+            var owner = new User
+            {
+                Id = 1,
+                Devices = new List<Device>
+                {
+                    new Device {PushToken = "123456", Platform = "iOS"}
+                }
+            };
+            users.Add(owner);
+
+            users.Add(new User
+            {
+                Id = 2
+            });
+
+            appts.Add(new Appointment
+            {
+                Id = 1,
+                User = owner,
+                UserId = owner.Id
+            });
+
+            var restClient = Substitute.For<RestClient>();
+            Context.Container.Configure(container => container.For<IRestClient>().Use(restClient));
+            Context.Register<IPostRequestHandler<AddAppointmentGuestCommand, Appointment>, AddAppointmentGuestPushNotifier>();
+            var handler = Context.GetInstance<IPostRequestHandler<AddAppointmentGuestCommand, Appointment>>();
+
+            var request = new AddAppointmentGuestCommand { AppointmentId = 1, UserId = 2 };
+            var response = new Appointment { UserId = 1, User = new User { Name = "Justin" } };
+            var iosCalled = false;
+
+            restClient
+                .WhenForAnyArgs(client => client.Post(new RestRequest()))
+                .Do(info =>
+                {
+                    var restRequest = info.Arg<RestRequest>();
+                    var jsonPayload = restRequest.Parameters.Find(p => p.Name == "application/json");
+                    var pushNotification =
+                        JsonConvert.DeserializeObject<IonicPushNotification<object>>((string)jsonPayload.Value);
+
+                    restRequest.Resource.ShouldBe("/push");
+                    restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
+                    pushNotification.Notification.Title.ShouldBe("Appointment Guest Request");
+                    if (pushNotification.Tokens.Any(t => t == "123456"))
+                    {
+                        iosCalled = true;
+                    }
+                });
+
+            handler.Notify(request, response);
+            restClient.ReceivedWithAnyArgs(1).Post(new RestRequest());
+            iosCalled.ShouldBe(true);
+            ConfigIoC();
+        }
+
+        [Test]
+        public void ConfirmAppointmentPushNotifier_CallsRestSharpMethod()
+        {
+            var users = Context.GetSet<User>();
+            var appts = Context.GetSet<Appointment>();
+
+            var owner = new User
+            {
+                Id = 1
+            };
+            users.Add(owner);
+
+            users.Add(new User
+            {
+                Id = 2,
+                Devices = new List<Device>
+                {
+                    new Device {PushToken = "123456", Platform = "iOS"}
+                }
+            });
+
+            appts.Add(new Appointment
+            {
+                Id = 1,
+                User = owner,
+                UserId = owner.Id,
+                GuestList = new List<AppointmentGuest>
+                {
+                    new AppointmentGuest {Id = 2, AppointmentId = 2, UserId = 2, Status = AppointmentGuestStatus.Confirmed},
+                    new AppointmentGuest {Id = 3, AppointmentId = 2, UserId = 3, Status = AppointmentGuestStatus.Pending}
+                }
+            });
+
+            var restClient = Substitute.For<RestClient>();
+            Context.Container.Configure(container => container.For<IRestClient>().Use(restClient));
+            Context.Register<IPostRequestHandler<ConfirmAppointmentCommand, Appointment>, ConfirmAppointmentPushNotifier>();
+            var handler = Context.GetInstance<IPostRequestHandler<ConfirmAppointmentCommand, Appointment>>();
+
+            var request = new ConfirmAppointmentCommand { AppointmentId = 1, AppointmentGuestIds = new List<long> {2} };
+            var response = new Appointment { UserId = 1, User = new User { Name = "Justin" } };
+            var iosCalled = false;
+
+            restClient
+                .WhenForAnyArgs(client => client.Post(new RestRequest()))
+                .Do(info =>
+                {
+                    var restRequest = info.Arg<RestRequest>();
+                    var jsonPayload = restRequest.Parameters.Find(p => p.Name == "application/json");
+                    var pushNotification =
+                        JsonConvert.DeserializeObject<IonicPushNotification<object>>((string)jsonPayload.Value);
+
+                    restRequest.Resource.ShouldBe("/push");
+                    restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
+                    pushNotification.Notification.Title.ShouldBe("Workout Session Confirmed");
+                    if (pushNotification.Tokens.Any(t => t == "123456"))
+                    {
+                        iosCalled = true;
+                    }
+                });
+
+            handler.Notify(request, response);
+            restClient.ReceivedWithAnyArgs(1).Post(new RestRequest());
+            iosCalled.ShouldBe(true);
+            ConfigIoC();
+        }
+
 
         public class FooPayload
         {
