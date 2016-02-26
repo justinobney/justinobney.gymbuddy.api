@@ -3,8 +3,12 @@ using System.Data.Entity;
 using System.Linq;
 using FluentValidation;
 using justinobney.gymbuddy.api.Data.Appointments;
+using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
+using justinobney.gymbuddy.api.Interfaces;
+using justinobney.gymbuddy.api.Notifications;
 using MediatR;
+using RestSharp;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments
 {
@@ -56,5 +60,60 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
                 .NotNull()
                 .Must(list => list.Count > 0);
         }
+    }
+
+    public class ConfirmAppointmentPushNotifier : IPostRequestHandler<ConfirmAppointmentCommand, Appointment>
+    {
+        private readonly IDbSet<Appointment> _appointments;
+        private readonly IDbSet<User> _users;
+        private readonly IRestClient _client;
+
+        public ConfirmAppointmentPushNotifier(IDbSet<Appointment> appointments, IDbSet<User> users, IRestClient client)
+        {
+            _appointments = appointments;
+            _users = users;
+            _client = client;
+        }
+
+        public void Notify(ConfirmAppointmentCommand request, Appointment response)
+        {
+            var appt = _appointments
+                .Include(x=>x.User)
+                .Include(x=>x.GuestList)
+                .First(x => x.Id == request.AppointmentId);
+
+            var guests = _users
+                .Include(x => x.Devices)
+                .Where(x =>
+                    appt.GuestList.Any(y =>  y.UserId == x.Id && y.Status == AppointmentGuestStatus.Confirmed)
+                );
+
+            var message = new NotificationPayload<object>(null)
+            {
+                Alert = $"{appt.User.Name} confirmed.",
+                Title = "Workout Session Confirmed"
+            };
+
+            var iosNotification = new IonicPushNotification(message)
+            {
+                Production = true,
+                Tokens = guests.SelectMany(x => x.Devices
+                    .Where(y => y.Platform == "iOS" && !string.IsNullOrEmpty(y.PushToken))
+                    .Select(y => y.PushToken))
+                    .ToList()
+            };
+
+            var androidNotification = new IonicPushNotification(message)
+            {
+                Tokens = guests.SelectMany(x => x.Devices
+                    .Where(y => y.Platform == "Android" && !string.IsNullOrEmpty(y.PushToken))
+                    .Select(y => y.PushToken))
+                    .ToList()
+            };
+
+            iosNotification.Send(_client);
+            androidNotification.Send(_client);
+        }
+
     }
 }

@@ -128,19 +128,8 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
                     .ToList()
             };
 
-            if (iosNotification.Tokens.Any())
-            {
-                //todo: log response
-                var iosPushResponse = iosNotification.Send(_client);
-                Debug.WriteLine(iosPushResponse.Content);
-            }
-
-            if (androidNotification.Tokens.Any())
-            {
-                //todo: log response
-                var androidPushResponse = androidNotification.Send(_client);
-                Debug.WriteLine(androidPushResponse.Content);
-            }
+            iosNotification.Send(_client);
+            androidNotification.Send(_client);
         }
         
     }
