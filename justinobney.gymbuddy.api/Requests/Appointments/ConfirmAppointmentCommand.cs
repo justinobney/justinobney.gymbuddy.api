@@ -82,11 +82,14 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
                 .Include(x=>x.GuestList)
                 .First(x => x.Id == request.AppointmentId);
 
+            var approvedGuests = appt.GuestList
+                .ToList()
+                .Where(x => x.Status == AppointmentGuestStatus.Confirmed)
+                .Select(x => x.UserId);
+
             var guests = _users
                 .Include(x => x.Devices)
-                .Where(x =>
-                    appt.GuestList.Any(y =>  y.UserId == x.Id && y.Status == AppointmentGuestStatus.Confirmed)
-                );
+                .Where(x => approvedGuests.Contains(x.Id));
 
             var message = new NotificationPayload<object>(null)
             {

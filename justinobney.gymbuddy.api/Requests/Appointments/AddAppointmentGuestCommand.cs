@@ -95,7 +95,10 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
         public void Notify(AddAppointmentGuestCommand request, Appointment response)
         {
             var appt = _appointments.First(x => x.Id == request.AppointmentId);
-            var apptOwner = _users.First(x => x.Id == appt.UserId);
+            var apptOwner = _users
+                .Include(x=>x.Devices)
+                .First(x => x.Id == appt.UserId);
+
             var guest = _users.First(x => x.Id == request.UserId);
 
             var message = new NotificationPayload<object>(null)
