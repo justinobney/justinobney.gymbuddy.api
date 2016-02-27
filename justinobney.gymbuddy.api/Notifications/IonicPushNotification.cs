@@ -14,14 +14,14 @@ namespace justinobney.gymbuddy.api.Notifications
     public class IonicPushNotification
     {
 
-        public IonicPushNotification(INotificationPayload notification)
+        public IonicPushNotification(NotificationPayload notification)
         {
             Notification = notification;
         }
 
         public List<string> Tokens { get; set; }
         public bool Production { get; set; }
-        public INotificationPayload Notification { get; set; }
+        public NotificationPayload Notification { get; set; }
 
         public IRestResponse Send(IRestClient client)
         {
@@ -41,14 +41,6 @@ namespace justinobney.gymbuddy.api.Notifications
             var response = client.Execute(ionicRequest);
             Debug.WriteLine(response.Content);
             return response;
-        }
-    }
-
-    // Used to be able to properly deserialize into a typed NotificationPayload from JSON when known
-    public class IonicPushNotification<T> : IonicPushNotification
-    {
-        public IonicPushNotification(NotificationPayload<T> notification) : base(notification)
-        {
         }
     }
 }

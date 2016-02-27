@@ -2,34 +2,39 @@ using justinobney.gymbuddy.api.Interfaces;
 
 namespace justinobney.gymbuddy.api.Notifications
 {
-    public class NotificationPayload<T> : INotificationPayload
+    public class NotificationPayload
     {
-        public NotificationPayload(T payload)
+        public NotificationPayload(AdditionalData payload)
         {
-            Android = new Android<T>
+            Android = new Android
             {
                 Payload = payload
             };
 
-            Ios = new Ios<T>
+            Ios = new Ios
             {
                 Payload = payload
             };
         }
         public string Alert { get; set; }
         public string Title { get; set; }
-        public Android<T> Android { get; set; }
-        public Ios<T> Ios { get; set; }
+        public Android Android { get; set; }
+        public Ios Ios { get; set; }
     }
 
-    public class Android<T>
+    public class Android
     {
-        public T Payload { get; set; }
+        public AdditionalData Payload { get; set; }
     }
-
-    public class Ios<T>
+    
+    public class Ios
     {
-        public T Payload { get; set; }
+        public AdditionalData Payload { get; set; }
         public int? Badge { get; set; }
+    }
+
+    public class AdditionalData
+    {
+        public string Type { get; set; }
     }
 }

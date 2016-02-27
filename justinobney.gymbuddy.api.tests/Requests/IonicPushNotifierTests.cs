@@ -7,7 +7,9 @@ using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Notifications;
-using justinobney.gymbuddy.api.Requests.Appointments;
+using justinobney.gymbuddy.api.Requests.Appointments.AddAppointmentGuest;
+using justinobney.gymbuddy.api.Requests.Appointments.Confirm;
+using justinobney.gymbuddy.api.Requests.Appointments.Create;
 using justinobney.gymbuddy.api.tests.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -23,8 +25,8 @@ namespace justinobney.gymbuddy.api.tests.Requests
         [Test]
         public void NotifierShouldSerializeCorrectly()
         {
-            var payload = new FooPayload {Foo = "Bar"};
-            var notification = new NotificationPayload<FooPayload>(payload)
+            var payload = new FooPayload {Type = "Foo", Foo = "Bar"};
+            var notification = new NotificationPayload(payload)
             {
                 Alert = "Alert",
                 Title = "Title"
@@ -40,11 +42,11 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
 
-            var expected = "{\"tokens\":[\"123\"],\"production\":false,\"notification\":{\"alert\":\"Alert\",\"title\":\"Title\",\"android\":{\"payload\":{\"foo\":\"Bar\"}},\"ios\":{\"payload\":{\"foo\":\"Bar\"},\"badge\":null}}}";
+            var expected = "{\"tokens\":[\"123\"],\"production\":false,\"notification\":{\"alert\":\"Alert\",\"title\":\"Title\",\"android\":{\"payload\":{\"foo\":\"Bar\",\"type\":\"Foo\"}},\"ios\":{\"payload\":{\"foo\":\"Bar\",\"type\":\"Foo\"},\"badge\":null}}}";
             JsonConvert.SerializeObject(notifier, serializationSettings).ShouldBe(expected);
 
             var expected2 = "{\"tokens\":null,\"production\":false,\"notification\":{\"alert\":null,\"title\":null,\"android\":{\"payload\":null},\"ios\":{\"payload\":null,\"badge\":null}}}";
-            JsonConvert.SerializeObject(new IonicPushNotification(new NotificationPayload<object>(null)), serializationSettings).ShouldBe(expected2);
+            JsonConvert.SerializeObject(new IonicPushNotification(new NotificationPayload(null)), serializationSettings).ShouldBe(expected2);
         }
 
         [Test]
@@ -87,7 +89,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                     var restRequest = info.Arg<RestRequest>();
                     var jsonPayload = restRequest.Parameters.Find(p => p.Name == "application/json");
                     var pushNotification =
-                        JsonConvert.DeserializeObject<IonicPushNotification<object>>((string) jsonPayload.Value);
+                        JsonConvert.DeserializeObject<IonicPushNotification>((string) jsonPayload.Value);
 
                     restRequest.Resource.ShouldBe("/push");
                     restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
@@ -153,7 +155,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                     var restRequest = info.Arg<RestRequest>();
                     var jsonPayload = restRequest.Parameters.Find(p => p.Name == "application/json");
                     var pushNotification =
-                        JsonConvert.DeserializeObject<IonicPushNotification<object>>((string)jsonPayload.Value);
+                        JsonConvert.DeserializeObject<IonicPushNotification>((string)jsonPayload.Value);
 
                     restRequest.Resource.ShouldBe("/push");
                     restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
@@ -219,7 +221,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                     var restRequest = info.Arg<RestRequest>();
                     var jsonPayload = restRequest.Parameters.Find(p => p.Name == "application/json");
                     var pushNotification =
-                        JsonConvert.DeserializeObject<IonicPushNotification<object>>((string)jsonPayload.Value);
+                        JsonConvert.DeserializeObject<IonicPushNotification>((string)jsonPayload.Value);
 
                     restRequest.Resource.ShouldBe("/push");
                     restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
@@ -237,7 +239,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
         }
 
 
-        public class FooPayload
+        public class FooPayload : AdditionalData
         {
             public string Foo { get; set; }
         }
