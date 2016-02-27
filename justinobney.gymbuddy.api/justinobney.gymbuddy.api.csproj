@@ -267,7 +267,6 @@
     <Compile Include="Interfaces\IAutoMapperConfiguration.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Interfaces\IHasTouchedProperties.cs" />
-    <Compile Include="Interfaces\INotificationPayload.cs" />
     <Compile Include="Interfaces\IPostRequestHandler.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Migrations\201602102036566_Domain_Rebuild.cs" />
@@ -294,9 +293,16 @@
     <Compile Include="Notifications\IonicPushNotification.cs" />
     <Compile Include="Notifications\NotificationPayload.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Requests\Appointments\AddAppointmentGuestCommand.cs" />
-    <Compile Include="Requests\Appointments\ConfirmAppointmentCommand.cs" />
-    <Compile Include="Requests\Appointments\CreateAppointmentCommand.cs" />
+    <Compile Include="Requests\Appointments\AddAppointmentGuest\AddAppointmentGuestCommand.cs" />
+    <Compile Include="Requests\Appointments\AddAppointmentGuest\AddAppointmentGuestCommandValidator.cs" />
+    <Compile Include="Requests\Appointments\AddAppointmentGuest\AddAppointmentGuestPushNotifier.cs" />
+    <Compile Include="Requests\Appointments\Confirm\ConfirmAppointmentCommand.cs" />
+    <Compile Include="Requests\Appointments\Confirm\ConfirmAppointmentCommandValidator.cs" />
+    <Compile Include="Requests\Appointments\Confirm\ConfirmAppointmentPushNotifier.cs" />
+    <Compile Include="Requests\Appointments\Create\CreateAppointmentCommand.cs" />
+    <Compile Include="Requests\Appointments\Create\CreateAppointmentCommandMapper.cs" />
+    <Compile Include="Requests\Appointments\Create\CreateAppointmentCommandValidator.cs" />
+    <Compile Include="Requests\Appointments\Create\CreateAppointmentPushNotifier.cs" />
     <Compile Include="Requests\Appointments\GetAvailableAppointmentsForUserQuery.cs" />
     <Compile Include="Requests\Appointments\GetScheduledAppointmentsForUserQuery.cs" />
     <Compile Include="Requests\Appointments\RemoveAppointmentGuestCommand.cs" />

@@ -7,6 +7,9 @@ using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Requests.Appointments;
+using justinobney.gymbuddy.api.Requests.Appointments.AddAppointmentGuest;
+using justinobney.gymbuddy.api.Requests.Appointments.Confirm;
+using justinobney.gymbuddy.api.Requests.Appointments.Create;
 using justinobney.gymbuddy.api.tests.Helpers;
 using NUnit.Framework;
 
