@@ -8,6 +8,7 @@ using justinobney.gymbuddy.api.Requests.Appointments;
 using justinobney.gymbuddy.api.Requests.Appointments.AddAppointmentGuest;
 using justinobney.gymbuddy.api.Requests.Appointments.Confirm;
 using justinobney.gymbuddy.api.Requests.Appointments.Create;
+using justinobney.gymbuddy.api.Requests.Appointments.RemoveAppointmentGuest;
 using justinobney.gymbuddy.api.Requests.Generic;
 using justinobney.gymbuddy.api.Responses;
 using MediatR;

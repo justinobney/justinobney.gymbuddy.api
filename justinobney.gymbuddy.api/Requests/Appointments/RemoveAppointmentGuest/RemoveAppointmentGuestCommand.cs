@@ -4,7 +4,7 @@ using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 
-namespace justinobney.gymbuddy.api.Requests.Appointments
+namespace justinobney.gymbuddy.api.Requests.Appointments.RemoveAppointmentGuest
 {
     public class RemoveAppointmentGuestCommand : IRequest<Appointment>
     {
