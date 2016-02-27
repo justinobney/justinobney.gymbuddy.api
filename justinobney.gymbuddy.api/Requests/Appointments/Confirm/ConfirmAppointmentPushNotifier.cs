@@ -38,7 +38,8 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
                 .Include(x => x.Devices)
                 .Where(x => approvedGuests.Contains(x.Id));
 
-            var message = new NotificationPayload(null)
+            var additionalData = new AdditionalData { Type = NofiticationTypes.ConfirmAppointment };
+            var message = new NotificationPayload(additionalData)
             {
                 Alert = $"{appt.User.Name} confirmed.",
                 Title = "Workout Session Confirmed"

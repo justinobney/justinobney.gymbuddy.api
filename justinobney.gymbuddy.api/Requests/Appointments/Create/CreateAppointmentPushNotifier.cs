@@ -27,7 +27,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Create
                 .Where(x => x.Gyms.Any(y => y.Id == request.GymId))
                 .Where(x => x.Id != request.UserId);
 
-            var additionalData = new AdditionalData {Type = "CreateAppointment" };
+            var additionalData = new AdditionalData {Type = NofiticationTypes.CreateAppointment };
             var message = new NotificationPayload(additionalData)
             {
                 Alert = $"{response.User.Name} wants to work: {request.Description}",
