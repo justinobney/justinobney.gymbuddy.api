@@ -30,7 +30,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Create
             var additionalData = new AdditionalData {Type = NofiticationTypes.CreateAppointment };
             var message = new NotificationPayload(additionalData)
             {
-                Alert = $"{response.User.Name} wants to work: {request.Description}",
+                Alert = $"{response.User.Name} wants to work: {request.Title}",
                 Title = "New Appointment Available"
             };
 
