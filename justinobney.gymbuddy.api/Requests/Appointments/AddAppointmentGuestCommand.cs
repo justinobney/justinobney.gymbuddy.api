@@ -101,7 +101,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
 
             var guest = _users.First(x => x.Id == request.UserId);
 
-            var message = new NotificationPayload<object>(null)
+            var message = new NotificationPayload(null)
             {
                 Alert = $"{guest.Name} wants to work in",
                 Title = "Appointment Guest Request"

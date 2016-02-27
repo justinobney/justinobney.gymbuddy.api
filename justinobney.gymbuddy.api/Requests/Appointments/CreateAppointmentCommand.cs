@@ -105,7 +105,8 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
                 .Where(x => x.Gyms.Any(y => y.Id == request.GymId))
                 .Where(x => x.Id != request.UserId);
 
-            var message = new NotificationPayload<object>(null)
+            var additionalData = new AdditionalData {Type = "CreateAppointment" };
+            var message = new NotificationPayload(additionalData)
             {
                 Alert = $"{response.User.Name} wants to work: {request.Description}",
                 Title = "New Appointment Available"
