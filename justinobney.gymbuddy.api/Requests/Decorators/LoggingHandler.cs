@@ -26,7 +26,11 @@ namespace justinobney.gymbuddy.api.Requests.Decorators
 
         public TResponse Handle(TRequest message)
         {
-            _log.Information($"TRequest: {message.GetType().GetPrettyName()} - {JsonConvert.SerializeObject(message)}");
+            _log.Information($"TRequest: {message.GetType().GetPrettyName()}");
+            if (!message.GetType().ContainsGenericParameters)
+            {
+                _log.Information($"JSON {JsonConvert.SerializeObject(message)}");
+            }
             var response = _inner.Handle(message);
             _log.Information($"TResponse: {response.GetType().GetPrettyName()}");
 
