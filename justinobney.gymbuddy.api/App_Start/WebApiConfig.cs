@@ -1,5 +1,6 @@
 ﻿using System.Web.Http;
 using System.Web.Http.Cors;
+using Exceptionless;
 using justinobney.gymbuddy.api.Filters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -33,6 +34,9 @@ namespace justinobney.gymbuddy.api
             config.Filters.Add(new AuthorizationExceptionFilter());
 
             config.SuppressHostPrincipal();
+
+            ExceptionlessClient.Default.Register();
+            ExceptionlessClient.Default.RegisterWebApi(config);
         }
     }
 }
