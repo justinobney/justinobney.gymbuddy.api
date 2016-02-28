@@ -35,6 +35,7 @@ namespace justinobney.gymbuddy.api
 
             config.SuppressHostPrincipal();
 
+            ExceptionlessClient.Default.Register();
             ExceptionlessClient.Default.RegisterWebApi(config);
         }
     }

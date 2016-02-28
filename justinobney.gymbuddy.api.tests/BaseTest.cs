@@ -5,6 +5,7 @@ using justinobney.gymbuddy.api.tests.Helpers;
 using MediatR;
 using NSubstitute;
 using NUnit.Framework;
+using Serilog;
 using StructureMap;
 
 namespace justinobney.gymbuddy.api.tests
@@ -24,6 +25,13 @@ namespace justinobney.gymbuddy.api.tests
             registry.IncludeRegistry<GenericCrudRegistry>();
             registry.IncludeRegistry<FakeNotificationRegistry>();
             registry.IncludeRegistry<FakeEntityFrameworkRegistry>();
+
+            var log = new LoggerConfiguration()
+                .WriteTo.ColoredConsole()
+                .CreateLogger();
+
+
+            registry.For<ILogger>().Use(log);
 
             _container = new Container(registry);
             _container.AssertConfigurationIsValid();

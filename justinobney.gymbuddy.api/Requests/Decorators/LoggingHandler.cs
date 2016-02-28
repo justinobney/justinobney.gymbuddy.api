@@ -1,6 +1,10 @@
 using System;
 using System.Diagnostics;
+using justinobney.gymbuddy.api.Helpers;
 using MediatR;
+using Newtonsoft.Json;
+using Serilog;
+using Serilog.Events;
 
 namespace justinobney.gymbuddy.api.Requests.Decorators
 {
@@ -11,18 +15,20 @@ namespace justinobney.gymbuddy.api.Requests.Decorators
     public class LoggingHandler<TRequest, TResponse> : IRequestHandler<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
+        private readonly ILogger _log;
         private readonly IRequestHandler<TRequest, TResponse> _inner;
 
-        public LoggingHandler(IRequestHandler<TRequest, TResponse> inner)
+        public LoggingHandler(ILogger log, IRequestHandler<TRequest, TResponse> inner)
         {
+            _log = log;
             _inner = inner;
         }
 
         public TResponse Handle(TRequest message)
         {
-            Debug.WriteLine("Request: {0}", message);
+            _log.Information($"TRequest: {message.GetType().GetPrettyName()} - {JsonConvert.SerializeObject(message)}");
             var response = _inner.Handle(message);
-            Debug.WriteLine("Response: {0}", response);
+            _log.Information($"TResponse: {response.GetType().GetPrettyName()}");
 
             return response;
         }
