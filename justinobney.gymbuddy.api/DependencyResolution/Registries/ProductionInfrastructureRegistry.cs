@@ -37,7 +37,7 @@ namespace justinobney.gymbuddy.api.DependencyResolution.Registries
             else
             {
                 logConfig
-                    .WriteTo.Exceptionless();
+                    .WriteTo.Loggly();
             }
 
             var log = logConfig.CreateLogger();
