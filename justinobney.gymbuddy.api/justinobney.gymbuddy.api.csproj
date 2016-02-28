@@ -75,7 +75,7 @@
     </Reference>
     <Reference Include="Exceptionless.Portable, Version=3.3.1590.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Bin\Exceptionless.Portable.dll</HintPath>
+      <HintPath>..\vsonline_deps_fix\Exceptionless.Portable.dll</HintPath>
     </Reference>
     <Reference Include="Exceptionless.WebApi, Version=3.3.1590.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Exceptionless.WebApi.3.3.1590\lib\net45\Exceptionless.WebApi.dll</HintPath>
