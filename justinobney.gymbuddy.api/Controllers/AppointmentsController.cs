@@ -8,6 +8,7 @@ using justinobney.gymbuddy.api.Requests.Appointments;
 using justinobney.gymbuddy.api.Requests.Appointments.AddAppointmentGuest;
 using justinobney.gymbuddy.api.Requests.Appointments.Confirm;
 using justinobney.gymbuddy.api.Requests.Appointments.Create;
+using justinobney.gymbuddy.api.Requests.Appointments.Delete;
 using justinobney.gymbuddy.api.Requests.Appointments.RemoveAppointmentGuest;
 using justinobney.gymbuddy.api.Requests.Generic;
 using justinobney.gymbuddy.api.Responses;
@@ -84,6 +85,23 @@ namespace justinobney.gymbuddy.api.Controllers
             var appointment =  _mediator.Send(command);
             var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
             return CreatedAtRoute("DefaultApi", new { id = listing.Id }, listing);
+        }
+
+        // DELETE: api/Appointments/5
+        [ResponseType(typeof(AppointmentListing))]
+        public IHttpActionResult DeleteAppointment(long id)
+        {
+            var request = new DeleteAppointmentCommand {Id = id};
+
+            var appointment = _mediator.Send(request);
+            var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
+
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(listing);
         }
 
         [Route("api/Appointments/{id}/Add-Guest/{timeSlotId}")]
