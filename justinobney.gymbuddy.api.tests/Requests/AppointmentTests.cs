@@ -30,8 +30,8 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 Id = 1,
                 Gender = Gender.Male,
                 FilterGender = GenderFilter.Both,
-                FitnessLevel = FitnessLevel.Brotege,
-                FilterFitnessLevel = FitnessLevel.Tadpole,
+                FitnessLevel = FitnessLevel.Intermediate,
+                FilterFitnessLevel = FitnessLevel.Beginner,
                 Gyms = new List<Gym> { DefaultGym }
             };
             Context.GetSet<User>().Attach(CurrentUser);

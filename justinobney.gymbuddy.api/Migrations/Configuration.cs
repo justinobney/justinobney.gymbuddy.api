@@ -33,31 +33,31 @@ namespace justinobney.gymbuddy.api.Migrations
                     new User
                     {
                         Devices = GetDeviceList(),
-                        Name = "Tadpole User",
-                        FitnessLevel = FitnessLevel.Tadpole,
+                        Name = "Beginner User",
+                        FitnessLevel = FitnessLevel.Beginner,
                         Gender = Gender.Male,
                         FilterGender = GenderFilter.Both,
-                        FilterFitnessLevel = FitnessLevel.Tadpole,
+                        FilterFitnessLevel = FitnessLevel.Beginner,
                         Gyms = new List<Gym> { gym }
                     },
                     new User
                     {
                         Devices = GetDeviceList(),
                         Name = "Broette User",
-                        FitnessLevel = FitnessLevel.Brotege,
+                        FitnessLevel = FitnessLevel.Intermediate,
                         Gender = Gender.Female,
                         FilterGender = GenderFilter.Both,
-                        FilterFitnessLevel = FitnessLevel.Tadpole,
+                        FilterFitnessLevel = FitnessLevel.Beginner,
                         Gyms = new List<Gym> { gym }
                     },
                     new User
                     {
                         Devices = GetDeviceList(),
                         Name = "Ladies Only Lady",
-                        FitnessLevel = FitnessLevel.Tadpole,
+                        FitnessLevel = FitnessLevel.Beginner,
                         Gender = Gender.Female,
                         FilterGender = GenderFilter.Female,
-                        FilterFitnessLevel = FitnessLevel.Brotege,
+                        FilterFitnessLevel = FitnessLevel.Intermediate,
                         Gyms = new List<Gym> { gym }
                     }
                 );
