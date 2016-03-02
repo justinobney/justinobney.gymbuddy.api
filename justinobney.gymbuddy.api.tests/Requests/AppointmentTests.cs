@@ -128,7 +128,14 @@ namespace justinobney.gymbuddy.api.tests.Requests
         public void ConfirmAppointmentCommand_UpdatesAppointment()
         {
             var timeslot = new AppointmentTimeSlot {Id = 1, AppointmentId = 1, Time = DateTime.Now};
-            var apptGuest = new AppointmentGuest {AppointmentId = 1, AppointmentTimeSlotId = 1, UserId = 2};
+            var apptGuest = new AppointmentGuest
+            {
+                AppointmentId = 1,
+                AppointmentTimeSlotId = 1,
+                UserId = 2,
+                TimeSlot = timeslot,
+                Status = AppointmentGuestStatus.Confirmed
+            };
             var appt = new Appointment
             {
                 Id = 1,
@@ -143,8 +150,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
 
             var result = Mediator.Send(new ConfirmAppointmentCommand
             {
-                AppointmentId = appt.Id,
-                AppointmentGuestIds = new List<long> {apptGuest.Id}
+                AppointmentId = appt.Id
             });
 
             result.ConfirmedTime.ShouldBe(timeslot.Time);

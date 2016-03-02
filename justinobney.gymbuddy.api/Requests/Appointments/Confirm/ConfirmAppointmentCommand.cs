@@ -10,7 +10,6 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
     public class ConfirmAppointmentCommand : IRequest<Appointment>
     {
         public long AppointmentId { get; set; }
-        public List<long> AppointmentGuestIds { get; set; } = new List<long>();
     }
 
     public class ConfirmAppointmentCommandHandler : IRequestHandler<ConfirmAppointmentCommand, Appointment>
@@ -29,16 +28,14 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
                 .Include(x => x.TimeSlots)
                 .Include(x => x.User)
                 .First(x => x.Id == message.AppointmentId);
-
+            
             var approvedGuests = appt.GuestList
-                .Where(guest => message.AppointmentGuestIds.Any(id => id == guest.Id))
+                .Where(guest => guest.Status == AppointmentGuestStatus.Confirmed)
                 .ToList();
 
-            var timeslot = appt.TimeSlots.First(x => x.Id == approvedGuests.First().AppointmentTimeSlotId);
+            var earlistApprovedTime = approvedGuests.Min(x => x.TimeSlot.Time);
 
-            approvedGuests.ForEach(guest => guest.Status = AppointmentGuestStatus.Confirmed);
-
-            appt.ConfirmedTime = timeslot.Time;
+            appt.ConfirmedTime = earlistApprovedTime;
             appt.Status = AppointmentStatus.Confirmed;
 
             return appt;

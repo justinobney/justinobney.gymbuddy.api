@@ -210,7 +210,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
             Context.Register<IPostRequestHandler<ConfirmAppointmentCommand, Appointment>, ConfirmAppointmentPushNotifier>();
             var handler = Context.GetInstance<IPostRequestHandler<ConfirmAppointmentCommand, Appointment>>();
 
-            var request = new ConfirmAppointmentCommand { AppointmentId = 1, AppointmentGuestIds = new List<long> {2} };
+            var request = new ConfirmAppointmentCommand { AppointmentId = 1 };
             var response = new Appointment { UserId = 1, User = new User { Name = "Justin" } };
             var iosCalled = false;
 
@@ -225,7 +225,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
 
                     restRequest.Resource.ShouldBe("/push");
                     restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
-                    pushNotification.Notification.Title.ShouldBe("Workout Session Confirmed");
+                    pushNotification.Notification.Title.ShouldBe("Workout Session Locked");
                     if (pushNotification.Tokens.Any(t => t == "123456"))
                     {
                         iosCalled = true;
