@@ -160,6 +160,40 @@ namespace justinobney.gymbuddy.api.tests.Requests
         }
 
         [Test]
+        public void ConfirmAppointmentGuestCommand_UpdatesAppointment()
+        {
+            var timeslot = new AppointmentTimeSlot { Id = 1, AppointmentId = 1, Time = DateTime.Now };
+            var apptGuest = new AppointmentGuest
+            {
+                Id = 1,
+                AppointmentId = 1,
+                AppointmentTimeSlotId = 1,
+                UserId = 2,
+                TimeSlot = timeslot,
+                Status = AppointmentGuestStatus.Confirmed
+            };
+            var appt = new Appointment
+            {
+                Id = 1,
+                UserId = 1,
+                GuestList = new List<AppointmentGuest> { apptGuest },
+                TimeSlots = new List<AppointmentTimeSlot> { timeslot }
+            };
+            var appointments = Context.GetSet<Appointment>();
+            var appointmentGuests = Context.GetSet<AppointmentGuest>();
+            appointments.Attach(appt);
+            appointmentGuests.Attach(apptGuest);
+
+            var result = Mediator.Send(new ConfirmAppointmentGuestCommand
+            {
+                AppointmentId = 1,
+                AppointmentGuestId = 1
+            });
+
+            result.Status.ShouldBe(AppointmentGuestStatus.Confirmed);
+        }
+
+        [Test]
         public void ConfirmAppointmentCommand_ThrowsValidationOnInvalidParams()
         {
             Action execute = () => Mediator.Send(new ConfirmAppointmentCommand());
@@ -323,4 +357,5 @@ namespace justinobney.gymbuddy.api.tests.Requests
             appts.Count().ShouldBe(0);
         }
     }
+
 }
