@@ -33,7 +33,8 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 FilterGender = GenderFilter.Both,
                 FitnessLevel = FitnessLevel.Intermediate,
                 FilterFitnessLevel = FitnessLevel.Beginner,
-                Gyms = new List<Gym> { DefaultGym }
+                Gyms = new List<Gym> { DefaultGym },
+                Name = "User"
             };
             Context.GetSet<User>().Attach(CurrentUser);
             Context.GetSet<Gym>().Attach(DefaultGym);
@@ -306,10 +307,19 @@ namespace justinobney.gymbuddy.api.tests.Requests
         public void DeleteAppointmentCommand_RemovesAppointment()
         {
             var appts = Context.GetSet<Appointment>();
-            appts.Add(new Appointment {Id = 1});
+            appts.Add(new Appointment
+            {
+                Id = 1,
+                User = CurrentUser,
+                GuestList = new List<AppointmentGuest> {new AppointmentGuest {User = new User {Id = 1}}}
+            });
 
-            Mediator.Send(new DeleteAppointmentCommand {Id = 1});
+            var request = new DeleteAppointmentCommand {Id = 1};
+            Mediator.Send(request);
 
+            request.NotificaitonTitle.ShouldBe("Workout Session Canceled");
+            request.NotificaitonAlert.ShouldBe("User canceled");
+            request.Guests.Count().ShouldBe(1);
             appts.Count().ShouldBe(0);
         }
     }
