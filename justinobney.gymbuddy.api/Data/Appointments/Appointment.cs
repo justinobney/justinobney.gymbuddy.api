@@ -23,6 +23,6 @@ namespace justinobney.gymbuddy.api.Data.Appointments
 
         public DateTime? CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
-        public User User { get; set; } = new User();
+        public User User { get; set; }
     }
 }

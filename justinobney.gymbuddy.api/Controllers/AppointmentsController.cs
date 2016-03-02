@@ -145,8 +145,9 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(listing);
         }
 
-        [Route("api/Appointments/{appointmentId}/ConfirmGuest{appointmentGuestId}")]
-        [ResponseType(typeof(AppointmentListing))]
+        [HttpPut]
+        [Route("api/Appointments/{appointmentId}/Confirm-Guest/{appointmentGuestId}")]
+        [ResponseType(typeof(AppointmentGuest))]
         public IHttpActionResult ConfirmAppointmentGuest(long appointmentId, long appointmentGuestId)
         {
             var command = new ConfirmAppointmentGuestCommand
