@@ -10,6 +10,7 @@ using justinobney.gymbuddy.api.Requests.Appointments;
 using justinobney.gymbuddy.api.Requests.Appointments.AddAppointmentGuest;
 using justinobney.gymbuddy.api.Requests.Appointments.Confirm;
 using justinobney.gymbuddy.api.Requests.Appointments.Create;
+using justinobney.gymbuddy.api.Requests.Appointments.Delete;
 using justinobney.gymbuddy.api.tests.Helpers;
 using NUnit.Framework;
 
@@ -293,6 +294,17 @@ namespace justinobney.gymbuddy.api.tests.Requests
             });
 
             appts.Count().ShouldBe(1);
+        }
+
+        [Test]
+        public void DeleteAppointmentCommand_RemovesAppointment()
+        {
+            var appts = Context.GetSet<Appointment>();
+            appts.Add(new Appointment {Id = 1});
+
+            Mediator.Send(new DeleteAppointmentCommand {Id = 1});
+
+            appts.Count().ShouldBe(0);
         }
     }
 }

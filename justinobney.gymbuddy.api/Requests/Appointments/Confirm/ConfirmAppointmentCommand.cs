@@ -27,6 +27,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
             var appt = _appointments
                 .Include(x => x.GuestList)
                 .Include(x => x.TimeSlots)
+                .Include(x => x.User)
                 .First(x => x.Id == message.AppointmentId);
 
             var approvedGuests = appt.GuestList
