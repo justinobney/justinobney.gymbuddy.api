@@ -287,7 +287,6 @@
     <Compile Include="DependencyResolution\Registries\EntityFrameworkRegistry.cs" />
     <Compile Include="DependencyResolution\Registries\GenericCrudRegistry.cs" />
     <Compile Include="DependencyResolution\IoC.cs" />
-    <Compile Include="DependencyResolution\Registries\NotificationRegistry.cs" />
     <Compile Include="DependencyResolution\Registries\ProductionInfrastructureRegistry.cs" />
     <Compile Include="DependencyResolution\StructureMapDependencyScope.cs" />
     <Compile Include="DependencyResolution\StructureMapScopeModule.cs" />

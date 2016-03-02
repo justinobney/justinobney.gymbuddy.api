@@ -1,5 +1,7 @@
 using System.Web.Configuration;
 using justinobney.gymbuddy.api.Interfaces;
+using justinobney.gymbuddy.api.Requests.Decorators;
+using MediatR;
 using RestSharp;
 using Serilog;
 using StructureMap;
@@ -17,11 +19,23 @@ namespace justinobney.gymbuddy.api.DependencyResolution.Registries
             {
                 scan.TheCallingAssembly();
                 scan.AssemblyContainingType(typeof(IEntity));
+                scan.AssemblyContainingType(typeof(IPostRequestHandler<,>));
+                if (!compilationSection.Debug)
+                {
+                    ConfigureNotifications(scan);
+                }
             });
 
             For<IRestClient>().Use(context => new RestClient());
 
             ConfigureLogger(compilationSection.Debug);
+        }
+
+        private void ConfigureNotifications(IAssemblyScanner scan)
+        {
+            scan.AddAllTypesOf(typeof(IPostRequestHandler<,>));
+            var handlerType = For(typeof(IRequestHandler<,>));
+            handlerType.DecorateAllWith(typeof(PostRequestHandler<,>));
         }
 
         private void ConfigureLogger(bool isDebugEnabled)
