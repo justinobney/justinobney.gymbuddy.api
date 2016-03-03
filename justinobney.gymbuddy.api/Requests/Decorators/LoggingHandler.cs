@@ -1,10 +1,8 @@
 using System;
-using System.Diagnostics;
 using justinobney.gymbuddy.api.Helpers;
 using MediatR;
 using Newtonsoft.Json;
 using Serilog;
-using Serilog.Events;
 
 namespace justinobney.gymbuddy.api.Requests.Decorators
 {
@@ -26,12 +24,15 @@ namespace justinobney.gymbuddy.api.Requests.Decorators
 
         public TResponse Handle(TRequest message)
         {
-            _log.Information($"TRequest: {message.GetType().GetPrettyName()}");
-            if (!message.GetType().ContainsGenericParameters)
+            var type = message.GetType();
+            _log.Information($"TRequest: {type.GetPrettyName()}");
+            if (type.GenericTypeArguments.Length == 0)
             {
-                _log.Information($"JSON {JsonConvert.SerializeObject(message)}");
+                _log.Information($"JSON {type.GetPrettyName()}: {JsonConvert.SerializeObject(message)}");
             }
+
             var response = _inner.Handle(message);
+
             _log.Information($"TResponse: {response.GetType().GetPrettyName()}");
 
             return response;

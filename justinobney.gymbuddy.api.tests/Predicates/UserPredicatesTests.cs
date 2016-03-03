@@ -42,20 +42,20 @@ namespace justinobney.gymbuddy.api.tests.Predicates
         public void RestrictMemberByFitnessLevel_ProperlyRestrictsWeaklings()
         {
             var users = Context.GetSet<User>();
-            users.Attach(new User { FitnessLevel = FitnessLevel.Tadpole, FilterFitnessLevel = FitnessLevel.Tadpole});
-            users.Attach(new User { FitnessLevel = FitnessLevel.Tadpole, FilterFitnessLevel = FitnessLevel.Brotege});
-            users.Attach(new User { FitnessLevel = FitnessLevel.Tadpole, FilterFitnessLevel = FitnessLevel.FreakBeast});
-            users.Attach(new User { FitnessLevel = FitnessLevel.Brotege, FilterFitnessLevel = FitnessLevel.Tadpole });
-            users.Attach(new User { FitnessLevel = FitnessLevel.Brotege, FilterFitnessLevel = FitnessLevel.Brotege });
-            users.Attach(new User { FitnessLevel = FitnessLevel.Brotege, FilterFitnessLevel = FitnessLevel.FreakBeast });
-            users.Attach(new User { FitnessLevel = FitnessLevel.FreakBeast, FilterFitnessLevel = FitnessLevel.Tadpole });
-            users.Attach(new User { FitnessLevel = FitnessLevel.FreakBeast, FilterFitnessLevel = FitnessLevel.Brotege });
-            users.Attach(new User { FitnessLevel = FitnessLevel.FreakBeast, FilterFitnessLevel = FitnessLevel.FreakBeast });
+            users.Attach(new User { FitnessLevel = FitnessLevel.Beginner, FilterFitnessLevel = FitnessLevel.Beginner});
+            users.Attach(new User { FitnessLevel = FitnessLevel.Beginner, FilterFitnessLevel = FitnessLevel.Intermediate});
+            users.Attach(new User { FitnessLevel = FitnessLevel.Beginner, FilterFitnessLevel = FitnessLevel.Advanced});
+            users.Attach(new User { FitnessLevel = FitnessLevel.Intermediate, FilterFitnessLevel = FitnessLevel.Beginner });
+            users.Attach(new User { FitnessLevel = FitnessLevel.Intermediate, FilterFitnessLevel = FitnessLevel.Intermediate });
+            users.Attach(new User { FitnessLevel = FitnessLevel.Intermediate, FilterFitnessLevel = FitnessLevel.Advanced });
+            users.Attach(new User { FitnessLevel = FitnessLevel.Advanced, FilterFitnessLevel = FitnessLevel.Beginner });
+            users.Attach(new User { FitnessLevel = FitnessLevel.Advanced, FilterFitnessLevel = FitnessLevel.Intermediate });
+            users.Attach(new User { FitnessLevel = FitnessLevel.Advanced, FilterFitnessLevel = FitnessLevel.Advanced });
 
-            var helpMeAnyone = new User { FitnessLevel = FitnessLevel.Tadpole, FilterFitnessLevel = FitnessLevel.Tadpole };
-            var helpMeStrongPeople = new User { FitnessLevel = FitnessLevel.Tadpole, FilterFitnessLevel = FitnessLevel.FreakBeast };
-            var strongPeopleOnly = new User { FitnessLevel = FitnessLevel.FreakBeast, FilterFitnessLevel = FitnessLevel.FreakBeast };
-            var noNoobs = new User { FitnessLevel = FitnessLevel.Brotege, FilterFitnessLevel = FitnessLevel.Brotege };
+            var helpMeAnyone = new User { FitnessLevel = FitnessLevel.Beginner, FilterFitnessLevel = FitnessLevel.Beginner };
+            var helpMeStrongPeople = new User { FitnessLevel = FitnessLevel.Beginner, FilterFitnessLevel = FitnessLevel.Advanced };
+            var strongPeopleOnly = new User { FitnessLevel = FitnessLevel.Advanced, FilterFitnessLevel = FitnessLevel.Advanced };
+            var noNoobs = new User { FitnessLevel = FitnessLevel.Intermediate, FilterFitnessLevel = FitnessLevel.Intermediate };
 
 
             users.Count(UserPredicates.RestrictMemberByFitnessLevel(helpMeAnyone)).ShouldBe(3);

@@ -144,5 +144,20 @@ namespace justinobney.gymbuddy.api.Controllers
             var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
             return Ok(listing);
         }
+
+        [HttpPut]
+        [Route("api/Appointments/{appointmentId}/Confirm-Guest/{appointmentGuestId}")]
+        [ResponseType(typeof(AppointmentGuest))]
+        public IHttpActionResult ConfirmAppointmentGuest(long appointmentId, long appointmentGuestId)
+        {
+            var command = new ConfirmAppointmentGuestCommand
+            {
+              AppointmentId  = appointmentId,
+              AppointmentGuestId = appointmentGuestId
+            };
+
+            var guest = _mediator.Send(command);
+            return Ok(guest);
+        }
     }
 }

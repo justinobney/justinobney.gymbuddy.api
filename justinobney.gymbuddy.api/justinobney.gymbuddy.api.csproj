@@ -287,7 +287,6 @@
     <Compile Include="DependencyResolution\Registries\EntityFrameworkRegistry.cs" />
     <Compile Include="DependencyResolution\Registries\GenericCrudRegistry.cs" />
     <Compile Include="DependencyResolution\IoC.cs" />
-    <Compile Include="DependencyResolution\Registries\NotificationRegistry.cs" />
     <Compile Include="DependencyResolution\Registries\ProductionInfrastructureRegistry.cs" />
     <Compile Include="DependencyResolution\StructureMapDependencyScope.cs" />
     <Compile Include="DependencyResolution\StructureMapScopeModule.cs" />
@@ -341,12 +340,16 @@
     <Compile Include="Requests\Appointments\AddAppointmentGuest\AddAppointmentGuestPushNotifier.cs" />
     <Compile Include="Requests\Appointments\Confirm\ConfirmAppointmentCommand.cs" />
     <Compile Include="Requests\Appointments\Confirm\ConfirmAppointmentCommandValidator.cs" />
+    <Compile Include="Requests\Appointments\Confirm\ConfirmAppointmentGuestCommand.cs" />
+    <Compile Include="Requests\Appointments\Confirm\ConfirmAppointmentGuestCommandValidator.cs" />
+    <Compile Include="Requests\Appointments\Confirm\ConfirmAppointmentGuestPushNotifier.cs" />
     <Compile Include="Requests\Appointments\Confirm\ConfirmAppointmentPushNotifier.cs" />
     <Compile Include="Requests\Appointments\Create\CreateAppointmentCommand.cs" />
     <Compile Include="Requests\Appointments\Create\CreateAppointmentCommandMapper.cs" />
     <Compile Include="Requests\Appointments\Create\CreateAppointmentCommandValidator.cs" />
     <Compile Include="Requests\Appointments\Create\CreateAppointmentPushNotifier.cs" />
     <Compile Include="Requests\Appointments\Delete\DeleteAppointmentCommand.cs" />
+    <Compile Include="Requests\Appointments\Delete\DeleteAppointmentPushNotifier.cs" />
     <Compile Include="Requests\Appointments\GetAvailableAppointmentsForUserQuery.cs" />
     <Compile Include="Requests\Appointments\GetScheduledAppointmentsForUserQuery.cs" />
     <Compile Include="Requests\Appointments\RemoveAppointmentGuest\RemoveAppointmentGuestCommand.cs" />
