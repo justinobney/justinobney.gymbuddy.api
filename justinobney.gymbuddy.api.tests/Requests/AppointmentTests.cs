@@ -288,7 +288,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
         }
 
         [Test]
-        public void GetScheduledAppointmentsForUserQuery_HandlesStatus()
+        public void GetScheduledAppointmentsForUserQuery_HandlesPendingStatus()
         {
             Context.GetSet<Appointment>().Attach(new Appointment
             {
