@@ -1,6 +1,7 @@
 using System;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Requests.Decorators;
@@ -35,18 +36,8 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
                         appt.GuestList.Any(
                             guest =>
                                 guest.UserId == message.UserId
-                                &&
-                                (
-                                    (
-                                        appt.Status == AppointmentStatus.Confirmed &&
-                                        guest.Status == AppointmentGuestStatus.Confirmed
-                                    )
-                                    ||
-                                    (
-                                        appt.Status == AppointmentStatus.PendingGuestConfirmation &&
-                                        guest.Status == AppointmentGuestStatus.Pending
-                                    )
-                                )
+                                && ((appt.Status == AppointmentStatus.Confirmed && guest.Status == AppointmentGuestStatus.Confirmed)
+                                    || appt.Status == AppointmentStatus.PendingGuestConfirmation)
                             )
                         )
                 );
