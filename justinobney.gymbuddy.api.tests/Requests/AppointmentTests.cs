@@ -208,6 +208,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 Id = 1,
                 GymId = DefaultGym.Id,
                 UserId = CurrentUser.Id,
+                User = CurrentUser,
                 TimeSlots = new List<AppointmentTimeSlot> {new AppointmentTimeSlot {Time = DateTime.Now.AddDays(1)}}
             });
 
@@ -215,7 +216,17 @@ namespace justinobney.gymbuddy.api.tests.Requests
             {
                 Id = 1,
                 GymId = DefaultGym.Id,
+                UserId = 2,
+                User = new User {Id = 2, FilterGender = GenderFilter.Female, Gender = Gender.Female},
+                TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.Now.AddDays(1) } }
+            });
+
+            Context.GetSet<Appointment>().Attach(new Appointment
+            {
+                Id = 1,
+                GymId = DefaultGym.Id,
                 UserId = CurrentUser.Id,
+                User = CurrentUser,
                 Status = AppointmentStatus.Confirmed,
                 TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.Now.AddDays(1) } }
             });
