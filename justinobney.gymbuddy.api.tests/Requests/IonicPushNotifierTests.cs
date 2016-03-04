@@ -95,6 +95,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                     restRequest.Resource.ShouldBe("/push");
                     restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
                     pushNotification.Notification.Title.ShouldBe("New Appointment Available");
+                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.CreateAppointment);
                     if (pushNotification.Tokens.Any(t => t == "123456"))
                     {
                         iosCalled = true;
@@ -161,6 +162,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                     restRequest.Resource.ShouldBe("/push");
                     restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
                     pushNotification.Notification.Title.ShouldBe("Appointment Guest Request");
+                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.AddAppointmentGuest);
                     if (pushNotification.Tokens.Any(t => t == "123456"))
                     {
                         iosCalled = true;
@@ -227,6 +229,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                     restRequest.Resource.ShouldBe("/push");
                     restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
                     pushNotification.Notification.Title.ShouldBe("Workout Session Locked");
+                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.ConfirmAppointment);
                     if (pushNotification.Tokens.Any(t => t == "123456"))
                     {
                         iosCalled = true;
@@ -311,6 +314,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                     restRequest.Resource.ShouldBe("/push");
                     restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
                     pushNotification.Notification.Title.ShouldBe("Workout Session Confirmed");
+                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.ConfirmAppointmentGuest);
                     if (pushNotification.Tokens.Any(t => t == "123456"))
                     {
                         iosCalled = true;
@@ -396,6 +400,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                     restRequest.Resource.ShouldBe("/push");
                     restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
                     pushNotification.Notification.Title.ShouldBe("Workout Session Canceled");
+                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.CancelAppointment);
                     if (pushNotification.Tokens.Any(t => t == "123456"))
                     {
                         iosCalled = true;

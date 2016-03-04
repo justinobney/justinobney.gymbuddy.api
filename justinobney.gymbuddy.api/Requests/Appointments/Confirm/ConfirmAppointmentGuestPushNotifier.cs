@@ -12,14 +12,12 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
     {
         private readonly IDbSet<Appointment> _appointments;
         private readonly IDbSet<AppointmentGuest> _guests;
-        private readonly IDbSet<User> _users;
         private readonly IRestClient _client;
 
-        public ConfirmAppointmentGuestPushNotifier(IDbSet<Appointment> appointments, IDbSet<AppointmentGuest> guests, IDbSet<User> users, IRestClient client)
+        public ConfirmAppointmentGuestPushNotifier(IDbSet<Appointment> appointments, IDbSet<AppointmentGuest> guests, IRestClient client)
         {
             _appointments = appointments;
             _guests = guests;
-            _users = users;
             _client = client;
         }
 
@@ -34,7 +32,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
                 .Include(x=>x.User)
                 .First(x => x.Id == request.AppointmentGuestId);
             
-            var additionalData = new AdditionalData { Type = NofiticationTypes.ConfirmAppointment };
+            var additionalData = new AdditionalData { Type = NofiticationTypes.ConfirmAppointmentGuest };
             var message = new NotificationPayload(additionalData)
             {
                 Alert = $"{appt.User.Name} confirmed.",

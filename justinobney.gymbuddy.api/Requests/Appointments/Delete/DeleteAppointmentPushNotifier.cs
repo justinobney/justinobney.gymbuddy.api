@@ -21,7 +21,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Delete
         public void Notify(DeleteAppointmentCommand request, Appointment response)
         {
             
-            var additionalData = new AdditionalData { Type = NofiticationTypes.ConfirmAppointment };
+            var additionalData = new AdditionalData { Type = NofiticationTypes.CancelAppointment };
             var message = new NotificationPayload(additionalData)
             {
                 Alert = request.NotificaitonAlert,
