@@ -14,10 +14,13 @@ namespace justinobney.gymbuddy.api.tests.Predicates
         {
             var users = Context.GetSet<User>();
             users.Attach(new User {Gender = Gender.Male, FilterGender = GenderFilter.Male});
+            users.Attach(new User { Gender = Gender.Male, FilterGender = GenderFilter.Male });
             users.Attach(new User {Gender = Gender.Male, FilterGender = GenderFilter.Female});
             users.Attach(new User {Gender = Gender.Male, FilterGender = GenderFilter.Both});
+            users.Attach(new User { Gender = Gender.Male, FilterGender = GenderFilter.Both });
 
             users.Attach(new User { Gender = Gender.Female, FilterGender = GenderFilter.Male });
+            users.Attach(new User { Gender = Gender.Female, FilterGender = GenderFilter.Female });
             users.Attach(new User { Gender = Gender.Female, FilterGender = GenderFilter.Female });
             users.Attach(new User { Gender = Gender.Female, FilterGender = GenderFilter.Both });
 
@@ -29,13 +32,13 @@ namespace justinobney.gymbuddy.api.tests.Predicates
             var manForMen = new User { Gender = Gender.Male, FilterGender = GenderFilter.Male };
             var manForAny = new User { Gender = Gender.Male, FilterGender = GenderFilter.Both };
 
-            users.Count(UserPredicates.RestrictMemberByGender(ladyForLady)).ShouldBe(2);
-            users.Count(UserPredicates.RestrictMemberByGender(ladyForMen)).ShouldBe(2);
-            users.Count(UserPredicates.RestrictMemberByGender(ladyForAny)).ShouldBe(4);
+            users.Count(UserPredicates.RestrictMemberByGender(ladyForLady)).ShouldBe(3);
+            users.Count(UserPredicates.RestrictMemberByGender(ladyForMen)).ShouldBe(3);
+            users.Count(UserPredicates.RestrictMemberByGender(ladyForAny)).ShouldBe(6);
 
             users.Count(UserPredicates.RestrictMemberByGender(manForLady)).ShouldBe(2);
-            users.Count(UserPredicates.RestrictMemberByGender(manForMen)).ShouldBe(2);
-            users.Count(UserPredicates.RestrictMemberByGender(manForAny)).ShouldBe(4);
+            users.Count(UserPredicates.RestrictMemberByGender(manForMen)).ShouldBe(4);
+            users.Count(UserPredicates.RestrictMemberByGender(manForAny)).ShouldBe(6);
         }
 
         [Test]

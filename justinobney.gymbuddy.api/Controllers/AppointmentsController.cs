@@ -157,7 +157,7 @@ namespace justinobney.gymbuddy.api.Controllers
             };
 
             var guest = _mediator.Send(command);
-            return Ok(guest);
+            return Ok(MappingConfig.Instance.Map<AppointmentGuestListing>(guest));
         }
     }
 }

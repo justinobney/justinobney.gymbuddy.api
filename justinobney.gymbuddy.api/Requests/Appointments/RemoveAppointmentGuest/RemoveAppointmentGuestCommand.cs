@@ -9,6 +9,8 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.RemoveAppointmentGuest
     public class RemoveAppointmentGuestCommand : IRequest<Appointment>
     {
         public long GuestAppointmentId { get; set; }
+        public long AppointmentId { get; set; }
+        public long UserId { get; set; }
     }
 
     [DoNotValidate]
@@ -25,13 +27,18 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.RemoveAppointmentGuest
 
         public Appointment Handle(RemoveAppointmentGuestCommand message)
         {
-            var guestAppt = _appointmentGuests.FirstOrDefault(x=> x.Id == message.GuestAppointmentId);
-            _appointmentGuests.Remove(guestAppt);
-
-
+            var guestAppt = _appointmentGuests
+                .First(x=> x.Id == message.GuestAppointmentId);
+            
             var appt = _appointments
                 .Include(x => x.GuestList)
-                .FirstOrDefault(appointment => appointment.Id == guestAppt.AppointmentId);
+                .First(appointment => appointment.Id == guestAppt.AppointmentId);
+
+            _appointmentGuests.Remove(guestAppt);
+
+            // For notifications
+            message.AppointmentId = appt.Id;
+            message.UserId = guestAppt.UserId;
 
             return appt;
         }

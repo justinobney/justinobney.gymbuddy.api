@@ -6,43 +6,43 @@ using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Notifications;
 using RestSharp;
 
-namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
+namespace justinobney.gymbuddy.api.Requests.Appointments.RemoveAppointmentGuest
 {
-    public class ConfirmAppointmentGuestPushNotifier : IPostRequestHandler<ConfirmAppointmentGuestCommand, AppointmentGuest>
+    public class RemoveAppointmentGuestPushNotifier : IPostRequestHandler<RemoveAppointmentGuestCommand, Appointment>
     {
         private readonly IDbSet<Appointment> _appointments;
-        private readonly IDbSet<AppointmentGuest> _guests;
+        private readonly IDbSet<User> _users;
         private readonly IRestClient _client;
 
-        public ConfirmAppointmentGuestPushNotifier(IDbSet<Appointment> appointments, IDbSet<AppointmentGuest> guests, IRestClient client)
+        public RemoveAppointmentGuestPushNotifier(IDbSet<Appointment> appointments, IDbSet<User> users, IRestClient client)
         {
             _appointments = appointments;
-            _guests = guests;
+            _users = users;
             _client = client;
         }
 
-        public void Notify(ConfirmAppointmentGuestCommand request, AppointmentGuest response)
+        public void Notify(RemoveAppointmentGuestCommand request, Appointment response)
         {
             var appt = _appointments
-                .Include(x => x.User)
-                .Include(x => x.GuestList)
                 .First(x => x.Id == request.AppointmentId);
 
-            var guest = _guests
-                .Include(x=>x.User)
-                .First(x => x.Id == request.AppointmentGuestId);
-            
-            var additionalData = new AdditionalData { Type = NofiticationTypes.ConfirmAppointmentGuest };
+            var apptOwner = _users
+                .Include(x => x.Devices)
+                .First(x => x.Id == appt.UserId);
+
+            var guest = _users.First(x => x.Id == request.UserId);
+
+            var additionalData = new AdditionalData { Type = NofiticationTypes.RemoveAppointmentGuest };
             var message = new NotificationPayload(additionalData)
             {
-                Alert = $"{appt.User.Name} confirmed.",
-                Title = "Workout Session Confirmed"
+                Alert = $"{guest.Name} left your plans",
+                Title = "Appointment Guest Left :("
             };
 
             var iosNotification = new IonicPushNotification(message)
             {
                 Production = true,
-                Tokens = guest.User.Devices
+                Tokens = apptOwner.Devices
                     .Where(y => y.Platform == "iOS" && !string.IsNullOrEmpty(y.PushToken))
                     .Select(y => y.PushToken)
                     .ToList()
@@ -50,7 +50,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
 
             var androidNotification = new IonicPushNotification(message)
             {
-                Tokens = guest.User.Devices
+                Tokens = apptOwner.Devices
                     .Where(y => y.Platform == "Android" && !string.IsNullOrEmpty(y.PushToken))
                     .Select(y => y.PushToken)
                     .ToList()
