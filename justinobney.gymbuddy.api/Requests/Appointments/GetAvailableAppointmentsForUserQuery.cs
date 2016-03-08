@@ -32,7 +32,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
         public IQueryable<Appointment> Handle(GetAvailableAppointmentsForUserQuery message)
         {
             var user = _users.First(x => x.Id == message.UserId);
-            var minTime = DateTime.UtcNow.AddMinutes(30);
+            var minTime = DateTime.UtcNow.AddMinutes(-30);
 
             Expression<Func<Appointment, bool>> predicate = appt =>
                 message.GymIds.Contains(appt.GymId.Value)

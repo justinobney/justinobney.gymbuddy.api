@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Exceptionless.Json;
 using justinobney.gymbuddy.api.Helpers;
 using justinobney.gymbuddy.api.Interfaces;
 using MediatR;
@@ -35,6 +36,7 @@ namespace justinobney.gymbuddy.api.Requests.Decorators
                 try
                 {
                     _log.Information($"Notifying TRequest: {message.GetType().GetPrettyName()} ::: {notifier.GetType().GetPrettyName()}");
+                    _log.Information($"Notifying {message.GetType().GetPrettyName()} ::: {JsonConvert.SerializeObject(message)}");
                     notifier.Notify(message, response);
                 }
                 catch (Exception exception)
