@@ -1,7 +1,6 @@
 using System;
 using System.Data.Entity;
 using System.Linq;
-using System.Linq.Expressions;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Requests.Decorators;
@@ -27,9 +26,10 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
 
         public IQueryable<Appointment> Handle(GetScheduledAppointmentsForUserQuery message)
         {
+            var minTime = DateTime.UtcNow.AddMinutes(-30);
             return _appointments.Where(
                 appt =>
-                    appt.TimeSlots.Any(ts => ts.Time > DateTime.UtcNow)
+                appt.TimeSlots.Any(ts => ts.Time > minTime)
                     && (
                         appt.UserId == message.UserId
                         ||
