@@ -152,7 +152,7 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
                 GuestList = new List<AppointmentGuest>(),
                 UserId = CurrentUser.Id,
                 Status = AppointmentStatus.Confirmed,
-                TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.Now.AddDays(1) } }
+                TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.UtcNow.AddMinutes(-29) } }
             });
 
             Context.GetSet<Appointment>().Attach(new Appointment
@@ -161,7 +161,7 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
                 GymId = 2,
                 GuestList = new List<AppointmentGuest>(),
                 UserId = 2,
-                TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.Now.AddDays(1) } }
+                TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.UtcNow.AddMinutes(-29) } }
             });
 
             Context.GetSet<Appointment>().Attach(new Appointment
@@ -170,10 +170,10 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
                 GymId = DefaultGym.Id,
                 GuestList = new List<AppointmentGuest>(),
                 UserId = 2,
-                TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.Now.AddDays(1) } }
+                TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.UtcNow.AddMinutes(-29) } }
             });
 
-            var timeslot = new AppointmentTimeSlot { Id = 1, Time = DateTime.Now.AddDays(1) };
+            var timeslot = new AppointmentTimeSlot { Id = 1, Time = DateTime.UtcNow.AddMinutes(-29) };
             Context.GetSet<Appointment>().Attach(new Appointment
             {
                 Id = 4,
