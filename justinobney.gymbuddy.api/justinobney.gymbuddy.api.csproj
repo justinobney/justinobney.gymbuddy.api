@@ -330,6 +330,10 @@
     <Compile Include="Migrations\201602251319243_Device_AddPlatform.Designer.cs">
       <DependentUpon>201602251319243_Device_AddPlatform.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201603141246018_Appointment_AddGym.cs" />
+    <Compile Include="Migrations\201603141246018_Appointment_AddGym.Designer.cs">
+      <DependentUpon>201603141246018_Appointment_AddGym.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
     <Compile Include="Notifications\NofiticationTypes.cs" />
@@ -393,6 +397,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602251319243_Device_AddPlatform.resx">
       <DependentUpon>201602251319243_Device_AddPlatform.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603141246018_Appointment_AddGym.resx">
+      <DependentUpon>201603141246018_Appointment_AddGym.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>

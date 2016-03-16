@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
@@ -24,5 +25,6 @@ namespace justinobney.gymbuddy.api.Data.Appointments
         public DateTime? CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
         public User User { get; set; }
+        public Gym Gym { get; set; }
     }
 }

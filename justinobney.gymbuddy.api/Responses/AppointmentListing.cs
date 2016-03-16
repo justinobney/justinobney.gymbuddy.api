@@ -13,6 +13,7 @@ namespace justinobney.gymbuddy.api.Responses
         public long UserId { get; set; }
         public string UserName { get; set; }
         public long? GymId { get; set; }
+        public string GymName { get; set; }
         public string Location { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
@@ -29,7 +30,8 @@ namespace justinobney.gymbuddy.api.Responses
         {
             cfg.CreateMap<Appointment, AppointmentListing>()
                 .ForMember(dest => dest.Status, opts => opts.MapFrom(src => src.Status.ToString()))
-                .ForMember(dest=>dest.UserName, opts => opts.MapFrom(src=>src.User.Name));
+                .ForMember(dest => dest.UserName, opts => opts.MapFrom(src => src.User.Name))
+                .ForMember(dest => dest.GymName, opts => opts.MapFrom(src => src.Gym.Name));
         }
     }
 }
