@@ -23,4 +23,14 @@ namespace justinobney.gymbuddy.api.Data.Appointments
                 .WillCascadeOnDelete(false);
         }
     }
+
+    public class AppointmentCommentConfiguration : EntityTypeConfiguration<AppointmentComment>
+    {
+        public AppointmentCommentConfiguration()
+        {
+            HasRequired(appt => appt.User)
+                .WithMany()
+                .WillCascadeOnDelete(false);
+        }
+    }
 }

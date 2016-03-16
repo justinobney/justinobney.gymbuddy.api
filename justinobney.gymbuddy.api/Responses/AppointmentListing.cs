@@ -22,6 +22,7 @@ namespace justinobney.gymbuddy.api.Responses
 
         public List<AppointmentGuestListing> GuestList { get; set; }
         public List<AppointmentTimeSlot> TimeSlots { get; set; }
+        public List<AppointmentListingComment> Comments { get; set; }
     }
 
     public class AppointmentListingMapper : IAutoMapperConfiguration

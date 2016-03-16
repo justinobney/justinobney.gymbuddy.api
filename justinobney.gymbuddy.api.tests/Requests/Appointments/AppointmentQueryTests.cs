@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper.QueryableExtensions;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Requests.Appointments;
+using justinobney.gymbuddy.api.Responses;
 using justinobney.gymbuddy.api.tests.Helpers;
 using NUnit.Framework;
 
@@ -99,8 +101,11 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
             {
                 Id = 1,
                 GymId = DefaultGym.Id,
+                Gym = DefaultGym,
                 GuestList = new List<AppointmentGuest>(),
                 UserId = CurrentUser.Id,
+                User = CurrentUser,
+                Comments = new List<AppointmentComment>(),
                 Status = AppointmentStatus.PendingGuestConfirmation,
                 TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.Now.AddDays(1) } }
             });
@@ -109,8 +114,12 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
             {
                 Id = 2,
                 GymId = 2,
+                Gym = DefaultGym,
                 GuestList = new List<AppointmentGuest>(),
                 UserId = 2,
+                User = new User(),
+                Comments = new List<AppointmentComment>(),
+                Status = AppointmentStatus.PendingGuestConfirmation,
                 TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.Now.AddDays(1) } }
             });
 
@@ -118,8 +127,12 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
             {
                 Id = 3,
                 GymId = DefaultGym.Id,
+                Gym = DefaultGym,
                 GuestList = new List<AppointmentGuest>(),
                 UserId = 2,
+                User = new User(),
+                Comments = new List<AppointmentComment>(),
+                Status = AppointmentStatus.PendingGuestConfirmation,
                 TimeSlots = new List<AppointmentTimeSlot> { new AppointmentTimeSlot { Time = DateTime.Now.AddDays(1) } }
             });
 
@@ -128,10 +141,25 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
             {
                 Id = 4,
                 GymId = DefaultGym.Id,
+                Gym = DefaultGym,
                 UserId = 2,
-                TimeSlots = new List<AppointmentTimeSlot> { timeslot },
+                User = new User(),
+                Comments = new List<AppointmentComment>(),
+                TimeSlots = new List<AppointmentTimeSlot> {timeslot},
                 Status = AppointmentStatus.PendingGuestConfirmation,
-                GuestList = new List<AppointmentGuest> { new AppointmentGuest { UserId = CurrentUser.Id, AppointmentTimeSlotId = timeslot.Id, AppointmentId = 4, Status = AppointmentGuestStatus.Pending } }
+                GuestList =
+                    new List<AppointmentGuest>
+                    {
+                        new AppointmentGuest
+                        {
+                            UserId = CurrentUser.Id,
+                            User = CurrentUser,
+                            AppointmentTimeSlotId = timeslot.Id,
+                            TimeSlot = timeslot,
+                            AppointmentId = 4,
+                            Status = AppointmentGuestStatus.Pending
+                        }
+                    }
             });
 
             var appts = Mediator.Send(new GetScheduledAppointmentsForUserQuery
@@ -139,7 +167,9 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
                 UserId = CurrentUser.Id
             });
 
-            appts.Count().ShouldBe(2);
+            var vm = appts.ProjectTo<AppointmentListing>(MappingConfig.Config).ToList();
+            vm.Count().ShouldBe(2);
+            vm.First().GymName.ShouldBe("GloboGym");
         }
 
         [Test]
