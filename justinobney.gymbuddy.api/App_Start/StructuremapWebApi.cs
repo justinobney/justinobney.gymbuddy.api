@@ -30,7 +30,9 @@ namespace justinobney.gymbuddy.api {
 			var container = StructuremapMvc.StructureMapDependencyScope.Container;
             GlobalConfiguration.Configuration.DependencyResolver = new StructureMapWebApiDependencyResolver(container);
 
+#if DEBUG
             File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "container.txt"), container.WhatDoIHave());
+#endif
             container.AssertConfigurationIsValid();
         }
     }
