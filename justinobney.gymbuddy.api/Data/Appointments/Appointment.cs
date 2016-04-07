@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
@@ -21,8 +22,11 @@ namespace justinobney.gymbuddy.api.Data.Appointments
         public ICollection<AppointmentGuest> GuestList { get; set; } = new List<AppointmentGuest>();
         public ICollection<AppointmentTimeSlot> TimeSlots { get; set; }
 
+        public ICollection<AppointmentComment> Comments { get; set; }
+
         public DateTime? CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
         public User User { get; set; }
+        public Gym Gym { get; set; }
     }
 }

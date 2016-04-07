@@ -52,7 +52,10 @@ namespace justinobney.gymbuddy.api.App_Start {
             DependencyResolver.SetResolver(StructureMapDependencyScope);
             DynamicModuleUtility.RegisterModule(typeof(StructureMapScopeModule));
 
+#if DEBUG
             File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "container.txt"), container.WhatDoIHave());
+#endif
+
             container.AssertConfigurationIsValid();
         }
 

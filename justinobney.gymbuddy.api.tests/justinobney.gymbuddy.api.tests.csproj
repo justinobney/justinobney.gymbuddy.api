@@ -35,6 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=4.2.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.4.2.0\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -130,7 +134,10 @@
     <Compile Include="BaseTest.cs" />
     <Compile Include="Predicates\UserPredicatesTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Requests\AppointmentTests.cs" />
+    <Compile Include="Requests\Appointments\AddAppointmentGuestTests.cs" />
+    <Compile Include="Requests\Appointments\AppointmentQueryTests.cs" />
+    <Compile Include="Requests\Appointments\ConfirmAppointmentTests.cs" />
+    <Compile Include="Requests\Appointments\CreateAppointmentTests.cs" />
     <Compile Include="Requests\GenericQueryTests.cs" />
     <Compile Include="Requests\IonicPushNotifierTests.cs" />
     <Compile Include="Requests\PostRequestHandlerTests.cs" />
