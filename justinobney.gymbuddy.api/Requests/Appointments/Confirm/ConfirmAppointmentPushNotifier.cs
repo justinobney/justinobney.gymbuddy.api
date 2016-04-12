@@ -5,7 +5,6 @@ using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Notifications;
-using RestSharp;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
 {
@@ -13,13 +12,13 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
     {
         private readonly IDbSet<Appointment> _appointments;
         private readonly IDbSet<User> _users;
-        private readonly IRestClient _client;
+        private readonly PushNotifier _pushNotifier;
 
-        public ConfirmAppointmentPushNotifier(IDbSet<Appointment> appointments, IDbSet<User> users, IRestClient client)
+        public ConfirmAppointmentPushNotifier(IDbSet<Appointment> appointments, IDbSet<User> users, PushNotifier pushNotifier)
         {
             _appointments = appointments;
             _users = users;
-            _client = client;
+            _pushNotifier = pushNotifier;
         }
 
         public void Notify(ConfirmAppointmentCommand request, Appointment response)
@@ -45,25 +44,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
                 Title = "Workout Session Locked"
             };
 
-            var iosNotification = new IonicPushNotification(message)
-            {
-                Production = true,
-                Tokens = guests.SelectMany(x => x.Devices
-                    .Where(y => y.Platform == "iOS" && !string.IsNullOrEmpty(y.PushToken))
-                    .Select(y => y.PushToken))
-                    .ToList()
-            };
-
-            var androidNotification = new IonicPushNotification(message)
-            {
-                Tokens = guests.SelectMany(x => x.Devices
-                    .Where(y => y.Platform == "Android" && !string.IsNullOrEmpty(y.PushToken))
-                    .Select(y => y.PushToken))
-                    .ToList()
-            };
-
-            iosNotification.Send(_client);
-            androidNotification.Send(_client);
+            _pushNotifier.Send(message, guests.SelectMany(x => x.Devices));
         }
 
     }
