@@ -3,7 +3,6 @@ using System.Linq;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Notifications;
-using RestSharp;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
 {
@@ -11,13 +10,13 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
     {
         private readonly IDbSet<Appointment> _appointments;
         private readonly IDbSet<AppointmentGuest> _guests;
-        private readonly IRestClient _client;
+        private readonly PushNotifier _pushNotifier;
 
-        public ConfirmAppointmentGuestPushNotifier(IDbSet<Appointment> appointments, IDbSet<AppointmentGuest> guests, IRestClient client)
+        public ConfirmAppointmentGuestPushNotifier(IDbSet<Appointment> appointments, IDbSet<AppointmentGuest> guests, PushNotifier pushNotifier)
         {
             _appointments = appointments;
             _guests = guests;
-            _client = client;
+            _pushNotifier = pushNotifier;
         }
 
         public void Notify(ConfirmAppointmentGuestCommand request, AppointmentGuest response)
@@ -38,26 +37,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
                 Title = "Workout Session Confirmed"
             };
 
-            var iosNotification = new IonicPushNotification(message)
-            {
-                Production = true,
-                Tokens = guest.User.Devices
-                    .Where(y => y.Platform == "iOS" && !string.IsNullOrEmpty(y.PushToken))
-                    .Select(y => y.PushToken)
-                    .ToList()
-            };
-
-            var androidNotification = new IonicPushNotification(message)
-            {
-                Tokens = guest.User.Devices
-                    .Where(y => y.Platform == "Android" && !string.IsNullOrEmpty(y.PushToken))
-                    .Select(y => y.PushToken)
-                    .ToList()
-            };
-
-            iosNotification.Send(_client);
-            androidNotification.Send(_client);
+            _pushNotifier.Send(message, guest.User.Devices.AsQueryable());
         }
-
     }
 }

@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using justinobney.gymbuddy.api.Helpers;
-using justinobney.gymbuddy.api.Interfaces;
 using RestSharp;
 using RestSharp.Authenticators;
 
