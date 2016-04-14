@@ -1,17 +1,17 @@
-using System;
 using System.Collections.Generic;
-using FluentValidation;
+using System.Linq;
+using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
-using justinobney.gymbuddy.api.Requests.Appointments.Create;
+using justinobney.gymbuddy.api.Requests.Appointments.Delete;
 using justinobney.gymbuddy.api.tests.Helpers;
 using NUnit.Framework;
 
 namespace justinobney.gymbuddy.api.tests.Requests.Appointments
 {
     [TestFixture]
-    public class CreateAppointmentTests : BaseTest
+    public class DeleteAppointmentTests : BaseTest
     {
         public User CurrentUser { get; set; }
         public Gym DefaultGym { get; set; }
@@ -33,28 +33,25 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
             Context.GetSet<User>().Attach(CurrentUser);
             Context.GetSet<Gym>().Attach(DefaultGym);
         }
-
+        
         [Test]
-        public void CreateAppointmentCommand_ThrowsValidationException_OnMissingParameters()
+        public void DeleteAppointmentCommand_RemovesAppointment()
         {
-            Action foo = () => Mediator.Send(new CreateAppointmentCommand());
-            foo.ShouldThrow<ValidationException>();
-        }
-
-        [Test]
-        public void CreateAppointmentCommand_CreatesAppointment_WhenParamsValid()
-        {
-            var appt = Mediator.Send(new CreateAppointmentCommand
+            var appts = Context.GetSet<Appointment>();
+            appts.Add(new Appointment
             {
-                Id = 0,
-                UserId = 1, // TODO: should throw on invalid user
-                GymId = 1, // TODO: should throw on invalid gym
-                TimeSlots = new List<DateTime?> {DateTime.Now},
-                Title = "Back Day"
+                Id = 1,
+                User = CurrentUser,
+                GuestList = new List<AppointmentGuest> { new AppointmentGuest { User = new User { Id = 1 } } }
             });
 
-            appt.TimeSlots.Count.ShouldBe(1);
-            appt.Status.ShouldBe(AppointmentStatus.AwaitingGuests);
+            var request = new DeleteAppointmentCommand { Id = 1 };
+            Mediator.Send(request);
+
+            request.NotificaitonTitle.ShouldBe("Workout Session Canceled");
+            request.NotificaitonAlert.ShouldBe("User canceled");
+            request.Guests.Count().ShouldBe(1);
+            appts.Count().ShouldBe(0);
         }
     }
 }

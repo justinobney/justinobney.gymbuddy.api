@@ -2,6 +2,7 @@ using System.Linq;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Notifications;
+using justinobney.gymbuddy.api.Requests.Decorators;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments.Delete
 {
