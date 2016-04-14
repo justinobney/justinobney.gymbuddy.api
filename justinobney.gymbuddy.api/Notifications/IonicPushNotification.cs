@@ -38,7 +38,6 @@ namespace justinobney.gymbuddy.api.Notifications
             client.BaseUrl = new Uri("https://push.ionic.io/api/v1");
             client.Authenticator = new HttpBasicAuthenticator(ConfigurationManager.AppSettings["Ionic-Api-Key"], "");
             var response = client.Execute(ionicRequest);
-            Debug.WriteLine(response.Content);
             return response;
         }
     }
