@@ -483,7 +483,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
         }
 
         [Test]
-        public void AppointmentOnMyWayPushNotifier_CallsRestSharpMethod()
+        public void AppointmentOnMyWayPushNotifier_WhenInitiatedByGuest_CallsRestSharpMethodWithOwnerTokens()
         {
             var users = Context.GetSet<User>();
             var appts = Context.GetSet<Appointment>();
@@ -529,7 +529,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                     new AppointmentGuest
                     {
                         Id = 2,
-                        AppointmentId = 2,
+                        AppointmentId = 1,
                         UserId = guest1.Id,
                         User = guest1,
                         Status = AppointmentGuestStatus.Confirmed
@@ -537,7 +537,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                     new AppointmentGuest
                     {
                         Id = 3,
-                        AppointmentId = 2,
+                        AppointmentId = 1,
                         UserId = guest2.Id,
                         User = guest2,
                         Status = AppointmentGuestStatus.Pending
@@ -554,7 +554,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
 
             var request = new AppointmentOnMyWayCommand
             {
-                AppointmentId = 1,
+                AppointmentId = appt.Id,
                 UserId = guest1.Id
             };
 
@@ -580,17 +580,18 @@ namespace justinobney.gymbuddy.api.tests.Requests
 
                     restRequest.Resource.ShouldBe("/push");
                     restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
-                    pushNotification.Notification.Title.ShouldBe("On My Way");
+                    pushNotification.Notification.Title.ShouldBe("GymSquad");
+                    pushNotification.Notification.Alert.ShouldBe($"{guest1.Name} is on the way to the gym");
                     pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.AppointmentOnMyWay);
-                    if (pushNotification.Tokens.Any(t => t == "000000"))
+                    if (pushNotification.Tokens.Any(t => t == owner.Devices.First().PushToken))
                     {
                         ownerCalled = true;
                     }
-                    if (pushNotification.Tokens.Any(t => t == "123456"))
+                    if (pushNotification.Tokens.Any(t => t == guest1.Devices.First().PushToken))
                     {
                         guest1Called = true;
                     }
-                    if (pushNotification.Tokens.Any(t => t == "654321"))
+                    if (pushNotification.Tokens.Any(t => t == guest2.Devices.First().PushToken))
                     {
                         guest2Called = true;
                     }
@@ -600,6 +601,138 @@ namespace justinobney.gymbuddy.api.tests.Requests
             restClient.ReceivedWithAnyArgs(1).Post(new RestRequest());
             ownerCalled.ShouldBe(true);
             guest1Called.ShouldBe(false);
+            guest2Called.ShouldBe(false);
+            ConfigIoC();
+        }
+
+        [Test]
+        public void AppointmentOnMyWayPushNotifier_WhenInitiatedByOwner_CallsRestSharpMethodWithGuestTokens()
+        {
+            var users = Context.GetSet<User>();
+            var appts = Context.GetSet<Appointment>();
+            var apptGuests = Context.GetSet<AppointmentGuest>();
+
+            var owner = new User
+            {
+                Id = 1,
+                Name = "Owner",
+                Devices = new List<Device>
+                {
+                    new Device {PushToken = "000000", Platform = "iOS", UserId = 1}
+                }
+            };
+
+            var guest1 = new User
+            {
+                Id = 2,
+                Name = "Guest 1",
+                Devices = new List<Device>
+                {
+                    new Device {PushToken = "123456", Platform = "iOS", UserId = 2}
+                }
+            };
+
+            var guest2 = new User
+            {
+                Id = 3,
+                Devices = new List<Device>
+                {
+                    new Device {PushToken = "654321", Platform = "Android", UserId = 3}
+                }
+            };
+
+            users.Add(owner);
+            users.Add(guest1);
+            users.Add(guest2);
+
+            var apptGuest1 = new AppointmentGuest
+            {
+                Id = 2,
+                AppointmentId = 1,
+                UserId = guest1.Id,
+                User = guest1,
+                Status = AppointmentGuestStatus.Confirmed
+            };
+
+            var apptGuest2 = new AppointmentGuest
+            {
+                Id = 3,
+                AppointmentId = 1,
+                UserId = guest2.Id,
+                User = guest2,
+                Status = AppointmentGuestStatus.Pending
+            };
+
+            var appt = new Appointment
+            {
+                Id = 1,
+                User = owner,
+                UserId = owner.Id,
+                GuestList = new List<AppointmentGuest>
+                {
+                    apptGuest1,
+                    apptGuest2
+                }
+            };
+
+            appts.Add(appt);
+            apptGuests.Add(apptGuest1);
+            apptGuests.Add(apptGuest2);
+
+            var restClient = Substitute.For<RestClient>();
+            Context.Container.Configure(container => container.For<IRestClient>().Use(restClient));
+            Context.Register<IPostRequestHandler<AppointmentOnMyWayCommand, Appointment>, AppointmentOnMyWayPushNotifier>();
+            var handler = Context.GetInstance<IPostRequestHandler<AppointmentOnMyWayCommand, Appointment>>();
+
+            var request = new AppointmentOnMyWayCommand
+            {
+                AppointmentId = appt.Id,
+                UserId = owner.Id
+            };
+
+            var response = new Appointment
+            {
+                GuestList = appt.GuestList,
+                UserId = owner.Id,
+                User = owner
+            };
+
+            var ownerCalled = false;
+            var guest1Called = false;
+            var guest2Called = false;
+
+            restClient
+                .WhenForAnyArgs(client => client.Post(new RestRequest()))
+                .Do(info =>
+                {
+                    var restRequest = info.Arg<RestRequest>();
+                    var jsonPayload = restRequest.Parameters.Find(p => p.Name == "application/json");
+                    var pushNotification =
+                        JsonConvert.DeserializeObject<IonicPushNotification>((string)jsonPayload.Value);
+
+                    restRequest.Resource.ShouldBe("/push");
+                    restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
+                    pushNotification.Notification.Title.ShouldBe("GymSquad");
+                    pushNotification.Notification.Alert.ShouldBe($"{owner.Name} is on the way to the gym");
+                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.AppointmentOnMyWay);
+                    if (pushNotification.Tokens.Any(t => t == owner.Devices.First().PushToken))
+                    {
+                        ownerCalled = true;
+                    }
+                    if (pushNotification.Tokens.Any(t => t == guest1.Devices.First().PushToken))
+                    {
+                        guest1Called = true;
+                    }
+                    if (pushNotification.Tokens.Any(t => t == guest2.Devices.First().PushToken))
+                    {
+                        guest2Called = true;
+                    }
+                });
+
+            handler.Notify(request, response);
+            restClient.ReceivedWithAnyArgs(1).Post(new RestRequest());
+            ownerCalled.ShouldBe(false);
+            guest1Called.ShouldBe(true);
             guest2Called.ShouldBe(false);
             ConfigIoC();
         }
