@@ -1,5 +1,3 @@
-using justinobney.gymbuddy.api.Interfaces;
-
 namespace justinobney.gymbuddy.api.Notifications
 {
     public class NotificationPayload
