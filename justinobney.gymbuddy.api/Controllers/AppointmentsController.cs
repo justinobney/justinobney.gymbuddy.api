@@ -6,6 +6,7 @@ using AutoMapper.QueryableExtensions;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Requests.Appointments;
 using justinobney.gymbuddy.api.Requests.Appointments.AddAppointmentGuest;
+using justinobney.gymbuddy.api.Requests.Appointments.Comments;
 using justinobney.gymbuddy.api.Requests.Appointments.Confirm;
 using justinobney.gymbuddy.api.Requests.Appointments.Create;
 using justinobney.gymbuddy.api.Requests.Appointments.Delete;
@@ -139,6 +140,18 @@ namespace justinobney.gymbuddy.api.Controllers
         public IHttpActionResult ConfirmAppointment(long id, ConfirmAppointmentCommand command)
         {
             command.AppointmentId = id;
+
+            var appointment = _mediator.Send(command);
+            var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
+            return Ok(listing);
+        }
+
+        [Route("api/Appointments/{id}/On-My-Way")]
+        [ResponseType(typeof(AppointmentListing))]
+        public IHttpActionResult OnMyWay(long id, AppointmentOnMyWayCommand command)
+        {
+            command.AppointmentId = id;
+            command.UserId = CurrentUser.Id;
 
             var appointment = _mediator.Send(command);
             var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
