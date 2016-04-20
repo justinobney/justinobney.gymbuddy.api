@@ -338,6 +338,7 @@
     <Compile Include="Notifications\IonicPushNotification.cs" />
     <Compile Include="Notifications\NofiticationTypes.cs" />
     <Compile Include="Notifications\NotificationPayload.cs" />
+    <Compile Include="Notifications\OtherPartiesNotifier.cs" />
     <Compile Include="Notifications\PushNotifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Requests\Appointments\AddAppointmentGuest\AddAppointmentGuestCommand.cs" />

@@ -2,6 +2,7 @@ using System;
 using System.Data.Entity;
 using System.Linq;
 using justinobney.gymbuddy.api.Data.Appointments;
+using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 
@@ -18,15 +19,23 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Comments
     {
         private readonly IDbSet<Appointment> _appointments;
         private readonly IDbSet<AppointmentComment> _comments;
+        private readonly IDbSet<User> _users;
 
-        public AppointmentOnMyWayCommandHandler(IDbSet<Appointment> appointments, IDbSet<AppointmentComment> comments)
+        public AppointmentOnMyWayCommandHandler(
+            IDbSet<Appointment> appointments,
+            IDbSet<AppointmentComment> comments,
+            IDbSet<User> users 
+            )
         {
             _appointments = appointments;
             _comments = comments;
+            _users = users;
         }
 
         public Appointment Handle(AppointmentOnMyWayCommand message)
         {
+            var notifier = _users.First(x => x.Id == message.UserId);
+
             var appointment = _appointments
                 .Include(appt => appt.GuestList)
                 .Include(appt => appt.Comments)
@@ -38,7 +47,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Comments
                 AppointmentId = appointment.Id,
                 UserId = appointment.UserId,
                 CreatedAt = DateTime.UtcNow,
-                Text = $"{appointment.User.Name} is on the way to the gym"
+                Text = $"{notifier.Name} is on the way to the gym"
             });
 
             return appointment;
