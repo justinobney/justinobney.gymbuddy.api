@@ -58,5 +58,31 @@ namespace justinobney.gymbuddy.api.tests.Requests.Comments
             comments.Count().ShouldBe(1);
             comments.First().Text.ShouldBe("User is on the way to the gym");
         }
+
+        [Test]
+        public void AppointmentAddCommentCommand_AddsCommentToAppointmentComments()
+        {
+            var appts = Context.GetSet<Appointment>();
+            var comments = Context.GetSet<AppointmentComment>();
+
+            appts.Add(new Appointment
+            {
+                Id = 1,
+                User = CurrentUser,
+                GuestList = new List<AppointmentGuest> { new AppointmentGuest { User = new User { Id = 1 } } }
+            });
+
+            var request = new AppointmentAddCommentCommand
+            {
+                AppointmentId = 1,
+                UserId = CurrentUser.Id,
+                Text = "User is on the way to the gym"
+            };
+            Mediator.Send(request);
+
+            appts.Count().ShouldBe(1);
+            comments.Count().ShouldBe(1);
+            comments.First().Text.ShouldBe("User is on the way to the gym");
+        }
     }
 }
