@@ -582,7 +582,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                     restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
                     pushNotification.Notification.Title.ShouldBe("GymSquad");
                     pushNotification.Notification.Alert.ShouldBe($"{guest1.Name} is on the way to the gym");
-                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.AppointmentOnMyWay);
+                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.AddComment);
                     if (pushNotification.Tokens.Any(t => t == owner.Devices.First().PushToken))
                     {
                         ownerCalled = true;
@@ -714,7 +714,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                     restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
                     pushNotification.Notification.Title.ShouldBe("GymSquad");
                     pushNotification.Notification.Alert.ShouldBe($"{owner.Name} is on the way to the gym");
-                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.AppointmentOnMyWay);
+                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.AddComment);
                     if (pushNotification.Tokens.Any(t => t == owner.Devices.First().PushToken))
                     {
                         ownerCalled = true;
@@ -847,7 +847,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                     restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
                     pushNotification.Notification.Title.ShouldBe("GymSquad");
                     pushNotification.Notification.Alert.ShouldBe($"{owner.Name} posted a comment");
-                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.AppointmentOnMyWay);
+                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.AddComment);
                     if (pushNotification.Tokens.Any(t => t == owner.Devices.First().PushToken))
                     {
                         ownerCalled = true;
