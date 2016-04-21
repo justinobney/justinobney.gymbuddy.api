@@ -22,7 +22,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Comments
         {
             var notifier = _users.First(x => x.Id == request.UserId);
 
-            var additionalData = new AdditionalData { Type = NofiticationTypes.AppointmentOnMyWay };
+            var additionalData = new AdditionalData { Type = NofiticationTypes.AddComment };
             var message = new NotificationPayload(additionalData)
             {
                 Title = "GymSquad",
