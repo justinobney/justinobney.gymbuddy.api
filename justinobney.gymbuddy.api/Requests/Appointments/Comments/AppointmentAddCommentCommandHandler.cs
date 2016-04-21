@@ -2,6 +2,7 @@ using System;
 using System.Data.Entity;
 using System.Linq;
 using justinobney.gymbuddy.api.Data.Appointments;
+using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 
@@ -40,7 +41,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Comments
             _comments.Add(new AppointmentComment
             {
                 AppointmentId = appointment.Id,
-                UserId = appointment.UserId,
+                UserId = message.UserId,
                 CreatedAt = DateTime.UtcNow,
                 Text = message.Text
             });

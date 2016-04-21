@@ -45,7 +45,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Comments
             _comments.Add(new AppointmentComment
             {
                 AppointmentId = appointment.Id,
-                UserId = appointment.UserId,
+                UserId = notifier.Id,
                 CreatedAt = DateTime.UtcNow,
                 Text = $"{notifier.Name} is on the way to the gym"
             });
