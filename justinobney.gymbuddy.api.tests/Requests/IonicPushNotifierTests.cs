@@ -846,7 +846,7 @@ namespace justinobney.gymbuddy.api.tests.Requests
                     restRequest.Resource.ShouldBe("/push");
                     restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
                     pushNotification.Notification.Title.ShouldBe("GymSquad");
-                    pushNotification.Notification.Alert.ShouldBe($"{owner.Name} posted a comment");
+                    pushNotification.Notification.Alert.ShouldBe($"[Comment] {owner.Name}: {request.Text}");
                     pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.AddComment);
                     if (pushNotification.Tokens.Any(t => t == owner.Devices.First().PushToken))
                     {

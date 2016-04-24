@@ -26,7 +26,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Comments
             var message = new NotificationPayload(additionalData)
             {
                 Title = "GymSquad",
-                Alert = $"{notifier.Name} posted a comment"
+                Alert = $"[Comment] {notifier.Name}: {request.Text}"
             };
 
             var notifierRequest = new OtherPartiesNotifierRequest
