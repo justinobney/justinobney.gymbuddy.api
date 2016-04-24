@@ -9,6 +9,7 @@ namespace justinobney.gymbuddy.api.Responses
     {
         public string Text { get; set; }
         public string UserName { get; set; }
+        public long UserId { get; set; }
         public DateTime? CreatedAt { get; set; }
     }
 
