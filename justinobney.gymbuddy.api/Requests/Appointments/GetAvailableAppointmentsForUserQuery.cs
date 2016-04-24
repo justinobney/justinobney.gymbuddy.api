@@ -48,7 +48,8 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
                 .Where(UserPredicates.RestrictMemberByGender(user));
 
             return possibleAppointments
-                .Where(x=>possibleAppointmentUsers.Contains(x.User));
+                .Where(x=>possibleAppointmentUsers.Contains(x.User))
+                .OrderBy(x=>x.TimeSlots.Select(y=>y.Time).Min());
         }
     }
 }
