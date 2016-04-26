@@ -1,4 +1,6 @@
-﻿using System.Web.Http;
+﻿using System.Linq;
+using System.Net.Http.Formatting;
+using System.Web.Http;
 using System.Web.Http.Cors;
 using Exceptionless;
 using justinobney.gymbuddy.api.Filters;
@@ -14,6 +16,8 @@ namespace justinobney.gymbuddy.api
             // web API configuration and services
             var cors = new EnableCorsAttribute("*", "*", "*");
             config.EnableCors(cors);
+
+            config.Formatters.Remove(config.Formatters.XmlFormatter);
             
             // camel case formatters
             var settings = config.Formatters.JsonFormatter.SerializerSettings;

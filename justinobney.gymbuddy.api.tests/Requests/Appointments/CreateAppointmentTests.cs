@@ -46,7 +46,6 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
         {
             var appt = Mediator.Send(new CreateAppointmentCommand
             {
-                Id = 0,
                 UserId = 1, // TODO: should throw on invalid user
                 GymId = 1, // TODO: should throw on invalid gym
                 TimeSlots = new List<DateTime?> {DateTime.Now},

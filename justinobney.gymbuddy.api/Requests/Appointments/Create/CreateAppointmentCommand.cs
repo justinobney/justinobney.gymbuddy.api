@@ -10,8 +10,6 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Create
 {
     public class CreateAppointmentCommand : IRequest<Appointment>
     {
-        public long Id { get; set; }
-
         public long UserId { get; set; }
         public long? GymId { get; set; }
         public string Location { get; set; }

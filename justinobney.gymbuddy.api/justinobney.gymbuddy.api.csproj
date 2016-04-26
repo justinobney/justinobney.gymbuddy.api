@@ -360,6 +360,10 @@
     <Compile Include="Requests\Appointments\Create\CreateAppointmentPushNotifier.cs" />
     <Compile Include="Requests\Appointments\Delete\DeleteAppointmentCommand.cs" />
     <Compile Include="Requests\Appointments\Delete\DeleteAppointmentPushNotifier.cs" />
+    <Compile Include="Requests\Appointments\Edit\AppointmentChangeTimesCommand.cs" />
+    <Compile Include="Requests\Appointments\Edit\AppointmentChangeTimesCommandPushNotifier.cs" />
+    <Compile Include="Requests\Appointments\Edit\AppointmentChangeTimesCommandValidator.cs" />
+    <Compile Include="Requests\Appointments\Edit\EditAppointmentCommandMapper.cs" />
     <Compile Include="Requests\Appointments\GetAvailableAppointmentsForUserQuery.cs" />
     <Compile Include="Requests\Appointments\GetScheduledAppointmentsForUserQuery.cs" />
     <Compile Include="Requests\Appointments\RemoveAppointmentGuest\RemoveAppointmentGuestCommand.cs" />

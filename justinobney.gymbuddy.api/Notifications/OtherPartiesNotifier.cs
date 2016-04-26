@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using justinobney.gymbuddy.api.Data.Appointments;
@@ -10,6 +11,8 @@ namespace justinobney.gymbuddy.api.Notifications
         public long AppointmentId { get; set; }
         public long UserId { get; set; }
         public AdditionalData AdditionalData { get; set; }
+        public bool IncludePending { get; set; }
+        public IQueryable<AppointmentGuest> Guests { get; set; } = new List<AppointmentGuest>().AsQueryable();
     }
 
     public class OtherPartiesNotifier
@@ -31,11 +34,23 @@ namespace justinobney.gymbuddy.api.Notifications
 
         public void Send(OtherPartiesNotifierRequest notifierRequest, NotificationPayload message)
         {
-            var guestDevices = _guests
+            IQueryable<AppointmentGuest> guests = notifierRequest.Guests;
+
+            if (!guests.Any())
+            {
+                guests = _guests
                 .Include(x => x.User.Devices)
-                .Where(x => x.AppointmentId == notifierRequest.AppointmentId)
-                .Where(x => x.Status == AppointmentGuestStatus.Confirmed)
-                .SelectMany(x => x.User.Devices)
+                .Where(x => x.AppointmentId == notifierRequest.AppointmentId);
+
+                if (!notifierRequest.IncludePending)
+                {
+                    guests = guests.Where(x => x.Status == AppointmentGuestStatus.Confirmed);
+                }
+            }
+            
+
+
+            var guestDevices = guests.SelectMany(x => x.User.Devices)
                 .AsQueryable();
 
             var devices = _appointments
