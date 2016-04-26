@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using justinobney.gymbuddy.api.Data.Devices;
 using RestSharp;
@@ -16,7 +17,7 @@ namespace justinobney.gymbuddy.api.Notifications
             _logger = logger;
         }
 
-        public void Send(NotificationPayload message, IQueryable<Device> devices)
+        public void Send(NotificationPayload message, IEnumerable<Device> devices)
         {
             var iosNotification = new IonicPushNotification(message)
             {

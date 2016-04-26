@@ -10,6 +10,7 @@ using justinobney.gymbuddy.api.Requests.Appointments.Comments;
 using justinobney.gymbuddy.api.Requests.Appointments.Confirm;
 using justinobney.gymbuddy.api.Requests.Appointments.Create;
 using justinobney.gymbuddy.api.Requests.Appointments.Delete;
+using justinobney.gymbuddy.api.Requests.Appointments.Edit;
 using justinobney.gymbuddy.api.Requests.Appointments.RemoveAppointmentGuest;
 using justinobney.gymbuddy.api.Requests.Generic;
 using justinobney.gymbuddy.api.Responses;
@@ -86,6 +87,18 @@ namespace justinobney.gymbuddy.api.Controllers
             var appointment =  _mediator.Send(command);
             var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
             return CreatedAtRoute("DefaultApi", new { id = listing.Id }, listing);
+        }
+
+        [Route("api/Appointments/{id}/change-times")]
+        [ResponseType(typeof(AppointmentListing))]
+        [HttpPost]
+        public IHttpActionResult AppointmentChangeTimes(long id, AppointmentChangeTimesCommand command)
+        {
+            command.UserId = CurrentUser.Id;
+            command.AppointmentId = id;
+            var appointment = _mediator.Send(command);
+            var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
+            return Ok(listing);
         }
 
         // DELETE: api/Appointments/5

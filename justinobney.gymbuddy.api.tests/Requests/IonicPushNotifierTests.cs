@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using justinobney.gymbuddy.api.Data.Appointments;
@@ -12,6 +13,7 @@ using justinobney.gymbuddy.api.Requests.Appointments.Comments;
 using justinobney.gymbuddy.api.Requests.Appointments.Confirm;
 using justinobney.gymbuddy.api.Requests.Appointments.Create;
 using justinobney.gymbuddy.api.Requests.Appointments.Delete;
+using justinobney.gymbuddy.api.Requests.Appointments.Edit;
 using justinobney.gymbuddy.api.Requests.Appointments.RemoveAppointmentGuest;
 using justinobney.gymbuddy.api.tests.Helpers;
 using Newtonsoft.Json;
@@ -867,6 +869,139 @@ namespace justinobney.gymbuddy.api.tests.Requests
             ownerCalled.ShouldBe(false);
             guest1Called.ShouldBe(true);
             guest2Called.ShouldBe(false);
+            ConfigIoC();
+        }
+
+        [Test]
+        public void AppointmentChangeTimesCommandPushNotifier_CallsRestSharpMethodWithGuestTokens()
+        {
+            var users = Context.GetSet<User>();
+            var appts = Context.GetSet<Appointment>();
+            var apptGuests = Context.GetSet<AppointmentGuest>();
+
+            var owner = new User
+            {
+                Id = 1,
+                Name = "Owner",
+                Devices = new List<Device>
+                {
+                    new Device {PushToken = "000000", Platform = "iOS", UserId = 1}
+                }
+            };
+
+            var guest1 = new User
+            {
+                Id = 2,
+                Name = "Guest 1",
+                Devices = new List<Device>
+                {
+                    new Device {PushToken = "123456", Platform = "iOS", UserId = 2}
+                }
+            };
+
+            var guest2 = new User
+            {
+                Id = 3,
+                Devices = new List<Device>
+                {
+                    new Device {PushToken = "654321", Platform = "Android", UserId = 3}
+                }
+            };
+
+            users.Add(owner);
+            users.Add(guest1);
+            users.Add(guest2);
+
+            var apptGuest1 = new AppointmentGuest
+            {
+                Id = 2,
+                AppointmentId = 1,
+                UserId = guest1.Id,
+                User = guest1,
+                Status = AppointmentGuestStatus.Confirmed
+            };
+
+            var apptGuest2 = new AppointmentGuest
+            {
+                Id = 3,
+                AppointmentId = 1,
+                UserId = guest2.Id,
+                User = guest2,
+                Status = AppointmentGuestStatus.Pending
+            };
+
+            var appt = new Appointment
+            {
+                Id = 1,
+                User = owner,
+                UserId = owner.Id,
+                GuestList = new List<AppointmentGuest>
+                {
+                    apptGuest1,
+                    apptGuest2
+                }
+            };
+
+            appts.Add(appt);
+            apptGuests.Add(apptGuest1);
+            apptGuests.Add(apptGuest2);
+
+            var restClient = Substitute.For<RestClient>();
+            Context.Container.Configure(container => container.For<IRestClient>().Use(restClient));
+            Context.Register<IPostRequestHandler<AppointmentChangeTimesCommand, Appointment>, AppointmentChangeTimesCommandPushNotifier>();
+            var handler = Context.GetInstance<IPostRequestHandler<AppointmentChangeTimesCommand, Appointment>>();
+
+            var request = new AppointmentChangeTimesCommand
+            {
+                AppointmentId = appt.Id,
+                UserId = owner.Id,
+                TimeSlots = new List<DateTime?>()
+            };
+
+            var response = new Appointment
+            {
+                GuestList = appt.GuestList,
+                UserId = owner.Id,
+                User = owner
+            };
+
+            var ownerCalled = false;
+            var guest1Called = false;
+            var guest2Called = false;
+
+            restClient
+                .WhenForAnyArgs(client => client.Post(new RestRequest()))
+                .Do(info =>
+                {
+                    var restRequest = info.Arg<RestRequest>();
+                    var jsonPayload = restRequest.Parameters.Find(p => p.Name == "application/json");
+                    var pushNotification =
+                        JsonConvert.DeserializeObject<IonicPushNotification>((string)jsonPayload.Value);
+
+                    restRequest.Resource.ShouldBe("/push");
+                    restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
+                    pushNotification.Notification.Title.ShouldBe("GymSquad");
+                    pushNotification.Notification.Alert.ShouldBe($"[Appointment] {owner.Name} changed the available times. You're request to join has been removed.");
+                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.AddComment);
+                    if (pushNotification.Tokens.Any(t => t == owner.Devices.First().PushToken))
+                    {
+                        ownerCalled = true;
+                    }
+                    if (pushNotification.Tokens.Any(t => t == guest1.Devices.First().PushToken))
+                    {
+                        guest1Called = true;
+                    }
+                    if (pushNotification.Tokens.Any(t => t == guest2.Devices.First().PushToken))
+                    {
+                        guest2Called = true;
+                    }
+                });
+
+            handler.Notify(request, response);
+            restClient.ReceivedWithAnyArgs(2).Post(new RestRequest());
+            ownerCalled.ShouldBe(false);
+            guest1Called.ShouldBe(true);
+            guest2Called.ShouldBe(true);
             ConfigIoC();
         }
 
