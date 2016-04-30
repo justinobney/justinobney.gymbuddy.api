@@ -11,9 +11,12 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.AddAppointmentGuest
     {
         private readonly IDbSet<Appointment> _appointments;
         private readonly IDbSet<User> _users;
-        private readonly PushNotifier _pushNotifier;
+        private readonly IPushNotifier _pushNotifier;
 
-        public AddAppointmentGuestPushNotifier(IDbSet<Appointment> appointments, IDbSet<User> users, PushNotifier pushNotifier)
+        public AddAppointmentGuestPushNotifier(
+            IDbSet<Appointment> appointments,
+            IDbSet<User> users,
+            IPushNotifier pushNotifier)
         {
             _appointments = appointments;
             _users = users;

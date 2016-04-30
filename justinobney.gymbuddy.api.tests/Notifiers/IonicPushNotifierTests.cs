@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Data.Devices;
-using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
@@ -11,7 +10,6 @@ using justinobney.gymbuddy.api.Notifications;
 using justinobney.gymbuddy.api.Requests.Appointments.AddAppointmentGuest;
 using justinobney.gymbuddy.api.Requests.Appointments.Comments;
 using justinobney.gymbuddy.api.Requests.Appointments.Confirm;
-using justinobney.gymbuddy.api.Requests.Appointments.Create;
 using justinobney.gymbuddy.api.Requests.Appointments.Delete;
 using justinobney.gymbuddy.api.Requests.Appointments.Edit;
 using justinobney.gymbuddy.api.Requests.Appointments.RemoveAppointmentGuest;
@@ -22,7 +20,7 @@ using NSubstitute;
 using NUnit.Framework;
 using RestSharp;
 
-namespace justinobney.gymbuddy.api.tests.Requests
+namespace justinobney.gymbuddy.api.tests.Notifiers
 {
     [TestFixture]
     public class IonicPushNotifierTests : BaseTest
@@ -47,76 +45,13 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
 
-            var expected = "{\"tokens\":[\"123\"],\"production\":false,\"notification\":{\"alert\":\"Alert\",\"title\":\"Title\",\"android\":{\"payload\":{\"foo\":\"Bar\",\"type\":\"Foo\"}},\"ios\":{\"payload\":{\"foo\":\"Bar\",\"type\":\"Foo\"},\"badge\":null}}}";
+            var expected = "{\"tokens\":[\"123\"],\"production\":false,\"notification\":{\"alert\":\"Alert\",\"title\":\"Title\",\"android\":{\"sound\":\"default\",\"payload\":{\"foo\":\"Bar\",\"type\":\"Foo\"}},\"ios\":{\"sound\":\"default\",\"payload\":{\"foo\":\"Bar\",\"type\":\"Foo\"},\"badge\":null}}}";
             JsonConvert.SerializeObject(notifier, serializationSettings).ShouldBe(expected);
 
-            var expected2 = "{\"tokens\":null,\"production\":false,\"notification\":{\"alert\":null,\"title\":null,\"android\":{\"payload\":null},\"ios\":{\"payload\":null,\"badge\":null}}}";
+            var expected2 = "{\"tokens\":null,\"production\":false,\"notification\":{\"alert\":null,\"title\":null,\"android\":{\"sound\":\"default\",\"payload\":null},\"ios\":{\"sound\":\"default\",\"payload\":null,\"badge\":null}}}";
             JsonConvert.SerializeObject(new IonicPushNotification(new NotificationPayload(null)), serializationSettings).ShouldBe(expected2);
         }
-
-        [Test]
-        public void CreateAppointmentNotifier_CallsRestSharpMethod()
-        {
-            var users = Context.GetSet<User>();
-            var gym = new Gym {Id = 1};
-            users.Add(new User
-            {
-                Gyms = new List<Gym> { gym },
-                Devices = new List<Device>
-                {
-                    new Device {PushToken = "123456", Platform = "iOS"}
-                }
-            });
-
-            users.Add(new User
-            {
-                Gyms = new List<Gym> { gym },
-                Devices = new List<Device>
-                {
-                    new Device {PushToken = "654321", Platform = "Android"}
-                }
-            });
-
-            var restClient = Substitute.For<RestClient>();
-            Context.Container.Configure(container => container.For<IRestClient>().Use(restClient));
-            Context.Register<IPostRequestHandler<CreateAppointmentCommand, Appointment>, CreateAppointmentPushNotifier>();
-            var handler = Context.GetInstance<IPostRequestHandler<CreateAppointmentCommand, Appointment>>();
-
-            var request = new CreateAppointmentCommand {UserId = 1, GymId = 1};
-            var response = new Appointment {UserId = 1, User = new User {Name = "Justin"} };
-            var iosCalled = false;
-            var androidCalled = false;
-
-            restClient
-                .WhenForAnyArgs(client => client.Post(new RestRequest()))
-                .Do(info =>
-                {
-                    var restRequest = info.Arg<RestRequest>();
-                    var jsonPayload = restRequest.Parameters.Find(p => p.Name == "application/json");
-                    var pushNotification =
-                        JsonConvert.DeserializeObject<IonicPushNotification>((string) jsonPayload.Value);
-
-                    restRequest.Resource.ShouldBe("/push");
-                    restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
-                    pushNotification.Notification.Title.ShouldBe("New Appointment Available");
-                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.CreateAppointment);
-                    if (pushNotification.Tokens.Any(t => t == "123456"))
-                    {
-                        iosCalled = true;
-                    }
-                    if (pushNotification.Tokens.Any(t => t == "654321"))
-                    {
-                        androidCalled = true;
-                    }
-                });
-            
-            handler.Notify(request, response);
-            restClient.ReceivedWithAnyArgs(2).Post(new RestRequest());
-            iosCalled.ShouldBe(true);
-            androidCalled.ShouldBe(true);
-            ConfigIoC();
-        }
-
+        
         [Test]
         public void AddAppointmentGuestPushNotifier_CallsRestSharpMethod()
         {
@@ -145,37 +80,26 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 UserId = owner.Id
             });
 
-            var restClient = Substitute.For<RestClient>();
-            Context.Container.Configure(container => container.For<IRestClient>().Use(restClient));
+            var notifier = Substitute.For<IPushNotifier>();
+            Context.Container.Configure(container => container.For<IPushNotifier>().Use(notifier));
+
             Context.Register<IPostRequestHandler<AddAppointmentGuestCommand, Appointment>, AddAppointmentGuestPushNotifier>();
             var handler = Context.GetInstance<IPostRequestHandler<AddAppointmentGuestCommand, Appointment>>();
 
             var request = new AddAppointmentGuestCommand { AppointmentId = 1, UserId = 2 };
             var response = new Appointment { UserId = 1, User = new User { Name = "Justin" } };
-            var iosCalled = false;
-
-            restClient
-                .WhenForAnyArgs(client => client.Post(new RestRequest()))
-                .Do(info =>
-                {
-                    var restRequest = info.Arg<RestRequest>();
-                    var jsonPayload = restRequest.Parameters.Find(p => p.Name == "application/json");
-                    var pushNotification =
-                        JsonConvert.DeserializeObject<IonicPushNotification>((string)jsonPayload.Value);
-
-                    restRequest.Resource.ShouldBe("/push");
-                    restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
-                    pushNotification.Notification.Title.ShouldBe("Appointment Guest Request");
-                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.AddAppointmentGuest);
-                    if (pushNotification.Tokens.Any(t => t == "123456"))
-                    {
-                        iosCalled = true;
-                    }
-                });
-
+            
             handler.Notify(request, response);
-            restClient.ReceivedWithAnyArgs(1).Post(new RestRequest());
-            iosCalled.ShouldBe(true);
+            notifier.Received().Send(
+                Arg.Is<NotificationPayload>(x => x.Title == "Appointment Guest Request" && x.Ios.Payload.Type == NofiticationTypes.AddAppointmentGuest),
+                Arg.Any<IEnumerable<Device>>()
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == "123456"))
+                );
+
             ConfigIoC();
         }
 
@@ -207,37 +131,27 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 UserId = owner.Id
             });
 
-            var restClient = Substitute.For<RestClient>();
-            Context.Container.Configure(container => container.For<IRestClient>().Use(restClient));
+            var notifier = Substitute.For<IPushNotifier>();
+            Context.Container.Configure(container => container.For<IPushNotifier>().Use(notifier));
+
             Context.Register<IPostRequestHandler<RemoveAppointmentGuestCommand, Appointment>, RemoveAppointmentGuestPushNotifier>();
             var handler = Context.GetInstance<IPostRequestHandler<RemoveAppointmentGuestCommand, Appointment>>();
 
             var request = new RemoveAppointmentGuestCommand { AppointmentId = 1, UserId = 2 };
             var response = new Appointment { UserId = 1, User = new User { Name = "Justin" } };
-            var iosCalled = false;
-
-            restClient
-                .WhenForAnyArgs(client => client.Post(new RestRequest()))
-                .Do(info =>
-                {
-                    var restRequest = info.Arg<RestRequest>();
-                    var jsonPayload = restRequest.Parameters.Find(p => p.Name == "application/json");
-                    var pushNotification =
-                        JsonConvert.DeserializeObject<IonicPushNotification>((string)jsonPayload.Value);
-
-                    restRequest.Resource.ShouldBe("/push");
-                    restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
-                    pushNotification.Notification.Title.ShouldBe("Appointment Guest Left :(");
-                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.RemoveAppointmentGuest);
-                    if (pushNotification.Tokens.Any(t => t == "123456"))
-                    {
-                        iosCalled = true;
-                    }
-                });
 
             handler.Notify(request, response);
-            restClient.ReceivedWithAnyArgs(1).Post(new RestRequest());
-            iosCalled.ShouldBe(true);
+
+            notifier.Received().Send(
+                Arg.Is<NotificationPayload>(x => x.Title == "Appointment Guest Left :(" && x.Ios.Payload.Type == NofiticationTypes.RemoveAppointmentGuest),
+                Arg.Any<IEnumerable<Device>>()
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == "123456"))
+                );
+
             ConfigIoC();
         }
 
@@ -274,37 +188,27 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 }
             });
 
-            var restClient = Substitute.For<RestClient>();
-            Context.Container.Configure(container => container.For<IRestClient>().Use(restClient));
+            var notifier = Substitute.For<IPushNotifier>();
+            Context.Container.Configure(container => container.For<IPushNotifier>().Use(notifier));
+
             Context.Register<IPostRequestHandler<ConfirmAppointmentCommand, Appointment>, ConfirmAppointmentPushNotifier>();
             var handler = Context.GetInstance<IPostRequestHandler<ConfirmAppointmentCommand, Appointment>>();
 
             var request = new ConfirmAppointmentCommand { AppointmentId = 1 };
             var response = new Appointment { UserId = 1, User = new User { Name = "Justin" } };
-            var iosCalled = false;
-
-            restClient
-                .WhenForAnyArgs(client => client.Post(new RestRequest()))
-                .Do(info =>
-                {
-                    var restRequest = info.Arg<RestRequest>();
-                    var jsonPayload = restRequest.Parameters.Find(p => p.Name == "application/json");
-                    var pushNotification =
-                        JsonConvert.DeserializeObject<IonicPushNotification>((string)jsonPayload.Value);
-
-                    restRequest.Resource.ShouldBe("/push");
-                    restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
-                    pushNotification.Notification.Title.ShouldBe("Workout Session Locked");
-                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.ConfirmAppointment);
-                    if (pushNotification.Tokens.Any(t => t == "123456"))
-                    {
-                        iosCalled = true;
-                    }
-                });
-
+            
             handler.Notify(request, response);
-            restClient.ReceivedWithAnyArgs(1).Post(new RestRequest());
-            iosCalled.ShouldBe(true);
+
+            notifier.Received().Send(
+                Arg.Is<NotificationPayload>(x => x.Title == "Workout Session Locked" && x.Ios.Payload.Type == NofiticationTypes.ConfirmAppointment),
+                Arg.Any<IEnumerable<Device>>()
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == "123456"))
+                );
+            
             ConfigIoC();
         }
 
@@ -359,37 +263,27 @@ namespace justinobney.gymbuddy.api.tests.Requests
             guest.Add(guest1);
             guest.Add(guest2);
 
-            var restClient = Substitute.For<RestClient>();
-            Context.Container.Configure(container => container.For<IRestClient>().Use(restClient));
+            var notifier = Substitute.For<IPushNotifier>();
+            Context.Container.Configure(container => container.For<IPushNotifier>().Use(notifier));
+
             Context.Register<IPostRequestHandler<ConfirmAppointmentGuestCommand, AppointmentGuest>, ConfirmAppointmentGuestPushNotifier>();
             var handler = Context.GetInstance<IPostRequestHandler<ConfirmAppointmentGuestCommand, AppointmentGuest>>();
 
             var request = new ConfirmAppointmentGuestCommand { AppointmentId = 1, AppointmentGuestId = 2 };
             var response = new AppointmentGuest { Id = 1, UserId = 1, User = new User { Name = "Justin" } };
-            var iosCalled = false;
-
-            restClient
-                .WhenForAnyArgs(client => client.Post(new RestRequest()))
-                .Do(info =>
-                {
-                    var restRequest = info.Arg<RestRequest>();
-                    var jsonPayload = restRequest.Parameters.Find(p => p.Name == "application/json");
-                    var pushNotification =
-                        JsonConvert.DeserializeObject<IonicPushNotification>((string)jsonPayload.Value);
-
-                    restRequest.Resource.ShouldBe("/push");
-                    restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
-                    pushNotification.Notification.Title.ShouldBe("Workout Session Confirmed");
-                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.ConfirmAppointmentGuest);
-                    if (pushNotification.Tokens.Any(t => t == "123456"))
-                    {
-                        iosCalled = true;
-                    }
-                });
-
+            
             handler.Notify(request, response);
-            restClient.ReceivedWithAnyArgs(1).Post(new RestRequest());
-            iosCalled.ShouldBe(true);
+
+            notifier.Received().Send(
+                Arg.Is<NotificationPayload>(x => x.Title == "Workout Session Confirmed" && x.Ios.Payload.Type == NofiticationTypes.ConfirmAppointmentGuest),
+                Arg.Any<IEnumerable<Device>>()
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == "123456"))
+                );
+            
             ConfigIoC();
         }
 
@@ -438,8 +332,9 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 }
             });
 
-            var restClient = Substitute.For<RestClient>();
-            Context.Container.Configure(container => container.For<IRestClient>().Use(restClient));
+            var notifier = Substitute.For<IPushNotifier>();
+            Context.Container.Configure(container => container.For<IPushNotifier>().Use(notifier));
+
             Context.Register<IPostRequestHandler<DeleteAppointmentCommand, Appointment>, DeleteAppointmentPushNotifier>();
             var handler = Context.GetInstance<IPostRequestHandler<DeleteAppointmentCommand, Appointment>>();
 
@@ -447,40 +342,29 @@ namespace justinobney.gymbuddy.api.tests.Requests
             {
                 Id = 1,
                 Guests = new List<User> {guest1, guest2},
+                NotificaitonAlert = "Workout Session Canceled",
                 NotificaitonTitle = "Workout Session Canceled"
             };
 
             var response = new Appointment { UserId = 1, User = new User { Name = "Justin" } };
-            var iosCalled = false;
-            var androidCalled = false;
-
-            restClient
-                .WhenForAnyArgs(client => client.Post(new RestRequest()))
-                .Do(info =>
-                {
-                    var restRequest = info.Arg<RestRequest>();
-                    var jsonPayload = restRequest.Parameters.Find(p => p.Name == "application/json");
-                    var pushNotification =
-                        JsonConvert.DeserializeObject<IonicPushNotification>((string)jsonPayload.Value);
-
-                    restRequest.Resource.ShouldBe("/push");
-                    restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
-                    pushNotification.Notification.Title.ShouldBe("Workout Session Canceled");
-                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.CancelAppointment);
-                    if (pushNotification.Tokens.Any(t => t == "123456"))
-                    {
-                        iosCalled = true;
-                    }
-                    if (pushNotification.Tokens.Any(t => t == "654321"))
-                    {
-                        androidCalled = true;
-                    }
-                });
-
+           
             handler.Notify(request, response);
-            restClient.ReceivedWithAnyArgs(2).Post(new RestRequest());
-            iosCalled.ShouldBe(true);
-            androidCalled.ShouldBe(true);
+
+            notifier.Received().Send(
+                Arg.Is<NotificationPayload>(x => x.Alert == "Workout Session Canceled" && x.Ios.Payload.Type == NofiticationTypes.CancelAppointment),
+                Arg.Any<IEnumerable<Device>>()
+                );
+            
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == guest1.Devices.First().PushToken))
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == guest2.Devices.First().PushToken))
+                );
+            
             ConfigIoC();
         }
 
@@ -549,8 +433,9 @@ namespace justinobney.gymbuddy.api.tests.Requests
 
             appts.Add(appt);
 
-            var restClient = Substitute.For<RestClient>();
-            Context.Container.Configure(container => container.For<IRestClient>().Use(restClient));
+            var notifier = Substitute.For<IPushNotifier>();
+            Context.Container.Configure(container => container.For<IPushNotifier>().Use(notifier));
+
             Context.Register<IPostRequestHandler<AppointmentOnMyWayCommand, Appointment>, AppointmentOnMyWayPushNotifier>();
             var handler = Context.GetInstance<IPostRequestHandler<AppointmentOnMyWayCommand, Appointment>>();
 
@@ -567,43 +452,28 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 User = owner
             };
 
-            var ownerCalled = false;
-            var guest1Called = false;
-            var guest2Called = false;
-
-            restClient
-                .WhenForAnyArgs(client => client.Post(new RestRequest()))
-                .Do(info =>
-                {
-                    var restRequest = info.Arg<RestRequest>();
-                    var jsonPayload = restRequest.Parameters.Find(p => p.Name == "application/json");
-                    var pushNotification =
-                        JsonConvert.DeserializeObject<IonicPushNotification>((string)jsonPayload.Value);
-
-                    restRequest.Resource.ShouldBe("/push");
-                    restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
-                    pushNotification.Notification.Title.ShouldBe("GymSquad");
-                    pushNotification.Notification.Alert.ShouldBe($"{guest1.Name} is on the way to the gym");
-                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.AddComment);
-                    if (pushNotification.Tokens.Any(t => t == owner.Devices.First().PushToken))
-                    {
-                        ownerCalled = true;
-                    }
-                    if (pushNotification.Tokens.Any(t => t == guest1.Devices.First().PushToken))
-                    {
-                        guest1Called = true;
-                    }
-                    if (pushNotification.Tokens.Any(t => t == guest2.Devices.First().PushToken))
-                    {
-                        guest2Called = true;
-                    }
-                });
-
             handler.Notify(request, response);
-            restClient.ReceivedWithAnyArgs(1).Post(new RestRequest());
-            ownerCalled.ShouldBe(true);
-            guest1Called.ShouldBe(false);
-            guest2Called.ShouldBe(false);
+
+            notifier.Received().Send(
+                Arg.Is<NotificationPayload>(x => x.Alert == $"{guest1.Name} is on the way to the gym" && x.Ios.Payload.Type == NofiticationTypes.AddComment),
+                Arg.Any<IEnumerable<Device>>()
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == owner.Devices.First().PushToken))
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).All(t => t != guest1.Devices.First().PushToken))
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).All(t => t != guest2.Devices.First().PushToken))
+                );
+            
             ConfigIoC();
         }
 
@@ -681,8 +551,9 @@ namespace justinobney.gymbuddy.api.tests.Requests
             apptGuests.Add(apptGuest1);
             apptGuests.Add(apptGuest2);
 
-            var restClient = Substitute.For<RestClient>();
-            Context.Container.Configure(container => container.For<IRestClient>().Use(restClient));
+            var notifier = Substitute.For<IPushNotifier>();
+            Context.Container.Configure(container => container.For<IPushNotifier>().Use(notifier));
+
             Context.Register<IPostRequestHandler<AppointmentOnMyWayCommand, Appointment>, AppointmentOnMyWayPushNotifier>();
             var handler = Context.GetInstance<IPostRequestHandler<AppointmentOnMyWayCommand, Appointment>>();
 
@@ -698,44 +569,29 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 UserId = owner.Id,
                 User = owner
             };
-
-            var ownerCalled = false;
-            var guest1Called = false;
-            var guest2Called = false;
-
-            restClient
-                .WhenForAnyArgs(client => client.Post(new RestRequest()))
-                .Do(info =>
-                {
-                    var restRequest = info.Arg<RestRequest>();
-                    var jsonPayload = restRequest.Parameters.Find(p => p.Name == "application/json");
-                    var pushNotification =
-                        JsonConvert.DeserializeObject<IonicPushNotification>((string)jsonPayload.Value);
-
-                    restRequest.Resource.ShouldBe("/push");
-                    restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
-                    pushNotification.Notification.Title.ShouldBe("GymSquad");
-                    pushNotification.Notification.Alert.ShouldBe($"{owner.Name} is on the way to the gym");
-                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.AddComment);
-                    if (pushNotification.Tokens.Any(t => t == owner.Devices.First().PushToken))
-                    {
-                        ownerCalled = true;
-                    }
-                    if (pushNotification.Tokens.Any(t => t == guest1.Devices.First().PushToken))
-                    {
-                        guest1Called = true;
-                    }
-                    if (pushNotification.Tokens.Any(t => t == guest2.Devices.First().PushToken))
-                    {
-                        guest2Called = true;
-                    }
-                });
-
+            
             handler.Notify(request, response);
-            restClient.ReceivedWithAnyArgs(1).Post(new RestRequest());
-            ownerCalled.ShouldBe(false);
-            guest1Called.ShouldBe(true);
-            guest2Called.ShouldBe(false);
+
+            notifier.Received().Send(
+                Arg.Is<NotificationPayload>(x => x.Alert == $"{owner.Name} is on the way to the gym" && x.Ios.Payload.Type == NofiticationTypes.AddComment),
+                Arg.Any<IEnumerable<Device>>()
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).All(t => t != owner.Devices.First().PushToken))
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == guest1.Devices.First().PushToken))
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).All(t => t != guest2.Devices.First().PushToken))
+                );
+
             ConfigIoC();
         }
 
@@ -813,8 +669,8 @@ namespace justinobney.gymbuddy.api.tests.Requests
             apptGuests.Add(apptGuest1);
             apptGuests.Add(apptGuest2);
 
-            var restClient = Substitute.For<RestClient>();
-            Context.Container.Configure(container => container.For<IRestClient>().Use(restClient));
+            var notifier = Substitute.For<IPushNotifier>();
+            Context.Container.Configure(container => container.For<IPushNotifier>().Use(notifier));
             Context.Register<IPostRequestHandler<AppointmentAddCommentCommand, Appointment>, AppointmentAddCommentPushNotifier>();
             var handler = Context.GetInstance<IPostRequestHandler<AppointmentAddCommentCommand, Appointment>>();
 
@@ -831,44 +687,28 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 UserId = owner.Id,
                 User = owner
             };
-
-            var ownerCalled = false;
-            var guest1Called = false;
-            var guest2Called = false;
-
-            restClient
-                .WhenForAnyArgs(client => client.Post(new RestRequest()))
-                .Do(info =>
-                {
-                    var restRequest = info.Arg<RestRequest>();
-                    var jsonPayload = restRequest.Parameters.Find(p => p.Name == "application/json");
-                    var pushNotification =
-                        JsonConvert.DeserializeObject<IonicPushNotification>((string)jsonPayload.Value);
-
-                    restRequest.Resource.ShouldBe("/push");
-                    restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
-                    pushNotification.Notification.Title.ShouldBe("GymSquad");
-                    pushNotification.Notification.Alert.ShouldBe($"[Comment] {owner.Name}: {request.Text}");
-                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.AddComment);
-                    if (pushNotification.Tokens.Any(t => t == owner.Devices.First().PushToken))
-                    {
-                        ownerCalled = true;
-                    }
-                    if (pushNotification.Tokens.Any(t => t == guest1.Devices.First().PushToken))
-                    {
-                        guest1Called = true;
-                    }
-                    if (pushNotification.Tokens.Any(t => t == guest2.Devices.First().PushToken))
-                    {
-                        guest2Called = true;
-                    }
-                });
-
+            
             handler.Notify(request, response);
-            restClient.ReceivedWithAnyArgs(1).Post(new RestRequest());
-            ownerCalled.ShouldBe(false);
-            guest1Called.ShouldBe(true);
-            guest2Called.ShouldBe(false);
+            notifier.Received().Send(
+                Arg.Is<NotificationPayload>(x => x.Alert == $"[Comment] {owner.Name}: {request.Text}" && x.Ios.Payload.Type == NofiticationTypes.AddComment),
+                Arg.Any<IEnumerable<Device>>()
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).All(t => t != owner.Devices.First().PushToken))
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == guest1.Devices.First().PushToken))
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).All(t => t != guest2.Devices.First().PushToken))
+                );
+
             ConfigIoC();
         }
 
@@ -946,8 +786,8 @@ namespace justinobney.gymbuddy.api.tests.Requests
             apptGuests.Add(apptGuest1);
             apptGuests.Add(apptGuest2);
 
-            var restClient = Substitute.For<RestClient>();
-            Context.Container.Configure(container => container.For<IRestClient>().Use(restClient));
+            var notifier = Substitute.For<IPushNotifier>();
+            Context.Container.Configure(container => container.For<IPushNotifier>().Use(notifier));
             Context.Register<IPostRequestHandler<AppointmentChangeTimesCommand, Appointment>, AppointmentChangeTimesCommandPushNotifier>();
             var handler = Context.GetInstance<IPostRequestHandler<AppointmentChangeTimesCommand, Appointment>>();
 
@@ -964,44 +804,28 @@ namespace justinobney.gymbuddy.api.tests.Requests
                 UserId = owner.Id,
                 User = owner
             };
-
-            var ownerCalled = false;
-            var guest1Called = false;
-            var guest2Called = false;
-
-            restClient
-                .WhenForAnyArgs(client => client.Post(new RestRequest()))
-                .Do(info =>
-                {
-                    var restRequest = info.Arg<RestRequest>();
-                    var jsonPayload = restRequest.Parameters.Find(p => p.Name == "application/json");
-                    var pushNotification =
-                        JsonConvert.DeserializeObject<IonicPushNotification>((string)jsonPayload.Value);
-
-                    restRequest.Resource.ShouldBe("/push");
-                    restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
-                    pushNotification.Notification.Title.ShouldBe("GymSquad");
-                    pushNotification.Notification.Alert.ShouldBe($"[Appointment] {owner.Name} changed the available times. You're request to join has been removed.");
-                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.AddComment);
-                    if (pushNotification.Tokens.Any(t => t == owner.Devices.First().PushToken))
-                    {
-                        ownerCalled = true;
-                    }
-                    if (pushNotification.Tokens.Any(t => t == guest1.Devices.First().PushToken))
-                    {
-                        guest1Called = true;
-                    }
-                    if (pushNotification.Tokens.Any(t => t == guest2.Devices.First().PushToken))
-                    {
-                        guest2Called = true;
-                    }
-                });
-
+            
             handler.Notify(request, response);
-            restClient.ReceivedWithAnyArgs(2).Post(new RestRequest());
-            ownerCalled.ShouldBe(false);
-            guest1Called.ShouldBe(true);
-            guest2Called.ShouldBe(true);
+            notifier.Received().Send(
+                Arg.Is<NotificationPayload>(x => x.Alert == $"[Appointment] {owner.Name} changed the available times. You're request to join has been removed." && x.Ios.Payload.Type == NofiticationTypes.AddComment),
+                Arg.Any<IEnumerable<Device>>()
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).All(t => t != owner.Devices.First().PushToken))
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == guest1.Devices.First().PushToken))
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == guest2.Devices.First().PushToken))
+                );
+
             ConfigIoC();
         }
 

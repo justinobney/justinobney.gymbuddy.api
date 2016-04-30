@@ -10,9 +10,9 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
     {
         private readonly IDbSet<Appointment> _appointments;
         private readonly IDbSet<AppointmentGuest> _guests;
-        private readonly PushNotifier _pushNotifier;
+        private readonly IPushNotifier _pushNotifier;
 
-        public ConfirmAppointmentGuestPushNotifier(IDbSet<Appointment> appointments, IDbSet<AppointmentGuest> guests, PushNotifier pushNotifier)
+        public ConfirmAppointmentGuestPushNotifier(IDbSet<Appointment> appointments, IDbSet<AppointmentGuest> guests, IPushNotifier pushNotifier)
         {
             _appointments = appointments;
             _guests = guests;

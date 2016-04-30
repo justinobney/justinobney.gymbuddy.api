@@ -1,10 +1,12 @@
-﻿using justinobney.gymbuddy.api.Data;
+﻿using Hangfire;
+using justinobney.gymbuddy.api.Data;
 using justinobney.gymbuddy.api.DependencyResolution.Registries;
 using justinobney.gymbuddy.api.tests.DependencyResolution;
 using justinobney.gymbuddy.api.tests.Helpers;
 using MediatR;
 using NSubstitute;
 using NUnit.Framework;
+using RestSharp;
 using Serilog;
 using StructureMap;
 
@@ -25,6 +27,10 @@ namespace justinobney.gymbuddy.api.tests
             registry.IncludeRegistry<GenericCrudRegistry>();
             registry.IncludeRegistry<FakeNotificationRegistry>();
             registry.IncludeRegistry<FakeEntityFrameworkRegistry>();
+            
+            var restClient = Substitute.For<RestClient>();
+            registry.For<IRestClient>().Use(restClient);
+            //registry.IncludeRegistry<ProductionInfrastructureRegistry>();
 
             var log = new LoggerConfiguration()
                 .WriteTo.ColoredConsole()

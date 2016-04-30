@@ -20,6 +20,7 @@ using System.Reflection;
 using AutoMapper;
 using FluentValidation;
 using justinobney.gymbuddy.api.Data;
+using justinobney.gymbuddy.api.Helpers;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
@@ -49,10 +50,10 @@ namespace justinobney.gymbuddy.api.DependencyResolution.Registries
                     scan.AddAllTypesOf(typeof (BaseRepository<>));
 
                     var handlerType = For(typeof (IRequestHandler<,>));
-                    handlerType.DecorateAllWith(typeof (TransactionHandler<,>), DoesNotHaveAttribute(typeof (DoNotCommit)));
-                    handlerType.DecorateAllWith(typeof (ValidateHandler<,>), DoesNotHaveAttribute(typeof (DoNotValidate)));
-                    handlerType.DecorateAllWith(typeof (AuthorizeHandler<,>), HasAttribute(typeof (Authorize)));
-                    handlerType.DecorateAllWith(typeof (LoggingHandler<,>), DoesNotHaveAttribute(typeof (DoNotLog)));
+                    handlerType.DecorateAllWith(typeof (TransactionHandler<,>), TypeExtensions.DoesNotHaveAttribute(typeof (DoNotCommit)));
+                    handlerType.DecorateAllWith(typeof (ValidateHandler<,>), TypeExtensions.DoesNotHaveAttribute(typeof (DoNotValidate)));
+                    handlerType.DecorateAllWith(typeof (AuthorizeHandler<,>), TypeExtensions.HasAttribute(typeof (Authorize)));
+                    handlerType.DecorateAllWith(typeof (LoggingHandler<,>), TypeExtensions.DoesNotHaveAttribute(typeof (DoNotLog)));
                     
                     For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => ctx.GetInstance(t));
                     For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => ctx.GetAllInstances(t));
@@ -64,23 +65,6 @@ namespace justinobney.gymbuddy.api.DependencyResolution.Registries
                     scan.WithDefaultConventions();
                 });
         }
-
-        private static Func<Instance, bool> DoesNotHaveAttribute(Type attr)
-        {
-            return instance => !ContainsAttribute(attr, instance);
-        }
-
-        private static Func<Instance, bool> HasAttribute(Type attr)
-        {
-            return instance => ContainsAttribute(attr, instance);
-        }
-
-        private static bool ContainsAttribute(Type attr, Instance instance)
-        {
-            var type = instance.ReturnedType ?? instance.GetType();
-            return type.GetCustomAttribute(attr, false) != null;
-        }
-
         #endregion
     }
 }
