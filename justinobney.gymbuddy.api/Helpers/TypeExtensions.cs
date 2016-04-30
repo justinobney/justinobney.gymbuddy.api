@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Reflection;
+using StructureMap.Pipeline;
 
 namespace justinobney.gymbuddy.api.Helpers
 {
@@ -30,6 +32,22 @@ namespace justinobney.gymbuddy.api.Helpers
             }
 
             return prettyName.Replace('+', '.');
+        }
+
+        public static Func<Instance, bool> DoesNotHaveAttribute(Type attr)
+        {
+            return instance => !ContainsAttribute(attr, instance);
+        }
+
+        public static Func<Instance, bool> HasAttribute(Type attr)
+        {
+            return instance => ContainsAttribute(attr, instance);
+        }
+
+        public static bool ContainsAttribute(Type attr, Instance instance)
+        {
+            var type = instance.ReturnedType ?? instance.GetType();
+            return type.GetCustomAttribute(attr, false) != null;
         }
     }
 }

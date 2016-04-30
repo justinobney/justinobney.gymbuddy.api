@@ -1,4 +1,6 @@
 using System.Web.Configuration;
+using Hangfire;
+using justinobney.gymbuddy.api.Helpers;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
@@ -21,7 +23,7 @@ namespace justinobney.gymbuddy.api.DependencyResolution.Registries
                 scan.TheCallingAssembly();
                 scan.AssemblyContainingType(typeof(IEntity));
                 scan.AssemblyContainingType(typeof(IPostRequestHandler<,>));
-                
+
                 if (compilationSection.Debug)
                 {
                     var restClient = Substitute.For<RestClient>();
@@ -30,16 +32,19 @@ namespace justinobney.gymbuddy.api.DependencyResolution.Registries
                 else
                 {
                     For<IRestClient>().Use(context => new RestClient());
-                    ConfigureNotifications(scan);
                 }
+
+                ConfigureNotifications(scan);
             });
             
             ConfigureLogger(compilationSection.Debug);
+
         }
 
         private void ConfigureNotifications(IAssemblyScanner scan)
         {
             scan.AddAllTypesOf(typeof(IPostRequestHandler<,>));
+            
             var handlerType = For(typeof(IRequestHandler<,>));
             handlerType.DecorateAllWith(typeof(PostRequestHandler<,>));
         }
