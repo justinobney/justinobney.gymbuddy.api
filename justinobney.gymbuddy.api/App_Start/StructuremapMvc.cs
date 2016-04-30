@@ -17,6 +17,8 @@
 
 using System;
 using System.IO;
+using Hangfire;
+using Hangfire.StructureMap;
 using justinobney.gymbuddy.api.App_Start;
 
 using WebActivatorEx;
@@ -48,6 +50,7 @@ namespace justinobney.gymbuddy.api.App_Start {
 		
         public static void Start() {
             IContainer container = IoC.Initialize();
+            GlobalConfiguration.Configuration.UseStructureMapActivator(container);
             StructureMapDependencyScope = new StructureMapDependencyScope(container);
             DependencyResolver.SetResolver(StructureMapDependencyScope);
             DynamicModuleUtility.RegisterModule(typeof(StructureMapScopeModule));

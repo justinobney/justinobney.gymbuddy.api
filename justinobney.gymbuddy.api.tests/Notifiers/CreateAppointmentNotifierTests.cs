@@ -9,10 +9,8 @@ using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Notifications;
 using justinobney.gymbuddy.api.Requests.Appointments.Create;
 using justinobney.gymbuddy.api.tests.Helpers;
-using Newtonsoft.Json;
 using NSubstitute;
 using NUnit.Framework;
-using RestSharp;
 
 namespace justinobney.gymbuddy.api.tests.Notifiers
 {
@@ -48,46 +46,32 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
 
             users.Add(user1);
             users.Add(user2);
-
-            var restClient = Substitute.For<RestClient>();
-            Context.Container.Configure(container => container.For<IRestClient>().Use(restClient));
+            
+            var notifier = Substitute.For<IPushNotifier>();
+            Context.Container.Configure(container => container.For<IPushNotifier>().Use(notifier));
             Context.Register<IPostRequestHandler<CreateAppointmentCommand, Appointment>, CreateAppointmentNotifier>();
             var handler = Context.GetInstance<IPostRequestHandler<CreateAppointmentCommand, Appointment>>();
 
             var request = new CreateAppointmentCommand { UserId = 1, GymId = 1 };
             var response = new Appointment { UserId = 1, User = new User { Name = "Justin" } };
-
-            var iosCalled = false;
-            var androidCalled = false;
-
-            restClient
-                .WhenForAnyArgs(client => client.Post(new RestRequest()))
-                .Do(info =>
-                {
-                    var restRequest = info.Arg<RestRequest>();
-                    var jsonPayload = restRequest.Parameters.Find(p => p.Name == "application/json");
-                    var pushNotification =
-                        JsonConvert.DeserializeObject<IonicPushNotification>((string)jsonPayload.Value);
-
-                    restRequest.Resource.ShouldBe("/push");
-                    restRequest.Parameters.Find(p => p.Name == "X-Ionic-Application-Id").ShouldNotBeNull();
-                    pushNotification.Notification.Title.ShouldBe("New Appointment Available");
-                    pushNotification.Notification.Ios.Payload.Type.ShouldBe(NofiticationTypes.CreateAppointment);
-                    if (pushNotification.Tokens.Any(t => t == "123456"))
-                    {
-                        iosCalled = true;
-                    }
-                    if (pushNotification.Tokens.Any(t => t == "654321"))
-                    {
-                        androidCalled = true;
-                    }
-                });
-
+            
             handler.Notify(request, response);
+            notifier.Received().Send(
+                Arg.Is<NotificationPayload>(x => x.Title == "New Appointment Available"),
+                Arg.Any<IEnumerable<Device>>()
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x=>x.Select(y=>y.PushToken).Any(t => t == "123456"))
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == "654321"))
+                );
 
             notifications.Count(x => x.UserId == user1.Id).ShouldBe(1);
-            iosCalled.ShouldBe(true);
-            androidCalled.ShouldBe(true);
 
             ConfigIoC();
         }

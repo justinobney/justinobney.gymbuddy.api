@@ -4,6 +4,7 @@ using System.Linq;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Data.Devices;
 using justinobney.gymbuddy.api.Enums;
+using justinobney.gymbuddy.api.Interfaces;
 
 namespace justinobney.gymbuddy.api.Notifications
 {
@@ -18,12 +19,12 @@ namespace justinobney.gymbuddy.api.Notifications
 
     public class OtherPartiesNotifier
     {
-        private readonly PushNotifier _pushNotifier;
+        private readonly IPushNotifier _pushNotifier;
         private readonly IDbSet<Appointment> _appointments;
         private readonly IDbSet<AppointmentGuest> _guests;
 
         public OtherPartiesNotifier(
-            PushNotifier pushNotifier,
+            IPushNotifier pushNotifier,
             IDbSet<Appointment> appointments,
             IDbSet<AppointmentGuest> guests
             )

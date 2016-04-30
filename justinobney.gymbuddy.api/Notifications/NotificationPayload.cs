@@ -23,11 +23,13 @@ namespace justinobney.gymbuddy.api.Notifications
     public class Android
     {
         public AdditionalData Payload { get; set; }
+        public string Sound = "default";
     }
     
     public class Ios
     {
         public AdditionalData Payload { get; set; }
+        public string Sound = "default";
         public int? Badge { get; set; }
     }
 

@@ -15,13 +15,13 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Create
         private readonly IDbSet<User> _users;
         private readonly IDbSet<Notification> _notifications;
         private readonly AppContext _context;
-        private readonly PushNotifier _pushNotifier;
+        private readonly IPushNotifier _pushNotifier;
 
         public CreateAppointmentNotifier(
             IDbSet<User> users,
             IDbSet<Notification> notifications,
             AppContext context,
-            PushNotifier pushNotifier
+            IPushNotifier pushNotifier
             )
         {
             _users = users;
@@ -53,8 +53,8 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Create
             var additionalData = new AdditionalData { Type = NofiticationTypes.CreateAppointment };
             var message = new NotificationPayload(additionalData)
             {
-                Alert = $"{response.User.Name} wants to work: {request.Title}",
-                Title = "New Appointment Available"
+                Title = "New Appointment Available",
+                Alert = $"{response.User.Name} wants to work: {request.Title}"
             };
 
             _context.SaveChanges();

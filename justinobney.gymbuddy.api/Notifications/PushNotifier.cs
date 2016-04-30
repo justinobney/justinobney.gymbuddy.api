@@ -1,16 +1,18 @@
 using System.Collections.Generic;
 using System.Linq;
+using Hangfire;
 using justinobney.gymbuddy.api.Data.Devices;
+using justinobney.gymbuddy.api.Interfaces;
 using RestSharp;
 using Serilog;
 
 namespace justinobney.gymbuddy.api.Notifications
 {
-    public class PushNotifier
+    public class PushNotifier : IPushNotifier
     {
         private readonly IRestClient _client;
         private readonly ILogger _logger;
-
+        
         public PushNotifier(IRestClient client, ILogger logger)
         {
             _client = client;
@@ -35,11 +37,14 @@ namespace justinobney.gymbuddy.api.Notifications
                     .ToList()
             };
 
-            var iosResp = iosNotification.Send(_client);
-            var androidResp = androidNotification.Send(_client);
+            BackgroundJob.Enqueue(() => ProcessNotification(iosNotification));
+            BackgroundJob.Enqueue(() => ProcessNotification(androidNotification));
+        }
 
-            _logger.Information($"iOS Notification: {iosResp.Content} ::: Tokens: {string.Join(", ", iosNotification.Tokens.ToArray())}");
-            _logger.Information($"Android Notification: {androidResp.Content} ::: Tokens: {string.Join(", ", androidNotification.Tokens.ToArray())}");
+        private void ProcessNotification(IonicPushNotification notification)
+        {
+            var resp = notification.Send(_client);
+            _logger.Information($"Notification: {resp.Content} ::: Tokens: {string.Join(", ", notification.Tokens.ToArray())}");
         }
     }
 }

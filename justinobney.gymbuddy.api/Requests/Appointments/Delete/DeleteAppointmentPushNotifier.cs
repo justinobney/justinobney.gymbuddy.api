@@ -2,15 +2,14 @@ using System.Linq;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Notifications;
-using justinobney.gymbuddy.api.Requests.Decorators;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments.Delete
 {
     public class DeleteAppointmentPushNotifier : IPostRequestHandler<DeleteAppointmentCommand, Appointment>
     {
-        private readonly PushNotifier _pushNotifier;
+        private readonly IPushNotifier _pushNotifier;
 
-        public DeleteAppointmentPushNotifier(PushNotifier pushNotifier)
+        public DeleteAppointmentPushNotifier(IPushNotifier pushNotifier)
         {
             _pushNotifier = pushNotifier;
         }
