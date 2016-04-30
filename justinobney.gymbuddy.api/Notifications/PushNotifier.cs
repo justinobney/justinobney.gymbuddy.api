@@ -41,7 +41,7 @@ namespace justinobney.gymbuddy.api.Notifications
             BackgroundJob.Enqueue(() => ProcessNotification(androidNotification));
         }
 
-        private void ProcessNotification(IonicPushNotification notification)
+        public void ProcessNotification(IonicPushNotification notification)
         {
             var resp = notification.Send(_client);
             _logger.Information($"Notification: {resp.Content} ::: Tokens: {string.Join(", ", notification.Tokens.ToArray())}");
