@@ -9,6 +9,7 @@ using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Notifications;
 using justinobney.gymbuddy.api.Responses;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments.Create
 {
@@ -48,7 +49,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Create
                 Message = $"{response.User.Name} wants to work: {request.Title}",
                 Title = "New Appointment Available",
                 CreatedAt = DateTime.UtcNow,
-                JsonPayload = JsonConvert.SerializeObject(MappingConfig.Instance.Map<AppointmentListing>(response))
+                JsonPayload = JsonConvert.SerializeObject(MappingConfig.Instance.Map<AppointmentListing>(response), StaticConfig.JsonSerializerSettings)
             })
             .ToList()
             .ForEach(x=>_notifications.Add(x));

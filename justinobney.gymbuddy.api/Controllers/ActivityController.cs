@@ -27,7 +27,9 @@ namespace justinobney.gymbuddy.api.Controllers
                 Predicate = x => x.UserId == CurrentUser.Id
             };
 
-            var notifications = _mediator.Send(reuest).ToList();
+            var notifications = _mediator.Send(reuest)
+                .OrderByDescending(x=>x.CreatedAt)
+                .ToList();
 
             return Ok(notifications);
         }
