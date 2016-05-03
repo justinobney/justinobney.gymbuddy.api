@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -69,6 +70,7 @@ namespace justinobney.gymbuddy.api.Controllers
             var request = new GetAllByPredicateQuery<Appointment>(u => u.Id == id);
 
             var appointment = _mediator.Send(request)
+                .Include(x=>x.GuestList)
                 .ProjectTo<AppointmentListing>(MappingConfig.Config)
                 .FirstOrDefault();
 
