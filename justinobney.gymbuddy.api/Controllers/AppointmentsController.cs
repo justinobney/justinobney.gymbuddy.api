@@ -119,7 +119,7 @@ namespace justinobney.gymbuddy.api.Controllers
         }
 
         [Route("api/Appointments/{id}/Add-Guest/{timeSlotId}")]
-        [ResponseType(typeof(AppointmentListing))]
+        [ResponseType(typeof(AppointmentGuestListing))]
         public IHttpActionResult AddAppointmentGuest(long id, long timeSlotId)
         {
             var command = new AddAppointmentGuestCommand
@@ -129,8 +129,8 @@ namespace justinobney.gymbuddy.api.Controllers
                 AppointmentTimeSlotId = timeSlotId
             };
 
-            var appointment = _mediator.Send(command);
-            var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
+            var guest = _mediator.Send(command);
+            var listing = MappingConfig.Instance.Map<AppointmentGuestListing>(guest);
             return Ok(listing);
         }
 

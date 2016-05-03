@@ -6,38 +6,47 @@ using MediatR;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments.AddAppointmentGuest
 {
-    public class AddAppointmentGuestCommand : IRequest<Appointment>
+    public class AddAppointmentGuestCommand : IRequest<AppointmentGuest>
     {
         public long UserId { get; set; }
         public long AppointmentId { get; set; }
         public long AppointmentTimeSlotId { get; set; }
     }
 
-    public class AddAppointmentGuestCommandHandler : IRequestHandler<AddAppointmentGuestCommand, Appointment>
+    public class AddAppointmentGuestCommandHandler : IRequestHandler<AddAppointmentGuestCommand, AppointmentGuest>
     {
         private readonly IDbSet<Appointment> _appointments;
+        private readonly IDbSet<AppointmentGuest> _guests;
 
-        public AddAppointmentGuestCommandHandler(IDbSet<Appointment> appointments)
+        public AddAppointmentGuestCommandHandler(
+            IDbSet<Appointment> appointments,
+            IDbSet<AppointmentGuest> guests
+            )
         {
             _appointments = appointments;
+            _guests = guests;
         }
 
-        public Appointment Handle(AddAppointmentGuestCommand message)
+        public AppointmentGuest Handle(AddAppointmentGuestCommand message)
         {
             var appt = _appointments
                 .Include(x => x.GuestList)
+                .Include(x => x.TimeSlots)
                 .FirstOrDefault(x => x.Id == message.AppointmentId);
 
-            appt.GuestList.Add(new AppointmentGuest
+            var guest = new AppointmentGuest
             {
                 UserId = message.UserId,
                 AppointmentTimeSlotId = message.AppointmentTimeSlotId,
+                AppointmentId = message.AppointmentId,
                 Status = AppointmentGuestStatus.Pending
-            });
+            };
+
+            _guests.Add(guest);
 
             appt.Status = AppointmentStatus.PendingGuestConfirmation;
 
-            return appt;
+            return guest;
         }
     }
 }
