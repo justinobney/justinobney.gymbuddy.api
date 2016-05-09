@@ -83,11 +83,11 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
             var notifier = Substitute.For<IPushNotifier>();
             Context.Container.Configure(container => container.For<IPushNotifier>().Use(notifier));
 
-            Context.Register<IPostRequestHandler<AddAppointmentGuestCommand, Appointment>, AddAppointmentGuestPushNotifier>();
-            var handler = Context.GetInstance<IPostRequestHandler<AddAppointmentGuestCommand, Appointment>>();
+            Context.Register<IPostRequestHandler<AddAppointmentGuestCommand, AppointmentGuest>, AddAppointmentGuestPushNotifier>();
+            var handler = Context.GetInstance<IPostRequestHandler<AddAppointmentGuestCommand, AppointmentGuest>>();
 
             var request = new AddAppointmentGuestCommand { AppointmentId = 1, UserId = 2 };
-            var response = new Appointment { UserId = 1, User = new User { Name = "Justin" } };
+            var response = new AppointmentGuest { UserId = 1, User = new User { Name = "Justin" } };
             
             handler.Notify(request, response);
             notifier.Received().Send(

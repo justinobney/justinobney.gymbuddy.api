@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -69,6 +70,7 @@ namespace justinobney.gymbuddy.api.Controllers
             var request = new GetAllByPredicateQuery<Appointment>(u => u.Id == id);
 
             var appointment = _mediator.Send(request)
+                .Include(x=>x.GuestList)
                 .ProjectTo<AppointmentListing>(MappingConfig.Config)
                 .FirstOrDefault();
 
@@ -119,7 +121,7 @@ namespace justinobney.gymbuddy.api.Controllers
         }
 
         [Route("api/Appointments/{id}/Add-Guest/{timeSlotId}")]
-        [ResponseType(typeof(AppointmentListing))]
+        [ResponseType(typeof(AppointmentGuestListing))]
         public IHttpActionResult AddAppointmentGuest(long id, long timeSlotId)
         {
             var command = new AddAppointmentGuestCommand
@@ -129,8 +131,8 @@ namespace justinobney.gymbuddy.api.Controllers
                 AppointmentTimeSlotId = timeSlotId
             };
 
-            var appointment = _mediator.Send(command);
-            var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
+            var guest = _mediator.Send(command);
+            var listing = MappingConfig.Instance.Map<AppointmentGuestListing>(guest);
             return Ok(listing);
         }
 

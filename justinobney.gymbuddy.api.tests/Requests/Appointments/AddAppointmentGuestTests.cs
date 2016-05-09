@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentValidation;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Data.Gyms;
@@ -46,16 +47,18 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
         public void AddAppointmentGuestCommand_AddsGuestAndChangesStatus()
         {
             var appointments = Context.GetSet<Appointment>();
+            var guests = Context.GetSet<AppointmentGuest>();
             appointments.Attach(new Appointment { Id = 1, GuestList = new List<AppointmentGuest>() });
 
-            var appt = Mediator.Send(new AddAppointmentGuestCommand
+            var guest = Mediator.Send(new AddAppointmentGuestCommand
             {
                 AppointmentId = 1,
                 UserId = 1, // todo: should throw on null
                 AppointmentTimeSlotId = 1 // todo: should throw on null
             });
 
-            appt.GuestList.Count.ShouldBe(1);
+            guests.Select(x=>x.AppointmentTimeSlotId == guest.AppointmentTimeSlotId).Count().ShouldBe(1);
+            var appt = appointments.First(x => x.Id == guest.AppointmentId);
             appt.Status.ShouldBe(AppointmentStatus.PendingGuestConfirmation);
         }
 

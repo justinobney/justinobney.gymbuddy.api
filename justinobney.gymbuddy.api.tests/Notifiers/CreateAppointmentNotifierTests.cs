@@ -70,9 +70,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
                 Arg.Any<NotificationPayload>(),
                 Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == "654321"))
                 );
-
-            notifications.Count(x => x.UserId == user1.Id).ShouldBe(1);
-
+            
             ConfigIoC();
         }
     }
