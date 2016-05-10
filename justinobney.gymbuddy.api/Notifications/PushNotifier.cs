@@ -26,6 +26,7 @@ namespace justinobney.gymbuddy.api.Notifications
                 Production = true,
                 Tokens = devices.Where(y => y.Platform == "iOS" && !string.IsNullOrEmpty(y.PushToken))
                     .Select(y => y.PushToken)
+                    .Distinct()
                     .ToList()
             };
 
@@ -34,6 +35,7 @@ namespace justinobney.gymbuddy.api.Notifications
                 Production = true,
                 Tokens = devices.Where(y => y.Platform == "Android" && !string.IsNullOrEmpty(y.PushToken))
                     .Select(y => y.PushToken)
+                    .Distinct()
                     .ToList()
             };
 

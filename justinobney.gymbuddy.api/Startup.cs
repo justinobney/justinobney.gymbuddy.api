@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Hangfire;
 using Hangfire.Dashboard;
 using justinobney.gymbuddy.api;
@@ -15,33 +16,21 @@ namespace justinobney.gymbuddy.api
             GlobalConfiguration.Configuration
                 .UseSqlServerStorage("AppContext");
             
-            var filter = new BasicAuthAuthorizationFilter(
-                new BasicAuthAuthorizationFilterOptions
-                {
-                    // Require secure connection for dashboard
-                    RequireSsl = false,
-                    SslRedirect = false,
-                    // Case sensitive login checking
-                    LoginCaseSensitive = true,
-                    // Users
-                    Users = new[]
-                    {
-                        new BasicAuthAuthorizationUser
-                        {
-                            Login = "jobney",
-                            // Password as plain text
-                            PasswordClear = "hangfire_jobs"
-                        }
-                    }
-                });
-
             var options = new DashboardOptions
             {
-                AuthorizationFilters = new[] { filter }
+                AuthorizationFilters = new[] { new MyNonRestrictiveAuthorizationFilter() }
             };
 
             app.UseHangfireDashboard("/jobs", options);
             app.UseHangfireServer();
+        }
+    }
+
+    public class MyNonRestrictiveAuthorizationFilter : IAuthorizationFilter
+    {
+        public bool Authorize(IDictionary<string, object> owinEnvironment)
+        {
+            return true;
         }
     }
 }

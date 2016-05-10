@@ -33,7 +33,8 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Comments
             {
                 AppointmentId = request.AppointmentId,
                 UserId = request.UserId,
-                AdditionalData = additionalData
+                AdditionalData = additionalData,
+                IncludePending = true
             };
             _otherPartiesNotifier.Send(notifierRequest, message);
         }
