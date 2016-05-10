@@ -22,7 +22,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
     {
         private readonly IDbSet<Appointment> _appointments;
         private readonly IDbSet<User> _users;
-
+        
         public GetAvailableAppointmentsForUserQueryHandler(IDbSet<Appointment> appointments, IDbSet<User> users)
         {
             _appointments = appointments;
