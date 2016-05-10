@@ -137,7 +137,7 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
             });
 
             var timeslot = new AppointmentTimeSlot { Id = 1, Time = DateTime.Now.AddDays(1) };
-            Context.GetSet<Appointment>().Attach(new Appointment
+            var appt = new Appointment
             {
                 Id = 4,
                 GymId = DefaultGym.Id,
@@ -147,20 +147,23 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
                 Comments = new List<AppointmentComment>(),
                 TimeSlots = new List<AppointmentTimeSlot> {timeslot},
                 Status = AppointmentStatus.PendingGuestConfirmation,
-                GuestList =
-                    new List<AppointmentGuest>
-                    {
-                        new AppointmentGuest
-                        {
-                            UserId = CurrentUser.Id,
-                            User = CurrentUser,
-                            AppointmentTimeSlotId = timeslot.Id,
-                            TimeSlot = timeslot,
-                            AppointmentId = 4,
-                            Status = AppointmentGuestStatus.Pending
-                        }
-                    }
-            });
+                GuestList = new List<AppointmentGuest>()
+            };
+
+            var guest = new AppointmentGuest
+            {
+                UserId = CurrentUser.Id,
+                User = CurrentUser,
+                AppointmentTimeSlotId = timeslot.Id,
+                TimeSlot = timeslot,
+                AppointmentId = 4,
+                Status = AppointmentGuestStatus.Pending,
+                Appointment = appt
+            };
+
+            appt.GuestList.Add(guest);
+
+            Context.GetSet<Appointment>().Attach(appt);
 
             var appts = Mediator.Send(new GetScheduledAppointmentsForUserQuery
             {

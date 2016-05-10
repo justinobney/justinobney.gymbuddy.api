@@ -3,8 +3,9 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
-using justinobney.gymbuddy.api.Data.Appointments;
+using AutoMapper.QueryableExtensions;
 using justinobney.gymbuddy.api.Requests.Guests;
+using justinobney.gymbuddy.api.Responses;
 using MediatR;
 
 namespace justinobney.gymbuddy.api.Controllers
@@ -19,13 +20,14 @@ namespace justinobney.gymbuddy.api.Controllers
         }
 
         // GET: api/Users
-        [ResponseType(typeof(IEnumerable<AppointmentGuest>))]
+        [ResponseType(typeof(IEnumerable<AppointmentGuestListing>))]
         public IHttpActionResult GetActivity()
         {
             var notifications = _mediator.Send(new GetOpenRequestsForUserQuery {UserId = CurrentUser.Id})
-                .Include(x=>x.TimeSlot.Time)
+                .Include(x=>x.TimeSlot)
+                .Include(x=>x.User)
                 .OrderByDescending(x => x.TimeSlot.Time)
-                .ToList();
+                .ProjectTo<AppointmentGuestListing>(MappingConfig.Config);
 
             return Ok(notifications);
         }

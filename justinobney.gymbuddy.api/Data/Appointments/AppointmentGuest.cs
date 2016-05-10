@@ -11,6 +11,8 @@ namespace justinobney.gymbuddy.api.Data.Appointments
         public long AppointmentId { get; set; }
         public long AppointmentTimeSlotId { get; set; }
 
+        public virtual Appointment Appointment { get; set; }
+
         public AppointmentTimeSlot TimeSlot { get; set; }
 
         public AppointmentGuestStatus Status { get; set; }
