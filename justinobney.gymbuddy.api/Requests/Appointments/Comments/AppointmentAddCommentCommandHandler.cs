@@ -2,7 +2,6 @@ using System;
 using System.Data.Entity;
 using System.Linq;
 using justinobney.gymbuddy.api.Data.Appointments;
-using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 

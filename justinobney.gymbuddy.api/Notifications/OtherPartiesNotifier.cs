@@ -22,21 +22,32 @@ namespace justinobney.gymbuddy.api.Notifications
         private readonly IPushNotifier _pushNotifier;
         private readonly IDbSet<Appointment> _appointments;
         private readonly IDbSet<AppointmentGuest> _guests;
+        private readonly IDbSet<AppointmentComment> _comments;
 
         public OtherPartiesNotifier(
             IPushNotifier pushNotifier,
             IDbSet<Appointment> appointments,
-            IDbSet<AppointmentGuest> guests
+            IDbSet<AppointmentGuest> guests,
+            IDbSet<AppointmentComment> comments
             )
         {
             _pushNotifier = pushNotifier;
             _appointments = appointments;
             _guests = guests;
+            _comments = comments;
         }
 
         public void Send(OtherPartiesNotifierRequest notifierRequest, NotificationPayload message)
         {
             IEnumerable<Device> guestDevices = notifierRequest.Devices ?? new List<Device>();
+
+            var appt = _appointments
+                .Include(x => x.User.Devices)
+                .First(x => x.Id == notifierRequest.AppointmentId);
+
+            var commentorDevices = _comments
+                .Where(x => x.AppointmentId == notifierRequest.AppointmentId)
+                .SelectMany(x => x.User.Devices);
 
             if (!guestDevices.Any())
             {
@@ -53,11 +64,10 @@ namespace justinobney.gymbuddy.api.Notifications
             }
             
 
-            var devices = _appointments
-                .Include(x => x.User.Devices)
-                .First(x => x.Id == notifierRequest.AppointmentId)
+            var devices = appt
                 .User.Devices
                 .Concat(guestDevices)
+                .Concat(commentorDevices)
                 .Where(x => x.UserId != notifierRequest.UserId);
 
             _pushNotifier.Send(message, devices);

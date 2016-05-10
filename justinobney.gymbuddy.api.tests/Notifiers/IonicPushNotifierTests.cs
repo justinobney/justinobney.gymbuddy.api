@@ -706,11 +706,270 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
 
             notifier.Received().Send(
                 Arg.Any<NotificationPayload>(),
-                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).All(t => t != guest2.Devices.First().PushToken))
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == guest2.Devices.First().PushToken))
                 );
 
             ConfigIoC();
         }
+
+        [Test]
+        public void AppointmentAddCommentPushNotifier_IncludesPending_CallsRestSharpMethodWithGuestTokens()
+        {
+            var users = Context.GetSet<User>();
+            var appts = Context.GetSet<Appointment>();
+            var apptGuests = Context.GetSet<AppointmentGuest>();
+
+            var owner = new User
+            {
+                Id = 1,
+                Name = "Owner",
+                Devices = new List<Device>
+                {
+                    new Device {PushToken = "000000", Platform = "iOS", UserId = 1}
+                }
+            };
+
+            var guest1 = new User
+            {
+                Id = 2,
+                Name = "Guest 1",
+                Devices = new List<Device>
+                {
+                    new Device {PushToken = "123456", Platform = "iOS", UserId = 2}
+                }
+            };
+
+            var guest2 = new User
+            {
+                Id = 3,
+                Devices = new List<Device>
+                {
+                    new Device {PushToken = "654321", Platform = "Android", UserId = 3}
+                }
+            };
+
+            users.Add(owner);
+            users.Add(guest1);
+            users.Add(guest2);
+
+            var apptGuest1 = new AppointmentGuest
+            {
+                Id = 2,
+                AppointmentId = 1,
+                UserId = guest1.Id,
+                User = guest1,
+                Status = AppointmentGuestStatus.Confirmed
+            };
+
+            var apptGuest2 = new AppointmentGuest
+            {
+                Id = 3,
+                AppointmentId = 1,
+                UserId = guest2.Id,
+                User = guest2,
+                Status = AppointmentGuestStatus.Pending
+            };
+
+            var appt = new Appointment
+            {
+                Id = 1,
+                User = owner,
+                UserId = owner.Id,
+                GuestList = new List<AppointmentGuest>
+                {
+                    apptGuest1,
+                    apptGuest2
+                }
+            };
+
+            appts.Add(appt);
+            apptGuests.Add(apptGuest1);
+            apptGuests.Add(apptGuest2);
+
+            var notifier = Substitute.For<IPushNotifier>();
+            Context.Container.Configure(container => container.For<IPushNotifier>().Use(notifier));
+            Context.Register<IPostRequestHandler<AppointmentAddCommentCommand, Appointment>, AppointmentAddCommentPushNotifier>();
+            var handler = Context.GetInstance<IPostRequestHandler<AppointmentAddCommentCommand, Appointment>>();
+
+            var request = new AppointmentAddCommentCommand
+            {
+                AppointmentId = appt.Id,
+                UserId = owner.Id,
+                Text = "Foo"
+            };
+
+            var response = new Appointment
+            {
+                GuestList = appt.GuestList,
+                UserId = owner.Id,
+                User = owner
+            };
+
+            handler.Notify(request, response);
+            notifier.Received().Send(
+                Arg.Is<NotificationPayload>(x => x.Alert == $"[Comment] {owner.Name}: {request.Text}" && x.Ios.Payload.Type == NofiticationTypes.AddComment),
+                Arg.Any<IEnumerable<Device>>()
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).All(t => t != owner.Devices.First().PushToken))
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == guest1.Devices.First().PushToken))
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == guest2.Devices.First().PushToken))
+                );
+
+            ConfigIoC();
+        }
+
+        [Test]
+        public void AppointmentAddCommentPushNotifier_IncludesCommentors_CallsRestSharpMethodWithGuestTokens()
+        {
+            var users = Context.GetSet<User>();
+            var appts = Context.GetSet<Appointment>();
+            var apptGuests = Context.GetSet<AppointmentGuest>();
+            var comments = Context.GetSet<AppointmentComment>();
+
+            var owner = new User
+            {
+                Id = 1,
+                Name = "Owner",
+                Devices = new List<Device>
+                {
+                    new Device {PushToken = "000000", Platform = "iOS", UserId = 1}
+                }
+            };
+
+            var guest1 = new User
+            {
+                Id = 2,
+                Name = "Guest 1",
+                Devices = new List<Device>
+                {
+                    new Device {PushToken = "123456", Platform = "iOS", UserId = 2}
+                }
+            };
+            
+            var guest2 = new User
+            {
+                Id = 3,
+                Devices = new List<Device>
+                {
+                    new Device {PushToken = "654321", Platform = "Android", UserId = 3}
+                }
+            };
+
+            var commentor = new User
+            {
+                Id = 99,
+                Devices = new List<Device>
+                {
+                    new Device {PushToken = "99", Platform = "Android", UserId = 99}
+                }
+            };
+
+            users.Add(owner);
+            users.Add(guest1);
+            users.Add(guest2);
+            users.Add(commentor);
+
+            comments.Add(new AppointmentComment
+            {
+                UserId = 99,
+                User = commentor,
+                AppointmentId = 1,
+                Text = "Boom"
+            });
+
+            var apptGuest1 = new AppointmentGuest
+            {
+                Id = 2,
+                AppointmentId = 1,
+                UserId = guest1.Id,
+                User = guest1,
+                Status = AppointmentGuestStatus.Confirmed
+            };
+
+            var apptGuest2 = new AppointmentGuest
+            {
+                Id = 3,
+                AppointmentId = 1,
+                UserId = guest2.Id,
+                User = guest2,
+                Status = AppointmentGuestStatus.Pending
+            };
+
+            var appt = new Appointment
+            {
+                Id = 1,
+                User = owner,
+                UserId = owner.Id,
+                GuestList = new List<AppointmentGuest>
+                {
+                    apptGuest1,
+                    apptGuest2
+                }
+            };
+
+            appts.Add(appt);
+            apptGuests.Add(apptGuest1);
+            apptGuests.Add(apptGuest2);
+
+            var notifier = Substitute.For<IPushNotifier>();
+            Context.Container.Configure(container => container.For<IPushNotifier>().Use(notifier));
+            Context.Register<IPostRequestHandler<AppointmentAddCommentCommand, Appointment>, AppointmentAddCommentPushNotifier>();
+            var handler = Context.GetInstance<IPostRequestHandler<AppointmentAddCommentCommand, Appointment>>();
+
+            var request = new AppointmentAddCommentCommand
+            {
+                AppointmentId = appt.Id,
+                UserId = owner.Id,
+                Text = "Foo"
+            };
+
+            var response = new Appointment
+            {
+                GuestList = appt.GuestList,
+                UserId = owner.Id,
+                User = owner
+            };
+
+            handler.Notify(request, response);
+            notifier.Received().Send(
+                Arg.Is<NotificationPayload>(x => x.Alert == $"[Comment] {owner.Name}: {request.Text}" && x.Ios.Payload.Type == NofiticationTypes.AddComment),
+                Arg.Any<IEnumerable<Device>>()
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).All(t => t != owner.Devices.First().PushToken))
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == guest1.Devices.First().PushToken))
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == guest2.Devices.First().PushToken))
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == commentor.Devices.First().PushToken))
+                );
+
+            ConfigIoC();
+        }
+
 
         [Test]
         public void AppointmentChangeTimesCommandPushNotifier_CallsRestSharpMethodWithGuestTokens()
