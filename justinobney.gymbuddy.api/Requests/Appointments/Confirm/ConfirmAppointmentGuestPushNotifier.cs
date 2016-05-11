@@ -22,7 +22,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
         public void Notify(ConfirmAppointmentGuestCommand request, AppointmentGuest response)
         {
             var appt = _appointments
-                .Include(x => x.User)
+                .Include(x => x.User.Devices)
                 .Include(x => x.GuestList)
                 .First(x => x.Id == request.AppointmentId);
 

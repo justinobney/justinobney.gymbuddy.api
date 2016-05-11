@@ -21,7 +21,7 @@ namespace justinobney.gymbuddy.api.Controllers
 
         // GET: api/Users
         [ResponseType(typeof(IEnumerable<AppointmentGuestListing>))]
-        public IHttpActionResult GetActivity()
+        public IHttpActionResult GetRequests()
         {
             var notifications = _mediator.Send(new GetOpenRequestsForUserQuery {UserId = CurrentUser.Id})
                 .Include(x=>x.TimeSlot)
@@ -30,6 +30,13 @@ namespace justinobney.gymbuddy.api.Controllers
                 .ProjectTo<AppointmentGuestListing>(MappingConfig.Config);
 
             return Ok(notifications);
+        }
+
+        [Route("api/Activity")]
+        [ResponseType(typeof(IEnumerable<AppointmentGuestListing>))]
+        public IHttpActionResult GetActivity()
+        {
+            return GetRequests();
         }
     }
 }
