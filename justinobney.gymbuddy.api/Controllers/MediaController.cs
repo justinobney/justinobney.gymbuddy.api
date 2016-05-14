@@ -1,7 +1,5 @@
 using System;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Web;
 using System.Web.Http;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;

@@ -13,11 +13,8 @@ namespace justinobney.gymbuddy.api.Controllers
 {
     public class GymsController : AuthenticatedController
     {
-        private readonly Mediator _mediator;
-
-        public GymsController(Mediator mediator):base(mediator)
+        public GymsController(IMediator mediator):base(mediator)
         {
-            _mediator = mediator;
         }
 
         // GET: api/Gyms
