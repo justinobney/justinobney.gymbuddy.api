@@ -383,6 +383,10 @@
     <Compile Include="Migrations\201604290122587_Notification_UpdateTimestampsAddMessage.Designer.cs">
       <DependentUpon>201604290122587_Notification_UpdateTimestampsAddMessage.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605142043577_User_AddProfilePicture.cs" />
+    <Compile Include="Migrations\201605142043577_User_AddProfilePicture.Designer.cs">
+      <DependentUpon>201605142043577_User_AddProfilePicture.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
     <Compile Include="Notifications\NofiticationTypes.cs" />
@@ -471,6 +475,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604290122587_Notification_UpdateTimestampsAddMessage.resx">
       <DependentUpon>201604290122587_Notification_UpdateTimestampsAddMessage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605142043577_User_AddProfilePicture.resx">
+      <DependentUpon>201605142043577_User_AddProfilePicture.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>
