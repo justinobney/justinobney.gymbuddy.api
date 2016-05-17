@@ -111,5 +111,22 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok();
         }
 
+        [ResponseType(typeof(object))]
+        [HttpPost]
+        [Route("api/Users/Update-Profile-Image")]
+        public IHttpActionResult UpdateProfilePicture(UpdateUserProfileImageCommand command)
+        {
+            if (CurrentUser == null)
+            {
+                return Unauthorized();
+            }
+
+            command.UserId = CurrentUser.Id;
+
+            var user = _mediator.Send(command);
+            var profile = MappingConfig.Instance.Map<ProfileListing>(user);
+            return Ok(profile);
+        }
+
     }
 }

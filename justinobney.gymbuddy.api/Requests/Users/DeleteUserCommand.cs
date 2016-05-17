@@ -1,7 +1,6 @@
 using System;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Requests.Decorators;

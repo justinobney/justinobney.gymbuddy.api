@@ -292,7 +292,6 @@
     <Compile Include="App_Start\StructuremapWebApi.cs" />
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\MediaController.cs" />
     <Compile Include="Controllers\RequestsController.cs" />
     <Compile Include="Controllers\AppointmentsController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
@@ -339,6 +338,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CamelCaseSerializer.cs" />
+    <Compile Include="Helpers\ImageHelpers.cs" />
     <Compile Include="Helpers\TypeExtensions.cs" />
     <Compile Include="Interfaces\IAuthorize.cs" />
     <Compile Include="Interfaces\IAutoMapperConfiguration.cs" />
@@ -435,6 +435,7 @@
     <Compile Include="Requests\Users\DeleteUserCommand.cs" />
     <Compile Include="Requests\Users\UpdateDeviceCommand.cs" />
     <Compile Include="Requests\Users\UpdateUserCommand.cs" />
+    <Compile Include="Requests\Users\UpdateUserProfileImageCommand.cs" />
     <Compile Include="Responses\ApiError.cs" />
     <Compile Include="Responses\AppointmentGuestListing.cs" />
     <Compile Include="Responses\AppointmentListing.cs" />

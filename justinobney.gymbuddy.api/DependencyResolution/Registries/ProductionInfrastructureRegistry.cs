@@ -1,6 +1,6 @@
+using System.Configuration;
 using System.Web.Configuration;
-using Hangfire;
-using justinobney.gymbuddy.api.Helpers;
+using CloudinaryDotNet;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
@@ -16,7 +16,7 @@ namespace justinobney.gymbuddy.api.DependencyResolution.Registries
     {
         public ProductionInfrastructureRegistry()
         {
-            var compilationSection = (CompilationSection)System.Configuration.ConfigurationManager.GetSection(@"system.web/compilation");
+            var compilationSection = (CompilationSection)ConfigurationManager.GetSection(@"system.web/compilation");
 
             Scan(scan =>
             {
@@ -28,10 +28,19 @@ namespace justinobney.gymbuddy.api.DependencyResolution.Registries
                 {
                     var restClient = Substitute.For<RestClient>();
                     For<IRestClient>().Use(context => restClient);
+
+                    var cloudinary = Substitute.For<Cloudinary>("fake", "fake", "fake");
+                    For<Cloudinary>().Use(context => cloudinary);
                 }
                 else
                 {
                     For<IRestClient>().Use(context => new RestClient());
+
+                    var cloud = ConfigurationManager.AppSettings.Get("Cloudinary-Cloud");
+                    var key = ConfigurationManager.AppSettings.Get("Cloudinary-ApiKey");
+                    var secret = ConfigurationManager.AppSettings.Get("Cloudinary-ApiSecret");
+                    var account = new Account(cloud,key,secret);
+                    For<Cloudinary>().Use(new Cloudinary(account));
                 }
 
                 ConfigureNotifications(scan);
@@ -44,9 +53,7 @@ namespace justinobney.gymbuddy.api.DependencyResolution.Registries
         private void ConfigureNotifications(IAssemblyScanner scan)
         {
             scan.AddAllTypesOf(typeof(IPostRequestHandler<,>));
-            
-            var handlerType = For(typeof(IRequestHandler<,>));
-            handlerType.DecorateAllWith(typeof(PostRequestHandler<,>));
+            For(typeof(IRequestHandler<,>)).DecorateAllWith(typeof(PostRequestHandler<,>));
         }
 
         private void ConfigureLogger(bool isDebugEnabled)
