@@ -159,6 +159,7 @@
     <Compile Include="Requests\Appointments\CreateAppointmentTests.cs" />
     <Compile Include="Requests\Appointments\DeleteAppointmentTests.cs" />
     <Compile Include="Requests\Comments\AppointmentCommentsTests.cs" />
+    <Compile Include="Requests\Friendships\FriendshipTests.cs" />
     <Compile Include="Requests\GenericQueryTests.cs" />
     <Compile Include="Requests\Guests\GetOpenRequestsTests.cs" />
     <Compile Include="Requests\PostRequestHandlerTests.cs" />

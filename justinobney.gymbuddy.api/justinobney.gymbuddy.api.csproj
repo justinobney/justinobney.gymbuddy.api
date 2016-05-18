@@ -346,6 +346,7 @@
     <Compile Include="Interfaces\IAuthorize.cs" />
     <Compile Include="Interfaces\IAutoMapperConfiguration.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
+    <Compile Include="Interfaces\IFriendship.cs" />
     <Compile Include="Interfaces\IHasTouchedProperties.cs" />
     <Compile Include="Interfaces\IPostRequestHandler.cs" />
     <Compile Include="Interfaces\IPushNotifier.cs" />
@@ -433,6 +434,9 @@
     <Compile Include="Requests\Decorators\PostRequestHandler.cs" />
     <Compile Include="Requests\Decorators\TransactionHandler.cs" />
     <Compile Include="Requests\Decorators\ValidateHandler.cs" />
+    <Compile Include="Requests\Frienships\ConfirmFriendshipCommand.cs" />
+    <Compile Include="Requests\Frienships\GetFriendshipQuery.cs" />
+    <Compile Include="Requests\Frienships\RequestFriendshipCommand.cs" />
     <Compile Include="Requests\Generic\GetByIdQuery.cs" />
     <Compile Include="Requests\Generic\GetByPredicateQuery.cs" />
     <Compile Include="Requests\Guests\GetOpenRequestsForUserQuery.cs" />
