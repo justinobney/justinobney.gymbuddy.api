@@ -9,7 +9,7 @@ namespace justinobney.gymbuddy.api.Controllers
 {
     public class AuthenticatedController : ApiController
     {
-        private readonly IMediator _mediator;
+        protected readonly IMediator _mediator;
 
         public User CurrentUser
         {

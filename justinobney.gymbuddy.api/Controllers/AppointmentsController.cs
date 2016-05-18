@@ -21,11 +21,8 @@ namespace justinobney.gymbuddy.api.Controllers
 {
     public class AppointmentsController : AuthenticatedController
     {
-        private readonly IMediator _mediator;
-
         public AppointmentsController(IMediator mediator) : base(mediator)
         {
-            _mediator = mediator;
         }
 
         // GET: api/Appointments
