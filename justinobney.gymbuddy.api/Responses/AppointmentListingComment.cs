@@ -10,6 +10,7 @@ namespace justinobney.gymbuddy.api.Responses
         public string Text { get; set; }
         public string UserName { get; set; }
         public long UserId { get; set; }
+        public string UserProfilePictureUrl { get; set; }
         public DateTime? CreatedAt { get; set; }
     }
 
@@ -18,7 +19,8 @@ namespace justinobney.gymbuddy.api.Responses
         public void Configure(IMapperConfiguration cfg)
         {
             cfg.CreateMap<AppointmentComment, AppointmentListingComment>()
-                .ForMember(dest => dest.UserName, opts => opts.MapFrom(src => src.User.Name));
+                .ForMember(dest => dest.UserName, opts => opts.MapFrom(src => src.User.Name))
+                .ForMember(dest => dest.UserProfilePictureUrl, opts => opts.MapFrom(src => src.User.ProfilePictureUrl));
         }
     }
 }

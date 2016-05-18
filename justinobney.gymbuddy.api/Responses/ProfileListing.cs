@@ -11,6 +11,7 @@ namespace justinobney.gymbuddy.api.Responses
         public string Name { get; set; }
         public string FitnessLevel { get; set; }
         public string Gender { get; set; }
+        public string ProfilePictureUrl { get; set; }
         public List<GymListing> Gyms { get; set; }
     }
 

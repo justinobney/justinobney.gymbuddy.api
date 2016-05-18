@@ -52,6 +52,10 @@
       <HintPath>..\packages\AutoMapper.4.2.0\lib\net45\AutoMapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="CloudinaryDotNet, Version=1.0.23.0, Culture=neutral, PublicKeyToken=c8234dc617ae7841, processorArchitecture=MSIL">
+      <HintPath>..\packages\CloudinaryDotNet.1.0.23\lib\net40\CloudinaryDotNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Dapper, Version=1.40.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
       <Private>True</Private>
@@ -278,6 +282,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -333,6 +338,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CamelCaseSerializer.cs" />
+    <Compile Include="Helpers\ImageHelpers.cs" />
     <Compile Include="Helpers\TypeExtensions.cs" />
     <Compile Include="Interfaces\IAuthorize.cs" />
     <Compile Include="Interfaces\IAutoMapperConfiguration.cs" />
@@ -376,6 +382,10 @@
     <Compile Include="Migrations\201604290122587_Notification_UpdateTimestampsAddMessage.cs" />
     <Compile Include="Migrations\201604290122587_Notification_UpdateTimestampsAddMessage.Designer.cs">
       <DependentUpon>201604290122587_Notification_UpdateTimestampsAddMessage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605142043577_User_AddProfilePicture.cs" />
+    <Compile Include="Migrations\201605142043577_User_AddProfilePicture.Designer.cs">
+      <DependentUpon>201605142043577_User_AddProfilePicture.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
@@ -425,6 +435,7 @@
     <Compile Include="Requests\Users\DeleteUserCommand.cs" />
     <Compile Include="Requests\Users\UpdateDeviceCommand.cs" />
     <Compile Include="Requests\Users\UpdateUserCommand.cs" />
+    <Compile Include="Requests\Users\UpdateUserProfileImageCommand.cs" />
     <Compile Include="Responses\ApiError.cs" />
     <Compile Include="Responses\AppointmentGuestListing.cs" />
     <Compile Include="Responses\AppointmentListing.cs" />
@@ -465,6 +476,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604290122587_Notification_UpdateTimestampsAddMessage.resx">
       <DependentUpon>201604290122587_Notification_UpdateTimestampsAddMessage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605142043577_User_AddProfilePicture.resx">
+      <DependentUpon>201605142043577_User_AddProfilePicture.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>

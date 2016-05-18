@@ -14,11 +14,8 @@ namespace justinobney.gymbuddy.api.Controllers
 {
     public class UsersController : AuthenticatedController
     {
-        private readonly Mediator _mediator;
-
-        public UsersController(Mediator mediator):base(mediator)
+        public UsersController(IMediator mediator):base(mediator)
         {
-            _mediator = mediator;
         }
 
         // GET: api/Users
@@ -112,6 +109,23 @@ namespace justinobney.gymbuddy.api.Controllers
             
             _mediator.Send(command);
             return Ok();
+        }
+
+        [ResponseType(typeof(object))]
+        [HttpPost]
+        [Route("api/Users/Update-Profile-Image")]
+        public IHttpActionResult UpdateProfilePicture(UpdateUserProfileImageCommand command)
+        {
+            if (CurrentUser == null)
+            {
+                return Unauthorized();
+            }
+
+            command.UserId = CurrentUser.Id;
+
+            var user = _mediator.Send(command);
+            var profile = MappingConfig.Instance.Map<ProfileListing>(user);
+            return Ok(profile);
         }
 
     }

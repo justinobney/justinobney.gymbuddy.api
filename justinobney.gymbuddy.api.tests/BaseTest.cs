@@ -1,4 +1,5 @@
-﻿using Hangfire;
+﻿using CloudinaryDotNet;
+using Hangfire;
 using justinobney.gymbuddy.api.Data;
 using justinobney.gymbuddy.api.DependencyResolution.Registries;
 using justinobney.gymbuddy.api.tests.DependencyResolution;
@@ -27,10 +28,14 @@ namespace justinobney.gymbuddy.api.tests
             registry.IncludeRegistry<GenericCrudRegistry>();
             registry.IncludeRegistry<FakeNotificationRegistry>();
             registry.IncludeRegistry<FakeEntityFrameworkRegistry>();
-            
+
+            // ProductionInfrastructureRegistry
             var restClient = Substitute.For<RestClient>();
             registry.For<IRestClient>().Use(restClient);
-            //registry.IncludeRegistry<ProductionInfrastructureRegistry>();
+
+            var account = new Account("fake", "fake", "fake");
+            var cloudinary = Substitute.For<Cloudinary>(account);
+            registry.For<Cloudinary>().Use(context => cloudinary);
 
             var log = new LoggerConfiguration()
                 .WriteTo.ColoredConsole()
