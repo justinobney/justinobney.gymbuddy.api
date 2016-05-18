@@ -312,6 +312,8 @@
     <Compile Include="Data\Notifications\Notification.cs" />
     <Compile Include="Data\Notifications\NotificationConfiguration.cs" />
     <Compile Include="Data\PredicateBuilder.cs" />
+    <Compile Include="Data\Users\Friendship.cs" />
+    <Compile Include="Data\Users\FriendshipConfiguration.cs" />
     <Compile Include="Data\Users\User.cs" />
     <Compile Include="Data\Users\UserConfiguration.cs" />
     <Compile Include="Data\Users\UserPredicates.cs" />
@@ -330,6 +332,7 @@
     <Compile Include="Enums\AppointmentGuestStatus.cs" />
     <Compile Include="Enums\AppointmentStatus.cs" />
     <Compile Include="Enums\FitnessLevel.cs" />
+    <Compile Include="Enums\FriendshipStatus.cs" />
     <Compile Include="Enums\Gender.cs" />
     <Compile Include="Exceptions\AuthorizationException.cs" />
     <Compile Include="Filters\AuthorizationExceptionFilter.cs" />
@@ -386,6 +389,10 @@
     <Compile Include="Migrations\201605142043577_User_AddProfilePicture.cs" />
     <Compile Include="Migrations\201605142043577_User_AddProfilePicture.Designer.cs">
       <DependentUpon>201605142043577_User_AddProfilePicture.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605180212252_Friendship_InitialDomainCreate.cs" />
+    <Compile Include="Migrations\201605180212252_Friendship_InitialDomainCreate.Designer.cs">
+      <DependentUpon>201605180212252_Friendship_InitialDomainCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
@@ -479,6 +486,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605142043577_User_AddProfilePicture.resx">
       <DependentUpon>201605142043577_User_AddProfilePicture.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605180212252_Friendship_InitialDomainCreate.resx">
+      <DependentUpon>201605180212252_Friendship_InitialDomainCreate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>
