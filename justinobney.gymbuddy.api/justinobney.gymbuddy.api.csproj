@@ -338,6 +338,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CamelCaseSerializer.cs" />
+    <Compile Include="Helpers\EntityCopier.cs" />
     <Compile Include="Helpers\ImageHelpers.cs" />
     <Compile Include="Helpers\TypeExtensions.cs" />
     <Compile Include="Interfaces\IAuthorize.cs" />
