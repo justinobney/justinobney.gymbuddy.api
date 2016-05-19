@@ -226,7 +226,8 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
                 UserId = CurrentUser.Id,
                 FriendId = friend.Id,
                 Status = FriendshipStatus.Pending,
-                FriendshipKey = "1||2"
+                FriendshipKey = "1||2",
+                Initiator = true
             });
             friendships.Attach(new Friendship
             {
@@ -247,6 +248,46 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
 
             friendships.Count(x => x.UserId == CurrentUser.Id && x.Status == FriendshipStatus.Active).ShouldBe(1);
             friendships.Count(x => x.UserId == friend.Id && x.Status == FriendshipStatus.Active).ShouldBe(1);
+        }
+
+        [Test]
+        public void ConfirmFriendshipFromInitiatorFails()
+        {
+            var users = Context.GetSet<User>();
+            var friendships = Context.GetSet<Friendship>();
+
+            var friend = new User
+            {
+                Id = 2,
+                Name = "Bobcat"
+            };
+
+            users.Attach(friend);
+
+            friendships.Attach(new Friendship
+            {
+                UserId = CurrentUser.Id,
+                FriendId = friend.Id,
+                Status = FriendshipStatus.Pending,
+                FriendshipKey = "1||2",
+                Initiator = true
+            });
+            friendships.Attach(new Friendship
+            {
+                UserId = friend.Id,
+                FriendId = CurrentUser.Id,
+                Status = FriendshipStatus.Pending,
+                FriendshipKey = "1||2"
+            });
+
+            var command = new ConfirmFriendshipCommand
+            {
+                UserId = CurrentUser.Id,
+                FriendId = friend.Id
+            };
+
+            Action action = () => Mediator.Send(command);
+            action.ShouldThrow<ValidationException>();
         }
     }
 }

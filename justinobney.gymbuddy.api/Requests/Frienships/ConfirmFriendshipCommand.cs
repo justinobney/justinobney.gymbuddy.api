@@ -1,5 +1,7 @@
 using System.Data.Entity;
 using System.Linq;
+using FluentValidation;
+using FluentValidation.Results;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
@@ -14,7 +16,6 @@ namespace justinobney.gymbuddy.api.Requests.Frienships
         public long FriendId { get; set; }
     }
 
-    [DoNotValidate]
     public class ConfirmFriendshipCommandHandler : IRequestHandler<ConfirmFriendshipCommand, Friendship>
     {
         private readonly IDbSet<Friendship> _friendships;
@@ -40,6 +41,27 @@ namespace justinobney.gymbuddy.api.Requests.Frienships
                     x.FriendshipKey == friendshipKey
                     && x.UserId == message.UserId
                 );
+        }
+    }
+
+    public class ConfirmFriendshipValidator : AbstractValidator<ConfirmFriendshipCommand>
+    {
+        private readonly IDbSet<Friendship> _friendships;
+
+        public ConfirmFriendshipValidator(IDbSet<Friendship> friendships)
+        {
+            _friendships = friendships;
+
+            Custom(command =>
+            {
+                var isConfirmFromInitiator = _friendships.Any(
+                    x =>
+                        x.UserId == command.UserId
+                        && x.FriendId == command.FriendId
+                        && x.Initiator == true
+                    );
+                return isConfirmFromInitiator ?  new ValidationFailure("UserId", "You can not confirm a request to friend someone else") : null;
+            });
         }
     }
 }
