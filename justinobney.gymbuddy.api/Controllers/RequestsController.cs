@@ -30,12 +30,5 @@ namespace justinobney.gymbuddy.api.Controllers
 
             return Ok(notifications);
         }
-
-        [Route("api/Activity")]
-        [ResponseType(typeof(IEnumerable<AppointmentGuestListing>))]
-        public IHttpActionResult GetActivity()
-        {
-            return GetRequests();
-        }
     }
 }
