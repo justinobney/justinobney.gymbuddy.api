@@ -55,5 +55,19 @@ namespace justinobney.gymbuddy.api.Controllers
 
             return Ok(MappingConfig.Instance.Map<FriendshipListing>(friendship));
         }
+
+        // POST: api/Friendship/{id}/Confirm
+        [ResponseType(typeof(FriendshipListing))]
+        [Route("api/Friendship/{id}/Confirm")]
+        public IHttpActionResult ConfirmFriendship(long id)
+        {
+            var friendship = _mediator.Send(new ConfirmFriendshipCommand
+            {
+                UserId = CurrentUser.Id,
+                FriendId = id
+            });
+
+            return Ok(MappingConfig.Instance.Map<FriendshipListing>(friendship));
+        }
     }
 }
