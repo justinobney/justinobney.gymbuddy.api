@@ -292,6 +292,7 @@
     <Compile Include="App_Start\StructuremapWebApi.cs" />
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\FriendshipController.cs" />
     <Compile Include="Controllers\RequestsController.cs" />
     <Compile Include="Controllers\AppointmentsController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
@@ -395,6 +396,14 @@
     <Compile Include="Migrations\201605180212252_Friendship_InitialDomainCreate.Designer.cs">
       <DependentUpon>201605180212252_Friendship_InitialDomainCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605190300202_Friendship_LinkFriendUser.cs" />
+    <Compile Include="Migrations\201605190300202_Friendship_LinkFriendUser.Designer.cs">
+      <DependentUpon>201605190300202_Friendship_LinkFriendUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605190323359_Friendship_DenoteInitiator.cs" />
+    <Compile Include="Migrations\201605190323359_Friendship_DenoteInitiator.Designer.cs">
+      <DependentUpon>201605190323359_Friendship_DenoteInitiator.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
     <Compile Include="Notifications\NofiticationTypes.cs" />
@@ -435,6 +444,7 @@
     <Compile Include="Requests\Decorators\TransactionHandler.cs" />
     <Compile Include="Requests\Decorators\ValidateHandler.cs" />
     <Compile Include="Requests\Frienships\ConfirmFriendshipCommand.cs" />
+    <Compile Include="Requests\Frienships\GetAllFriendshipRequestsQuery.cs" />
     <Compile Include="Requests\Frienships\GetFriendshipQuery.cs" />
     <Compile Include="Requests\Frienships\RequestFriendshipCommand.cs" />
     <Compile Include="Requests\Generic\GetByIdQuery.cs" />
@@ -451,6 +461,7 @@
     <Compile Include="Responses\AppointmentGuestListing.cs" />
     <Compile Include="Responses\AppointmentListing.cs" />
     <Compile Include="Responses\AppointmentListingComment.cs" />
+    <Compile Include="Responses\FriendshipListing.cs" />
     <Compile Include="Responses\GymListing.cs" />
     <Compile Include="Responses\ProfileListing.cs" />
     <Compile Include="Startup.cs" />
@@ -493,6 +504,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605180212252_Friendship_InitialDomainCreate.resx">
       <DependentUpon>201605180212252_Friendship_InitialDomainCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605190300202_Friendship_LinkFriendUser.resx">
+      <DependentUpon>201605190300202_Friendship_LinkFriendUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605190323359_Friendship_DenoteInitiator.resx">
+      <DependentUpon>201605190323359_Friendship_DenoteInitiator.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>

@@ -57,8 +57,19 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
 
             Mediator.Send(command);
 
-            friendships.Count(x=>x.UserId == CurrentUser.Id && x.Status == FriendshipStatus.Pending).ShouldBe(1);
-            friendships.Count(x=>x.UserId == friend.Id && x.Status == FriendshipStatus.Pending).ShouldBe(1);
+            friendships.Count(
+                x =>
+                    x.UserId == CurrentUser.Id
+                    && x.Status == FriendshipStatus.Pending
+                    && x.Initiator == true
+                ).ShouldBe(1);
+
+            friendships.Count(
+                x =>
+                    x.UserId == friend.Id
+                    && x.Status == FriendshipStatus.Pending
+                    && x.Initiator == false
+                ).ShouldBe(1);
         }
 
         [Test]
@@ -126,6 +137,74 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
 
             var friendship = Mediator.Send(command);
             friendship.Status.ShouldBe(FriendshipStatus.Pending);
+        }
+
+        [Test]
+        public void GetFriendshipReturnsNullIfNoHistoryFriendship()
+        {
+            var users = Context.GetSet<User>();
+
+            var friend = new User
+            {
+                Id = 2,
+                Name = "Bobcat"
+            };
+
+            users.Attach(friend);
+            
+            var command = new GetFriendshipQuery
+            {
+                UserId = CurrentUser.Id,
+                FriendId = friend.Id
+            };
+
+            var friendship = Mediator.Send(command);
+            friendship.Status.ShouldBe(FriendshipStatus.Unknown);
+        }
+
+        [Test]
+        public void GetFriendshipReturnsRequestOnlyForNonInitiatorFriendship()
+        {
+            var users = Context.GetSet<User>();
+            var friendships = Context.GetSet<Friendship>();
+
+            var friend = new User
+            {
+                Id = 2,
+                Name = "Bobcat"
+            };
+
+            users.Attach(friend);
+
+            friendships.Attach(new Friendship
+            {
+                UserId = CurrentUser.Id,
+                FriendId = friend.Id,
+                Status = FriendshipStatus.Pending,
+                FriendshipKey = "1||2",
+                Initiator = true
+            });
+            friendships.Attach(new Friendship
+            {
+                UserId = friend.Id,
+                FriendId = CurrentUser.Id,
+                Status = FriendshipStatus.Pending,
+                FriendshipKey = "1||2"
+            });
+
+            var userToFriendRequest = new GetAllFriendshipRequestsQuery
+            {
+                UserId = CurrentUser.Id
+            };
+            var userFriendshipRequests = Mediator.Send(userToFriendRequest);
+            userFriendshipRequests.Count().ShouldBe(0);
+
+            var friendToUserRequest = new GetAllFriendshipRequestsQuery
+            {
+                UserId = friend.Id
+            };
+            var friendFriendshipRequests = Mediator.Send(friendToUserRequest);
+            friendFriendshipRequests.Count().ShouldBe(1);
         }
 
         [Test]

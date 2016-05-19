@@ -33,7 +33,8 @@ namespace justinobney.gymbuddy.api.Requests.Frienships
                 UserId = message.UserId,
                 FriendId = message.FriendId,
                 FriendshipKey = friendshipKey,
-                Status = FriendshipStatus.Pending
+                Status = FriendshipStatus.Pending,
+                Initiator = true
             };
 
             var friendToUser = new Friendship

@@ -14,6 +14,10 @@ namespace justinobney.gymbuddy.api.Data.Users
         public FriendshipStatus Status { get; set; }
         public DateTime? FriendshipDate { get; set; }
 
+        public string StatusText => Status.ToString();
+        public bool Initiator { get; set; }
+        public User Friend { get; set; }
+
         public static string GetFriendshipKey(IFriendship friendship)
         {
             var ids = new[] { friendship.UserId, friendship.FriendId };

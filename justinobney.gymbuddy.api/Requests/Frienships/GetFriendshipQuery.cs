@@ -1,6 +1,7 @@
 using System.Data.Entity;
 using System.Linq;
 using justinobney.gymbuddy.api.Data.Users;
+using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
@@ -14,6 +15,7 @@ namespace justinobney.gymbuddy.api.Requests.Frienships
     }
 
     [DoNotValidate]
+    [DoNotCommit]
     public class GetFriendshipQueryHandler : IRequestHandler<GetFriendshipQuery, Friendship>
     {
         private readonly IDbSet<Friendship> _friendships;
@@ -26,11 +28,13 @@ namespace justinobney.gymbuddy.api.Requests.Frienships
 
         public Friendship Handle(GetFriendshipQuery message)
         {
-            return _friendships.First(
+            var friendship = _friendships.FirstOrDefault(
                 x =>
                     x.UserId == message.UserId
                     && x.FriendId == message.FriendId
                 );
+
+            return friendship ?? new Friendship { Status = FriendshipStatus.Unknown };
         }
     }
 }

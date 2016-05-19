@@ -2,7 +2,9 @@ namespace justinobney.gymbuddy.api.Enums
 {
     public enum FriendshipStatus
     {
-        Pending,
-        Active
+        Blocked = -1,
+        Unknown = 0,
+        Pending = 1,
+        Active = 2
     }
 }
