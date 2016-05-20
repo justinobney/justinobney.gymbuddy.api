@@ -33,7 +33,12 @@ namespace justinobney.gymbuddy.api.Requests.Decorators
 
             var response = _inner.Handle(message);
 
-            _log.Information($"TResponse: {response.GetType().GetPrettyName()}");
+            var log = response == null
+                ? "TResponse: null"
+                : $"TResponse: {response.GetType().GetPrettyName()}";
+
+            _log.Information(log);
+
 
             return response;
         }

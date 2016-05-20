@@ -292,6 +292,7 @@
     <Compile Include="App_Start\StructuremapWebApi.cs" />
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\FriendshipController.cs" />
     <Compile Include="Controllers\RequestsController.cs" />
     <Compile Include="Controllers\AppointmentsController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
@@ -312,6 +313,8 @@
     <Compile Include="Data\Notifications\Notification.cs" />
     <Compile Include="Data\Notifications\NotificationConfiguration.cs" />
     <Compile Include="Data\PredicateBuilder.cs" />
+    <Compile Include="Data\Users\Friendship.cs" />
+    <Compile Include="Data\Users\FriendshipConfiguration.cs" />
     <Compile Include="Data\Users\User.cs" />
     <Compile Include="Data\Users\UserConfiguration.cs" />
     <Compile Include="Data\Users\UserPredicates.cs" />
@@ -330,6 +333,7 @@
     <Compile Include="Enums\AppointmentGuestStatus.cs" />
     <Compile Include="Enums\AppointmentStatus.cs" />
     <Compile Include="Enums\FitnessLevel.cs" />
+    <Compile Include="Enums\FriendshipStatus.cs" />
     <Compile Include="Enums\Gender.cs" />
     <Compile Include="Exceptions\AuthorizationException.cs" />
     <Compile Include="Filters\AuthorizationExceptionFilter.cs" />
@@ -344,6 +348,7 @@
     <Compile Include="Interfaces\IAuthorize.cs" />
     <Compile Include="Interfaces\IAutoMapperConfiguration.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
+    <Compile Include="Interfaces\IFriendship.cs" />
     <Compile Include="Interfaces\IHasTouchedProperties.cs" />
     <Compile Include="Interfaces\IPostRequestHandler.cs" />
     <Compile Include="Interfaces\IPushNotifier.cs" />
@@ -388,6 +393,18 @@
     <Compile Include="Migrations\201605142043577_User_AddProfilePicture.Designer.cs">
       <DependentUpon>201605142043577_User_AddProfilePicture.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605180212252_Friendship_InitialDomainCreate.cs" />
+    <Compile Include="Migrations\201605180212252_Friendship_InitialDomainCreate.Designer.cs">
+      <DependentUpon>201605180212252_Friendship_InitialDomainCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605190300202_Friendship_LinkFriendUser.cs" />
+    <Compile Include="Migrations\201605190300202_Friendship_LinkFriendUser.Designer.cs">
+      <DependentUpon>201605190300202_Friendship_LinkFriendUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605190323359_Friendship_DenoteInitiator.cs" />
+    <Compile Include="Migrations\201605190323359_Friendship_DenoteInitiator.Designer.cs">
+      <DependentUpon>201605190323359_Friendship_DenoteInitiator.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
     <Compile Include="Notifications\NofiticationTypes.cs" />
@@ -427,6 +444,13 @@
     <Compile Include="Requests\Decorators\PostRequestHandler.cs" />
     <Compile Include="Requests\Decorators\TransactionHandler.cs" />
     <Compile Include="Requests\Decorators\ValidateHandler.cs" />
+    <Compile Include="Requests\Friendships\ConfirmFriendshipCommand.cs" />
+    <Compile Include="Requests\Friendships\ConfirmFriendshipPushNotifier.cs" />
+    <Compile Include="Requests\Friendships\GetAllFriendshipRequestsQuery.cs" />
+    <Compile Include="Requests\Friendships\GetAllFriendshipsQuery.cs" />
+    <Compile Include="Requests\Friendships\GetFriendshipQuery.cs" />
+    <Compile Include="Requests\Friendships\RequestFriendshipCommand.cs" />
+    <Compile Include="Requests\Friendships\RequestFriendshipPushNotifier.cs" />
     <Compile Include="Requests\Generic\GetByIdQuery.cs" />
     <Compile Include="Requests\Generic\GetByPredicateQuery.cs" />
     <Compile Include="Requests\Guests\GetOpenRequestsForUserQuery.cs" />
@@ -441,6 +465,7 @@
     <Compile Include="Responses\AppointmentGuestListing.cs" />
     <Compile Include="Responses\AppointmentListing.cs" />
     <Compile Include="Responses\AppointmentListingComment.cs" />
+    <Compile Include="Responses\FriendshipListing.cs" />
     <Compile Include="Responses\GymListing.cs" />
     <Compile Include="Responses\ProfileListing.cs" />
     <Compile Include="Startup.cs" />
@@ -480,6 +505,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605142043577_User_AddProfilePicture.resx">
       <DependentUpon>201605142043577_User_AddProfilePicture.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605180212252_Friendship_InitialDomainCreate.resx">
+      <DependentUpon>201605180212252_Friendship_InitialDomainCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605190300202_Friendship_LinkFriendUser.resx">
+      <DependentUpon>201605190300202_Friendship_LinkFriendUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605190323359_Friendship_DenoteInitiator.resx">
+      <DependentUpon>201605190323359_Friendship_DenoteInitiator.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>

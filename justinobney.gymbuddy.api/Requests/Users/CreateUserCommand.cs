@@ -72,5 +72,5 @@ namespace justinobney.gymbuddy.api.Requests.Users
         {
             cfg.CreateMap<CreateUserCommand, User>();
         }
-    }   
+    }
 }
