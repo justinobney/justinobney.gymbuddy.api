@@ -5,7 +5,7 @@ using FluentValidation;
 using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
-using justinobney.gymbuddy.api.Requests.Frienships;
+using justinobney.gymbuddy.api.Requests.Friendships;
 using justinobney.gymbuddy.api.tests.Helpers;
 using NUnit.Framework;
 

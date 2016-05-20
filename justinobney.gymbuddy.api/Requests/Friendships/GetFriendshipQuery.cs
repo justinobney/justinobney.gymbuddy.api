@@ -6,7 +6,7 @@ using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 
-namespace justinobney.gymbuddy.api.Requests.Frienships
+namespace justinobney.gymbuddy.api.Requests.Friendships
 {
     public class GetFriendshipQuery : IRequest<Friendship>, IFriendship
     {
@@ -28,6 +28,11 @@ namespace justinobney.gymbuddy.api.Requests.Frienships
 
         public Friendship Handle(GetFriendshipQuery message)
         {
+            if (message.UserId == message.FriendId)
+            {
+                return new Friendship {Status = FriendshipStatus.Self};
+            }
+
             var friendship = _friendships.FirstOrDefault(
                 x =>
                     x.UserId == message.UserId

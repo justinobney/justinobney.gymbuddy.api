@@ -5,10 +5,9 @@ using FluentValidation.Results;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
-using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 
-namespace justinobney.gymbuddy.api.Requests.Frienships
+namespace justinobney.gymbuddy.api.Requests.Friendships
 {
     public class ConfirmFriendshipCommand : IRequest<Friendship>, IFriendship
     {

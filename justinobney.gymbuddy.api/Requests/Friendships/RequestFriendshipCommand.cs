@@ -7,7 +7,7 @@ using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
 using MediatR;
 
-namespace justinobney.gymbuddy.api.Requests.Frienships
+namespace justinobney.gymbuddy.api.Requests.Friendships
 {
     public class RequestFriendshipCommand : IRequest<Friendship>, IFriendship
     {

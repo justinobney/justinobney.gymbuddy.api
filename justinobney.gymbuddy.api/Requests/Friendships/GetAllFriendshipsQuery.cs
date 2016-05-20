@@ -5,32 +5,31 @@ using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 
-namespace justinobney.gymbuddy.api.Requests.Frienships
+namespace justinobney.gymbuddy.api.Requests.Friendships
 {
-    public class GetAllFriendshipRequestsQuery : IRequest<IQueryable<Friendship>>
+    public class GetAllFriendshipsQuery : IRequest<IQueryable<Friendship>>
     {
         public long UserId { get; set; }
     }
 
     [DoNotValidate]
     [DoNotCommit]
-    public class GetAllFriendshipRequestsQueryHandler : IRequestHandler<GetAllFriendshipRequestsQuery, IQueryable<Friendship>>
+    public class GetAllFriendshipsQueryHandler : IRequestHandler<GetAllFriendshipsQuery, IQueryable<Friendship>>
     {
         private readonly IDbSet<Friendship> _friendships;
 
-        public GetAllFriendshipRequestsQueryHandler(IDbSet<Friendship> friendships)
+        public GetAllFriendshipsQueryHandler(IDbSet<Friendship> friendships)
         {
             _friendships = friendships;
         }
 
 
-        public IQueryable<Friendship> Handle(GetAllFriendshipRequestsQuery message)
+        public IQueryable<Friendship> Handle(GetAllFriendshipsQuery message)
         {
             return _friendships.Where(
                 x =>
                     x.UserId == message.UserId
-                    && x.Status == FriendshipStatus.Pending
-                    && x.Initiator == false
+                    && x.Status == FriendshipStatus.Active
                 );
         }
     }
