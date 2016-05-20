@@ -444,10 +444,12 @@
     <Compile Include="Requests\Decorators\TransactionHandler.cs" />
     <Compile Include="Requests\Decorators\ValidateHandler.cs" />
     <Compile Include="Requests\Friendships\ConfirmFriendshipCommand.cs" />
+    <Compile Include="Requests\Friendships\ConfirmFriendshipPushNotifier.cs" />
     <Compile Include="Requests\Friendships\GetAllFriendshipRequestsQuery.cs" />
     <Compile Include="Requests\Friendships\GetAllFriendshipsQuery.cs" />
     <Compile Include="Requests\Friendships\GetFriendshipQuery.cs" />
     <Compile Include="Requests\Friendships\RequestFriendshipCommand.cs" />
+    <Compile Include="Requests\Friendships\RequestFriendshipPushNotifier.cs" />
     <Compile Include="Requests\Generic\GetByIdQuery.cs" />
     <Compile Include="Requests\Generic\GetByPredicateQuery.cs" />
     <Compile Include="Requests\Guests\GetOpenRequestsForUserQuery.cs" />

@@ -13,6 +13,7 @@ using justinobney.gymbuddy.api.Requests.Appointments.Confirm;
 using justinobney.gymbuddy.api.Requests.Appointments.Delete;
 using justinobney.gymbuddy.api.Requests.Appointments.Edit;
 using justinobney.gymbuddy.api.Requests.Appointments.RemoveAppointmentGuest;
+using justinobney.gymbuddy.api.Requests.Friendships;
 using justinobney.gymbuddy.api.tests.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -284,6 +285,118 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
                 Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == "123456"))
                 );
             
+            ConfigIoC();
+        }
+
+        [Test]
+        public void RequestFriendshipPushNotifier_CallsRestSharpMethod()
+        {
+            var users = Context.GetSet<User>();
+
+            var owner = new User
+            {
+                Id = 1,
+                Name = "Owner"
+            };
+
+            var user2 = new User
+            {
+                Id = 2,
+                Devices = new List<Device>
+                {
+                    new Device {PushToken = "123456", Platform = "iOS"}
+                }
+            };
+
+            users.Add(owner);
+            users.Add(user2);
+            
+
+            var notifier = Substitute.For<IPushNotifier>();
+            Context.Container.Configure(container => container.For<IPushNotifier>().Use(notifier));
+
+            Context.Register<IPostRequestHandler<RequestFriendshipCommand, Friendship>, RequestFriendshipPushNotifier>();
+            var handler = Context.GetInstance<IPostRequestHandler<RequestFriendshipCommand, Friendship>>();
+
+            var request = new RequestFriendshipCommand { UserId = owner.Id, FriendId = user2.Id };
+            var response = new Friendship
+            {
+                Id = 1,
+                UserId = owner.Id,
+                FriendId = user2.Id,
+                Status = FriendshipStatus.Pending,
+                FriendshipKey = "1||2",
+                Initiator = true
+            };
+
+            handler.Notify(request, response);
+
+            notifier.Received().Send(
+                Arg.Is<NotificationPayload>(x => x.Alert == "Owner wants to join the squad" && x.Ios.Payload.Type == NofiticationTypes.RequestFriendship),
+                Arg.Any<IEnumerable<Device>>()
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == "123456"))
+                );
+
+            ConfigIoC();
+        }
+
+        [Test]
+        public void ConfirmFriendshipPushNotifier_CallsRestSharpMethod()
+        {
+            var users = Context.GetSet<User>();
+
+            var owner = new User
+            {
+                Id = 1,
+                Name = "Owner"
+            };
+
+            var user2 = new User
+            {
+                Id = 2,
+                Devices = new List<Device>
+                {
+                    new Device {PushToken = "123456", Platform = "iOS"}
+                }
+            };
+
+            users.Add(owner);
+            users.Add(user2);
+
+
+            var notifier = Substitute.For<IPushNotifier>();
+            Context.Container.Configure(container => container.For<IPushNotifier>().Use(notifier));
+
+            Context.Register<IPostRequestHandler<ConfirmFriendshipCommand, Friendship>, ConfirmFriendshipPushNotifier>();
+            var handler = Context.GetInstance<IPostRequestHandler<ConfirmFriendshipCommand, Friendship>>();
+
+            var request = new ConfirmFriendshipCommand { UserId = owner.Id, FriendId = user2.Id };
+            var response = new Friendship
+            {
+                Id = 1,
+                UserId = owner.Id,
+                FriendId = user2.Id,
+                Status = FriendshipStatus.Active,
+                FriendshipKey = "1||2",
+                Initiator = false
+            };
+
+            handler.Notify(request, response);
+
+            notifier.Received().Send(
+                Arg.Is<NotificationPayload>(x => x.Alert == "Owner added you to the squad" && x.Ios.Payload.Type == NofiticationTypes.RequestFriendship),
+                Arg.Any<IEnumerable<Device>>()
+                );
+
+            notifier.Received().Send(
+                Arg.Any<NotificationPayload>(),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == "123456"))
+                );
+
             ConfigIoC();
         }
 
