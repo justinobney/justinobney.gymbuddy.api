@@ -46,7 +46,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
 
-            var expected = "{\"tokens\":[\"123\"],\"production\":false,\"notification\":{\"alert\":\"Alert\",\"title\":\"Title\",\"android\":{\"sound\":\"default\",\"payload\":{\"foo\":\"Bar\",\"type\":\"Foo\"}},\"ios\":{\"sound\":\"default\",\"payload\":{\"foo\":\"Bar\",\"type\":\"Foo\"},\"badge\":null}}}";
+            var expected = "{\"tokens\":[\"123\"],\"production\":false,\"notification\":{\"alert\":\"Alert\",\"title\":\"Title\",\"android\":{\"sound\":\"default\",\"payload\":{\"foo\":\"Bar\",\"type\":\"Foo\",\"appointmentId\":0}},\"ios\":{\"sound\":\"default\",\"payload\":{\"foo\":\"Bar\",\"type\":\"Foo\",\"appointmentId\":0},\"badge\":null}}}";
             JsonConvert.SerializeObject(notifier, serializationSettings).ShouldBe(expected);
 
             var expected2 = "{\"tokens\":null,\"production\":false,\"notification\":{\"alert\":null,\"title\":null,\"android\":{\"sound\":\"default\",\"payload\":null},\"ios\":{\"sound\":\"default\",\"payload\":null,\"badge\":null}}}";
