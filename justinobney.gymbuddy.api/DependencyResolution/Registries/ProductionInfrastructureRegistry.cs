@@ -29,7 +29,7 @@ namespace justinobney.gymbuddy.api.DependencyResolution.Registries
                     var restClient = Substitute.For<RestClient>();
                     For<IRestClient>().Use(context => restClient);
 
-                    var cloudinary = Substitute.For<Cloudinary>("fake", "fake", "fake");
+                    var cloudinary = Substitute.For<Cloudinary>(new Account("fake", "fake", "fake"));
                     For<Cloudinary>().Use(context => cloudinary);
                 }
                 else

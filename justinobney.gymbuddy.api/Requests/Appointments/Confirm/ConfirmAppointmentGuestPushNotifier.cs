@@ -30,7 +30,11 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
                 .Include(x=>x.User.Devices)
                 .First(x => x.Id == request.AppointmentGuestId);
             
-            var additionalData = new AdditionalData { Type = NofiticationTypes.ConfirmAppointmentGuest };
+            var additionalData = new AdditionalData
+            {
+                Type = NofiticationTypes.ConfirmAppointmentGuest,
+                AppointmentId = response.AppointmentId
+            };
             var message = new NotificationPayload(additionalData)
             {
                 Alert = $"{appt.User.Name} confirmed.",

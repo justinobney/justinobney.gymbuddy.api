@@ -15,6 +15,7 @@ namespace justinobney.gymbuddy.api.Requests.Guests
     }
 
     [DoNotValidate]
+    [DoNotCommit]
     public class GetOpenRequestsForUserQueryHandler : IRequestHandler<GetOpenRequestsForUserQuery, IQueryable<AppointmentGuest>>
     {
         private readonly IDbSet<Appointment> _appointments;

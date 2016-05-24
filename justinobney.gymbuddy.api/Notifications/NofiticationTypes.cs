@@ -10,5 +10,6 @@ namespace justinobney.gymbuddy.api.Notifications
         public static string CancelAppointment { get; set; } = "CancelAppointment";
         public static string AppointmentOnMyWay { get; set; } = "AppointmentOnMyWay";
         public static string AddComment { get; set; } = "AddComment";
+        public static string RequestFriendship { get; set; } = "RequestFriendship";
     }
 }

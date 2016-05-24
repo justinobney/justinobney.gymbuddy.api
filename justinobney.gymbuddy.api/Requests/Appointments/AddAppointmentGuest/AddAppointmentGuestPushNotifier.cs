@@ -57,7 +57,11 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.AddAppointmentGuest
 
             _context.SaveChanges();
 
-            var additionalData = new AdditionalData { Type = NofiticationTypes.AddAppointmentGuest };
+            var additionalData = new AdditionalData
+            {
+                Type = NofiticationTypes.AddAppointmentGuest,
+                AppointmentId = response.AppointmentId
+            };
             var message = new NotificationPayload(additionalData)
             {
                 Alert = $"{guest.Name} wants to work in",
