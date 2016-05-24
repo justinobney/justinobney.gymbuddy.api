@@ -19,7 +19,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using NSubstitute;
 using NUnit.Framework;
-using RestSharp;
 
 namespace justinobney.gymbuddy.api.tests.Notifiers
 {

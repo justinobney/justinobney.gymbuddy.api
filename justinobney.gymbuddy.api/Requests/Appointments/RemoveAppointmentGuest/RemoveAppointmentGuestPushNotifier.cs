@@ -5,6 +5,7 @@ using justinobney.gymbuddy.api.Data;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Data.Notifications;
 using justinobney.gymbuddy.api.Data.Users;
+using justinobney.gymbuddy.api.Helpers;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Notifications;
 using justinobney.gymbuddy.api.Responses;
