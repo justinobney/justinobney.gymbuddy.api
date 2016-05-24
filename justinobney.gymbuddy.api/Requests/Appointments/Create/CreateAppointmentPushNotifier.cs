@@ -1,15 +1,9 @@
-using System;
 using System.Data.Entity;
 using System.Linq;
-using justinobney.gymbuddy.api.Data;
 using justinobney.gymbuddy.api.Data.Appointments;
-using justinobney.gymbuddy.api.Data.Notifications;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Notifications;
-using justinobney.gymbuddy.api.Responses;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace justinobney.gymbuddy.api.Requests.Appointments.Create
 {
@@ -36,7 +30,11 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Create
                 .Where(x => x.Id != request.UserId)
                 .ToList();
 
-            var additionalData = new AdditionalData { Type = NofiticationTypes.CreateAppointment };
+            var additionalData = new AdditionalData
+            {
+                Type = NofiticationTypes.CreateAppointment,
+                AppointmentId = response.Id
+            };
             var message = new NotificationPayload(additionalData)
             {
                 Title = "New Appointment Available",
@@ -45,6 +43,5 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Create
 
             _pushNotifier.Send(message, notifyUsers.SelectMany(x => x.Devices));
         }
-        
     }
 }

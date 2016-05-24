@@ -36,5 +36,6 @@ namespace justinobney.gymbuddy.api.Notifications
     public class AdditionalData
     {
         public string Type { get; set; }
+        public long AppointmentId { get; set; }
     }
 }
