@@ -40,7 +40,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
                                     || appt.Status == AppointmentStatus.PendingGuestConfirmation)
                             )
                         )
-                );
+                ).OrderBy(x => x.TimeSlots.Select(y => y.Time).Min());
         }
     }
 }
