@@ -19,12 +19,19 @@ namespace justinobney.gymbuddy.api.Requests.Users
         private readonly IDbSet<User> _users;
         private readonly IDbSet<Appointment> _appointments;
         private readonly IDbSet<AppointmentGuest> _appointmentGuests;
+        private readonly IDbSet<AppointmentComment> _appointmentComments;
 
-        public DeleteUserCommandHandler(IDbSet<User> users, IDbSet<Appointment> appointments, IDbSet<AppointmentGuest> appointmentGuests)
+        public DeleteUserCommandHandler(
+            IDbSet<User> users,
+            IDbSet<Appointment> appointments,
+            IDbSet<AppointmentGuest> appointmentGuests,
+            IDbSet<AppointmentComment> appointmentComments 
+        )
         {
             _users = users;
             _appointments = appointments;
             _appointmentGuests = appointmentGuests;
+            _appointmentComments = appointmentComments;
         }
 
         public User Handle(DeleteUserCommand message)
@@ -36,6 +43,12 @@ namespace justinobney.gymbuddy.api.Requests.Users
             if (user == null)
             {
                 throw new ArgumentException("User not found");
+            }
+
+            var comments = _appointmentComments.Where(x => x.UserId == user.Id).ToList();
+            foreach (var comment in comments)
+            {
+                _appointmentComments.Remove(comment);
             }
 
             var guestEntry = _appointmentGuests.Where(x => x.UserId == user.Id).ToList();
