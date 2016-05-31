@@ -17,6 +17,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Create
         public string Description { get; set; }
 
         public List<DateTime?> TimeSlots { get; set; } = new List<DateTime?>();
+        public List<string> Exercises { get; set; } = new List<string>();
     }
 
     public class CreateAppointmentCommandHandler : IRequestHandler<CreateAppointmentCommand, Appointment>
