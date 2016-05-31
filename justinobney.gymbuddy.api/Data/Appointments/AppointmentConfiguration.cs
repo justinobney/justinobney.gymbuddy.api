@@ -33,4 +33,13 @@ namespace justinobney.gymbuddy.api.Data.Appointments
                 .WillCascadeOnDelete(false);
         }
     }
+
+    public class AppointmentExerciseConfiguration : EntityTypeConfiguration<AppointmentExercise>
+    {
+        public AppointmentExerciseConfiguration()
+        {
+            Property(x => x.Name)
+                .IsRequired();
+        }
+    }
 }
