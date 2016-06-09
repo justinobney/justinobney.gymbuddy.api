@@ -26,7 +26,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
 
         public IQueryable<Appointment> Handle(GetScheduledAppointmentsForUserQuery message)
         {
-            var minTime = DateTime.UtcNow.AddMinutes(-30);
+            var minTime = DateTime.UtcNow.AddMinutes(-120);
             return _appointments.Where(
                 appt =>
                 appt.TimeSlots.Any(ts => ts.Time > minTime)
@@ -40,7 +40,8 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
                                     || appt.Status == AppointmentStatus.PendingGuestConfirmation)
                             )
                         )
-                ).OrderBy(x => x.TimeSlots.Select(y => y.Time).Min());
+                )
+                .OrderBy(x => x.TimeSlots.Select(y => y.Time).Min());
         }
     }
 }

@@ -304,6 +304,7 @@
     <Compile Include="Data\Appointments\Appointment.cs" />
     <Compile Include="Data\Appointments\AppointmentComment.cs" />
     <Compile Include="Data\Appointments\AppointmentConfiguration.cs" />
+    <Compile Include="Data\Appointments\AppointmentExercise.cs" />
     <Compile Include="Data\Appointments\AppointmentGuest.cs" />
     <Compile Include="Data\Appointments\AppointmentTimeSlot.cs" />
     <Compile Include="Data\BaseRepository.cs" />
@@ -412,6 +413,10 @@
     <Compile Include="Migrations\201605241226041_DomainAdd_PostAndPostKudos.cs" />
     <Compile Include="Migrations\201605241226041_DomainAdd_PostAndPostKudos.Designer.cs">
       <DependentUpon>201605241226041_DomainAdd_PostAndPostKudos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605311425119_Appointment_AddExercises.cs" />
+    <Compile Include="Migrations\201605311425119_Appointment_AddExercises.Designer.cs">
+      <DependentUpon>201605311425119_Appointment_AddExercises.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
@@ -525,6 +530,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605241226041_DomainAdd_PostAndPostKudos.resx">
       <DependentUpon>201605241226041_DomainAdd_PostAndPostKudos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605311425119_Appointment_AddExercises.resx">
+      <DependentUpon>201605311425119_Appointment_AddExercises.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>
