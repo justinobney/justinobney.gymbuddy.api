@@ -349,6 +349,7 @@
     <Compile Include="Helpers\CamelCaseSerializer.cs" />
     <Compile Include="Helpers\EntityCopier.cs" />
     <Compile Include="Helpers\ImageHelpers.cs" />
+    <Compile Include="Helpers\ImageUploader.cs" />
     <Compile Include="Helpers\TypeExtensions.cs" />
     <Compile Include="Interfaces\IAuthorize.cs" />
     <Compile Include="Interfaces\IAutoMapperConfiguration.cs" />

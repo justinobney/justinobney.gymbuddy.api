@@ -1,8 +1,5 @@
-using System;
 using System.Data.Entity;
 using System.Linq;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Helpers;
 using justinobney.gymbuddy.api.Requests.Decorators;
@@ -20,25 +17,20 @@ namespace justinobney.gymbuddy.api.Requests.Users
     public class UpdateUserProfileImageCommandHandler : IRequestHandler<UpdateUserProfileImageCommand, User>
     {
         private readonly IDbSet<User> _users;
-        private readonly Cloudinary _cloudinary;
+        private readonly ImageUploader _uploader;
 
-        public UpdateUserProfileImageCommandHandler(IDbSet<User> users, Cloudinary cloudinary)
+        public UpdateUserProfileImageCommandHandler(IDbSet<User> users, ImageUploader uploader)
         {
             _users = users;
-            _cloudinary = cloudinary;
+            _uploader = uploader;
         }
 
         public User Handle(UpdateUserProfileImageCommand message)
         {
+            //TODO: move to background task
             var user = _users.First(x => x.Id == message.UserId);
-            var ms = ImageHelpers.ConvertDataUriToMemoryStream(message.ImageDataUri);
-            var uploadParams = new ImageUploadParams
-            {
-                File = new FileDescription($"{Guid.NewGuid()}", ms)
-            };
-
-            var uploadResult = _cloudinary.Upload(uploadParams);
-            user.ProfilePictureUrl = uploadResult.Uri.ToString();
+            var imageUrl = _uploader.UploadFromDataUri(message.ImageDataUri);
+            user.ProfilePictureUrl = imageUrl;
 
             return user;
         }
