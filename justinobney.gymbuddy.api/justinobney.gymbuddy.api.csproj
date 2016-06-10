@@ -419,6 +419,10 @@
     <Compile Include="Migrations\201605311425119_Appointment_AddExercises.Designer.cs">
       <DependentUpon>201605311425119_Appointment_AddExercises.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201606102045513_Appointment_AddKudos.cs" />
+    <Compile Include="Migrations\201606102045513_Appointment_AddKudos.Designer.cs">
+      <DependentUpon>201606102045513_Appointment_AddKudos.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
     <Compile Include="Notifications\NofiticationTypes.cs" />
@@ -534,6 +538,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605311425119_Appointment_AddExercises.resx">
       <DependentUpon>201605311425119_Appointment_AddExercises.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606102045513_Appointment_AddKudos.resx">
+      <DependentUpon>201606102045513_Appointment_AddKudos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>
