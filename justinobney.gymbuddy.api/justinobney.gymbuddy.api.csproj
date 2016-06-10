@@ -423,6 +423,10 @@
     <Compile Include="Migrations\201606102045513_Appointment_AddKudos.Designer.cs">
       <DependentUpon>201606102045513_Appointment_AddKudos.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201606102138315_Appointment_KudosPropertyRename.cs" />
+    <Compile Include="Migrations\201606102138315_Appointment_KudosPropertyRename.Designer.cs">
+      <DependentUpon>201606102138315_Appointment_KudosPropertyRename.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
     <Compile Include="Notifications\NofiticationTypes.cs" />
@@ -455,6 +459,7 @@
     <Compile Include="Requests\Appointments\Edit\EditAppointmentCommandMapper.cs" />
     <Compile Include="Requests\Appointments\GetAvailableAppointmentsForUserQuery.cs" />
     <Compile Include="Requests\Appointments\GetScheduledAppointmentsForUserQuery.cs" />
+    <Compile Include="Requests\Appointments\Kudos\AppointmentToggleKudosCommand.cs" />
     <Compile Include="Requests\Appointments\RemoveAppointmentGuest\RemoveAppointmentGuestCommand.cs" />
     <Compile Include="Requests\Appointments\RemoveAppointmentGuest\RemoveAppointmentGuestPushNotifier.cs" />
     <Compile Include="Requests\Decorators\AuthorizeHandler.cs" />
@@ -541,6 +546,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201606102045513_Appointment_AddKudos.resx">
       <DependentUpon>201606102045513_Appointment_AddKudos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606102138315_Appointment_KudosPropertyRename.resx">
+      <DependentUpon>201606102138315_Appointment_KudosPropertyRename.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>

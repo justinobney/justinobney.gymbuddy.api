@@ -12,6 +12,7 @@ using justinobney.gymbuddy.api.Requests.Appointments.Confirm;
 using justinobney.gymbuddy.api.Requests.Appointments.Create;
 using justinobney.gymbuddy.api.Requests.Appointments.Delete;
 using justinobney.gymbuddy.api.Requests.Appointments.Edit;
+using justinobney.gymbuddy.api.Requests.Appointments.Kudos;
 using justinobney.gymbuddy.api.Requests.Appointments.RemoveAppointmentGuest;
 using justinobney.gymbuddy.api.Requests.Generic;
 using justinobney.gymbuddy.api.Responses;
@@ -113,6 +114,22 @@ namespace justinobney.gymbuddy.api.Controllers
             {
                 return NotFound();
             }
+
+            return Ok(listing);
+        }
+
+        [Route("api/Appointments/{id}/Kudos")]
+        [ResponseType(typeof(AppointmentListing))]
+        public IHttpActionResult Kudos(long id)
+        {
+            var request = new AppointmentToggleKudosCommand
+            {
+                AppointmentId = id,
+                UserId = CurrentUser.Id
+            };
+
+            var appointment = _mediator.Send(request);
+            var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
 
             return Ok(listing);
         }

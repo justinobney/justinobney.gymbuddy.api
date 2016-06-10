@@ -43,4 +43,5 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Delete
             return appt;
         }
     }
+    
 }
