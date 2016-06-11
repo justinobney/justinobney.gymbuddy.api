@@ -15,12 +15,12 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Kudos
     [DoNotValidate]
     public class AppointmentToggleKudosCommandHandler : IRequestHandler<AppointmentToggleKudosCommand, Appointment>
     {
-        private readonly IDbSet<AppointmentKudos> _kudoses;
+        private readonly IDbSet<AppointmentKudos> _kudos;
         private readonly IDbSet<Appointment> _appointments;
 
-        public AppointmentToggleKudosCommandHandler(IDbSet<Appointment> appointments, IDbSet<AppointmentKudos> kudoses)
+        public AppointmentToggleKudosCommandHandler(IDbSet<Appointment> appointments, IDbSet<AppointmentKudos> kudos)
         {
-            _kudoses = kudoses;
+            _kudos = kudos;
             _appointments = appointments;
         }
 
@@ -30,14 +30,14 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Kudos
                 .Include(x => x.Kudos)
                 .First(x => x.Id == message.AppointmentId);
 
-            var userKudos = _kudoses.FirstOrDefault(x =>
+            var userKudos = _kudos.FirstOrDefault(x =>
                 x.UserId == message.UserId
                 && x.AppointmentId == message.AppointmentId
             );
 
             if (userKudos == null)
             {
-                _kudoses.Add(new AppointmentKudos
+                _kudos.Add(new AppointmentKudos
                 {
                     UserId = message.UserId,
                     AppointmentId = message.AppointmentId
@@ -45,7 +45,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Kudos
             }
             else
             {
-                _kudoses.Remove(userKudos);
+                _kudos.Remove(userKudos);
             }
 
             return appt;

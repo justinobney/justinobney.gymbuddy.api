@@ -460,6 +460,7 @@
     <Compile Include="Requests\Appointments\GetAvailableAppointmentsForUserQuery.cs" />
     <Compile Include="Requests\Appointments\GetScheduledAppointmentsForUserQuery.cs" />
     <Compile Include="Requests\Appointments\Kudos\AppointmentToggleKudosCommand.cs" />
+    <Compile Include="Requests\Appointments\Kudos\AppointmentToggleKudosPushNotifier.cs" />
     <Compile Include="Requests\Appointments\RemoveAppointmentGuest\RemoveAppointmentGuestCommand.cs" />
     <Compile Include="Requests\Appointments\RemoveAppointmentGuest\RemoveAppointmentGuestPushNotifier.cs" />
     <Compile Include="Requests\Decorators\AuthorizeHandler.cs" />

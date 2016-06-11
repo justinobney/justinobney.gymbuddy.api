@@ -148,6 +148,7 @@
     <Compile Include="Helpers\IoCTests.cs" />
     <Compile Include="Helpers\TestExtensions.cs" />
     <Compile Include="BaseTest.cs" />
+    <Compile Include="Notifiers\AppointmentToggleKudosNotifierTests.cs" />
     <Compile Include="Notifiers\CreateAppointmentNotifierTests.cs" />
     <Compile Include="Notifiers\IonicPushNotifierTests.cs" />
     <Compile Include="Predicates\UserPredicatesTests.cs" />
