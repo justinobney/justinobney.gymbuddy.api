@@ -26,7 +26,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Kudos
 
         public void Notify(AppointmentToggleKudosCommand request, Appointment response)
         {
-            var userRevokedKudos = _appointmentKudos.Any(x => x.UserId == request.UserId && x.AppointmentId == response.Id);
+            var userRevokedKudos = !_appointmentKudos.Any(x => x.UserId == request.UserId && x.AppointmentId == response.Id);
             
             var friend = _users.FirstOrDefault(x=>x.Id == request.UserId);
 
