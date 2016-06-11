@@ -1,9 +1,8 @@
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace justinobney.gymbuddy.api.Data.Posts
 {
@@ -16,7 +15,7 @@ namespace justinobney.gymbuddy.api.Data.Posts
         public PostType Type { get; set; }
         public string ContentJson { get; set; }
         public bool SkipPush { get; set; }
-        public Collection<PostKudos> Kudos { get; set; }
+        public ICollection<PostKudos> Kudos { get; set; }
 
 
         public DateTime? CreatedAt { get; set; }

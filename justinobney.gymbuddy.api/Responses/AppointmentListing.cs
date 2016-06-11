@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Interfaces;
@@ -20,6 +21,8 @@ namespace justinobney.gymbuddy.api.Responses
         public string Status { get; set; }
         public string UserProfilePictureUrl { get; set; }
         public DateTime? ConfirmedTime { get; set; }
+        public List<long> KudosUsers { get; set; }
+        public int KudosCount { get; set; }
 
         public List<AppointmentGuestListing> GuestList { get; set; }
         public List<AppointmentTimeSlot> TimeSlots { get; set; }
@@ -35,7 +38,9 @@ namespace justinobney.gymbuddy.api.Responses
                 .ForMember(dest => dest.Status, opts => opts.MapFrom(src => src.Status.ToString()))
                 .ForMember(dest => dest.UserName, opts => opts.MapFrom(src => src.User.Name))
                 .ForMember(dest => dest.UserProfilePictureUrl, opts => opts.MapFrom(src => src.User.ProfilePictureUrl))
-                .ForMember(dest => dest.GymName, opts => opts.MapFrom(src => src.Gym.Name));
+                .ForMember(dest => dest.GymName, opts => opts.MapFrom(src => src.Gym.Name))
+                .ForMember(dest => dest.KudosUsers, opts => opts.MapFrom(src => src.Kudos.Select(x=>x.UserId)))
+                .ForMember(dest => dest.KudosCount, opts => opts.MapFrom(src => src.Kudos.Count));
         }
     }
 }
