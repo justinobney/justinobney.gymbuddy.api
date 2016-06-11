@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Interfaces;

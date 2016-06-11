@@ -3,12 +3,10 @@ using System.Linq;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Data.Devices;
 using justinobney.gymbuddy.api.Data.Gyms;
-using justinobney.gymbuddy.api.Data.Notifications;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Notifications;
 using justinobney.gymbuddy.api.Requests.Appointments.Create;
-using justinobney.gymbuddy.api.tests.Helpers;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -21,7 +19,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
         public void CreateAppointmentNotifier_CallsRestSharpMethod()
         {
             var users = Context.GetSet<User>();
-            var notifications = Context.GetSet<Notification>();
+            var notifier = Context.Container.GetInstance<IPushNotifier>();
 
             var gym = new Gym { Id = 1 };
             var user1 = new User
@@ -46,9 +44,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
 
             users.Add(user1);
             users.Add(user2);
-            
-            var notifier = Substitute.For<IPushNotifier>();
-            Context.Container.Configure(container => container.For<IPushNotifier>().Use(notifier));
+
             Context.Register<IPostRequestHandler<CreateAppointmentCommand, Appointment>, CreateAppointmentNotifier>();
             var handler = Context.GetInstance<IPostRequestHandler<CreateAppointmentCommand, Appointment>>();
 

@@ -2,6 +2,7 @@
 using Hangfire;
 using justinobney.gymbuddy.api.Data;
 using justinobney.gymbuddy.api.DependencyResolution.Registries;
+using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.tests.DependencyResolution;
 using justinobney.gymbuddy.api.tests.Helpers;
 using MediatR;
@@ -36,6 +37,9 @@ namespace justinobney.gymbuddy.api.tests
             var account = new Account("fake", "fake", "fake");
             var cloudinary = Substitute.For<Cloudinary>(account);
             registry.For<Cloudinary>().Use(context => cloudinary);
+
+            var notifier = Substitute.For<IPushNotifier>();
+            registry.For<IPushNotifier>().Use(notifier);
 
             var log = new LoggerConfiguration()
                 .WriteTo.ColoredConsole()
