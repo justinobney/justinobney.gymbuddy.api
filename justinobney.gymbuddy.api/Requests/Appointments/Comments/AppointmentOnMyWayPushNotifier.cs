@@ -29,7 +29,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Comments
             };
             var message = new NotificationPayload(additionalData)
             {
-                Title = "GymSquad",
+                Title = "LetMeLift",
                 Alert = $"{notifier.Name} is on the way to the gym"
             };
 

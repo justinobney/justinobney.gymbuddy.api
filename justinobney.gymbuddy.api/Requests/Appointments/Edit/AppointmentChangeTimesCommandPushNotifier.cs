@@ -23,11 +23,15 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Edit
         {
             var notifier = _users.First(x => x.Id == request.UserId);
 
-            var additionalData = new AdditionalData { Type = NofiticationTypes.AddComment };
+            var additionalData = new AdditionalData
+            {
+                Type = NofiticationTypes.AddComment,
+                AppointmentId = response.Id
+            };
             var message = new NotificationPayload(additionalData)
             {
-                Title = "GymSquad",
-                Alert = $"[Appointment] {notifier.Name} changed the available times. You're request to join has been removed."
+                Title = "LetMeLift",
+                Alert = $"[Appointment] {notifier.Name} changed the available times. Please review and join again."
             };
 
             

@@ -1178,7 +1178,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
             
             handler.Notify(request, response);
             notifier.Received().Send(
-                Arg.Is<NotificationPayload>(x => x.Alert == $"[Appointment] {owner.Name} changed the available times. You're request to join has been removed." && x.Ios.Payload.Type == NofiticationTypes.AddComment),
+                Arg.Is<NotificationPayload>(x => x.Alert == $"[Appointment] {owner.Name} changed the available times. Please review and join again." && x.Ios.Payload.Type == NofiticationTypes.AddComment),
                 Arg.Any<IEnumerable<Device>>()
                 );
 
