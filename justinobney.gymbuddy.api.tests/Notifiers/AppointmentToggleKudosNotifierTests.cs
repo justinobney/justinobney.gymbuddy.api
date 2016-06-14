@@ -33,6 +33,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
 
             var users = Context.GetSet<User>();
             var appts = Context.GetSet<Appointment>();
+            var kudos = Context.GetSet<AppointmentKudos>();
 
             var appt = new Appointment
             {
@@ -41,9 +42,16 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
                 UserId = Guest.Id
             };
 
+            var theKudos = new AppointmentKudos
+            {
+                AppointmentId = appt.Id,
+                UserId = Owner.Id
+            };
+
             users.Add(Owner);
             users.Add(Guest);
             appts.Add(appt);
+            kudos.Add(theKudos);
             
             Context.Register<IPostRequestHandler<AppointmentToggleKudosCommand, Appointment>, AppointmentToggleKudosPushNotifier>();
             var handler = Context.GetInstance<IPostRequestHandler<AppointmentToggleKudosCommand, Appointment>>();
@@ -76,7 +84,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
         {
             var users = Context.GetSet<User>();
             var appts = Context.GetSet<Appointment>();
-            var kudos = Context.GetSet<AppointmentKudos>();
+            
 
             var appt = new Appointment
             {
@@ -84,9 +92,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
                 User = Guest,
                 UserId = Guest.Id
             };
-
-            kudos.Add(new AppointmentKudos {AppointmentId = 1, UserId = Owner.Id});
-
+            
             users.Add(Owner);
             users.Add(Guest);
             appts.Add(appt);
