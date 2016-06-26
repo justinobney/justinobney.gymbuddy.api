@@ -37,7 +37,9 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
 
             var notifier = new IonicPushNotification(notification)
             {
-                Tokens = new List<string> { "123" }
+                Tokens = new List<string> { "123" },
+                Message = notification.Message,
+                Title = notification.Title
             };
 
             var serializationSettings = new JsonSerializerSettings
@@ -45,10 +47,10 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
 
-            var expected = "{\"tokens\":[\"123\"],\"production\":false,\"notification\":{\"alert\":\"Alert\",\"title\":\"Title\",\"android\":{\"sound\":\"default\",\"payload\":{\"foo\":\"Bar\",\"type\":\"Foo\",\"appointmentId\":0}},\"ios\":{\"sound\":\"default\",\"payload\":{\"foo\":\"Bar\",\"type\":\"Foo\",\"appointmentId\":0},\"badge\":null}}}";
+            var expected = "{\"tokens\":[\"123\"],\"profile\":\"letmelift__prod\",\"production\":false,\"message\":\"Alert\",\"title\":\"Title\",\"notification\":{\"message\":\"Alert\",\"title\":\"Title\",\"android\":{\"sound\":\"default\",\"payload\":{\"foo\":\"Bar\",\"type\":\"Foo\",\"appointmentId\":0}},\"ios\":{\"sound\":\"default\",\"payload\":{\"foo\":\"Bar\",\"type\":\"Foo\",\"appointmentId\":0},\"badge\":0}}}";
             JsonConvert.SerializeObject(notifier, serializationSettings).ShouldBe(expected);
 
-            var expected2 = "{\"tokens\":null,\"production\":false,\"notification\":{\"alert\":null,\"title\":null,\"android\":{\"sound\":\"default\",\"payload\":null},\"ios\":{\"sound\":\"default\",\"payload\":null,\"badge\":null}}}";
+            var expected2 = "{\"tokens\":null,\"profile\":\"letmelift__prod\",\"production\":false,\"message\":null,\"title\":null,\"notification\":{\"message\":null,\"title\":null,\"android\":{\"sound\":\"default\",\"payload\":null},\"ios\":{\"sound\":\"default\",\"payload\":null,\"badge\":0}}}";
             JsonConvert.SerializeObject(new IonicPushNotification(new NotificationPayload(null)), serializationSettings).ShouldBe(expected2);
         }
         
