@@ -31,7 +31,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
             var payload = new FooPayload {Type = "Foo", Foo = "Bar"};
             var notification = new NotificationPayload(payload)
             {
-                Alert = "Alert",
+                Message = "Alert",
                 Title = "Title"
             };
 
@@ -331,7 +331,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
             handler.Notify(request, response);
 
             notifier.Received().Send(
-                Arg.Is<NotificationPayload>(x => x.Alert == "Owner wants to join the squad" && x.Ios.Payload.Type == NofiticationTypes.RequestFriendship),
+                Arg.Is<NotificationPayload>(x => x.Message == "Owner wants to join the squad" && x.Ios.Payload.Type == NofiticationTypes.RequestFriendship),
                 Arg.Any<IEnumerable<Device>>()
                 );
 
@@ -387,7 +387,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
             handler.Notify(request, response);
 
             notifier.Received().Send(
-                Arg.Is<NotificationPayload>(x => x.Alert == "Owner added you to the squad" && x.Ios.Payload.Type == NofiticationTypes.RequestFriendship),
+                Arg.Is<NotificationPayload>(x => x.Message == "Owner added you to the squad" && x.Ios.Payload.Type == NofiticationTypes.RequestFriendship),
                 Arg.Any<IEnumerable<Device>>()
                 );
 
@@ -463,7 +463,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
             handler.Notify(request, response);
 
             notifier.Received().Send(
-                Arg.Is<NotificationPayload>(x => x.Alert == "Workout Session Canceled" && x.Ios.Payload.Type == NofiticationTypes.CancelAppointment),
+                Arg.Is<NotificationPayload>(x => x.Message == "Workout Session Canceled" && x.Ios.Payload.Type == NofiticationTypes.CancelAppointment),
                 Arg.Any<IEnumerable<Device>>()
                 );
             
@@ -567,7 +567,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
             handler.Notify(request, response);
 
             notifier.Received().Send(
-                Arg.Is<NotificationPayload>(x => x.Alert == $"{guest1.Name} is on the way to the gym" && x.Ios.Payload.Type == NofiticationTypes.AddComment),
+                Arg.Is<NotificationPayload>(x => x.Message == $"{guest1.Name} is on the way to the gym" && x.Ios.Payload.Type == NofiticationTypes.AddComment),
                 Arg.Any<IEnumerable<Device>>()
                 );
 
@@ -685,7 +685,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
             handler.Notify(request, response);
 
             notifier.Received().Send(
-                Arg.Is<NotificationPayload>(x => x.Alert == $"{owner.Name} is on the way to the gym" && x.Ios.Payload.Type == NofiticationTypes.AddComment),
+                Arg.Is<NotificationPayload>(x => x.Message == $"{owner.Name} is on the way to the gym" && x.Ios.Payload.Type == NofiticationTypes.AddComment),
                 Arg.Any<IEnumerable<Device>>()
                 );
 
@@ -802,7 +802,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
             
             handler.Notify(request, response);
             notifier.Received().Send(
-                Arg.Is<NotificationPayload>(x => x.Alert == $"[Comment] {owner.Name}: {request.Text}" && x.Ios.Payload.Type == NofiticationTypes.AddComment),
+                Arg.Is<NotificationPayload>(x => x.Message == $"[Comment] {owner.Name}: {request.Text}" && x.Ios.Payload.Type == NofiticationTypes.AddComment),
                 Arg.Any<IEnumerable<Device>>()
                 );
 
@@ -919,7 +919,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
 
             handler.Notify(request, response);
             notifier.Received().Send(
-                Arg.Is<NotificationPayload>(x => x.Alert == $"[Comment] {owner.Name}: {request.Text}" && x.Ios.Payload.Type == NofiticationTypes.AddComment),
+                Arg.Is<NotificationPayload>(x => x.Message == $"[Comment] {owner.Name}: {request.Text}" && x.Ios.Payload.Type == NofiticationTypes.AddComment),
                 Arg.Any<IEnumerable<Device>>()
                 );
 
@@ -1055,7 +1055,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
 
             handler.Notify(request, response);
             notifier.Received().Send(
-                Arg.Is<NotificationPayload>(x => x.Alert == $"[Comment] {owner.Name}: {request.Text}" && x.Ios.Payload.Type == NofiticationTypes.AddComment),
+                Arg.Is<NotificationPayload>(x => x.Message == $"[Comment] {owner.Name}: {request.Text}" && x.Ios.Payload.Type == NofiticationTypes.AddComment),
                 Arg.Any<IEnumerable<Device>>()
                 );
 
@@ -1178,7 +1178,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
             
             handler.Notify(request, response);
             notifier.Received().Send(
-                Arg.Is<NotificationPayload>(x => x.Alert == $"[Appointment] {owner.Name} changed the available times. Please review and join again." && x.Ios.Payload.Type == NofiticationTypes.AddComment),
+                Arg.Is<NotificationPayload>(x => x.Message == $"[Appointment] {owner.Name} changed the available times. Please review and join again." && x.Ios.Payload.Type == NofiticationTypes.CreateAppointment),
                 Arg.Any<IEnumerable<Device>>()
                 );
 

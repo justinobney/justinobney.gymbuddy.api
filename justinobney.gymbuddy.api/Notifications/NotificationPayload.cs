@@ -14,7 +14,7 @@ namespace justinobney.gymbuddy.api.Notifications
                 Payload = payload
             };
         }
-        public string Alert { get; set; }
+        public string Message { get; set; }
         public string Title { get; set; }
         public Android Android { get; set; }
         public Ios Ios { get; set; }
@@ -30,7 +30,7 @@ namespace justinobney.gymbuddy.api.Notifications
     {
         public AdditionalData Payload { get; set; }
         public string Sound = "default";
-        public int? Badge { get; set; }
+        public int? Badge { get; set; } = 0;
     }
 
     public class AdditionalData

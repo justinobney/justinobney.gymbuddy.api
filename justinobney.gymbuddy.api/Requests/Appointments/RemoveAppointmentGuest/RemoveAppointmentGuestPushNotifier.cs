@@ -64,7 +64,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.RemoveAppointmentGuest
             var additionalData = new AdditionalData { Type = NofiticationTypes.RemoveAppointmentGuest };
             var message = new NotificationPayload(additionalData)
             {
-                Alert = $"{guest.Name} left your plans",
+                Message = $"{guest.Name} left your plans",
                 Title = "Appointment Guest Left :("
             };
             

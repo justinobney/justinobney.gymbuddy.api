@@ -20,7 +20,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Delete
             var additionalData = new AdditionalData { Type = NofiticationTypes.CancelAppointment };
             var message = new NotificationPayload(additionalData)
             {
-                Alert = request.NotificaitonAlert,
+                Message = request.NotificaitonAlert,
                 Title = request.NotificaitonTitle
             };
 

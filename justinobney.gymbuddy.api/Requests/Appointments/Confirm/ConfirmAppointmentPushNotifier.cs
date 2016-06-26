@@ -40,7 +40,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
             var additionalData = new AdditionalData { Type = NofiticationTypes.ConfirmAppointment };
             var message = new NotificationPayload(additionalData)
             {
-                Alert = $"{appt.User.Name} locked.",
+                Message = $"{appt.User.Name} locked.",
                 Title = "Workout Session Locked"
             };
 

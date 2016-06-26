@@ -45,7 +45,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Kudos
 
             var message = new NotificationPayload(additionalData)
             {
-                Alert = $"Kudos: {friend.Name} approves",
+                Message = $"Kudos: {friend.Name} approves",
                 Title = "Kudos"
             };
 

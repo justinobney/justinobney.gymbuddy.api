@@ -33,7 +33,7 @@ namespace justinobney.gymbuddy.api.Requests.Friendships
             var additionalData = new AdditionalData { Type = NofiticationTypes.RequestFriendship };
                 var message = new NotificationPayload(additionalData)
                 {
-                    Alert = $"{initiator.Name} wants to join the squad",
+                    Message = $"{initiator.Name} wants to join the squad",
                     Title = "Squad Up"
                 };
 

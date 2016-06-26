@@ -38,7 +38,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Create
             var message = new NotificationPayload(additionalData)
             {
                 Title = "New Appointment Available",
-                Alert = $"{response.User.Name} wants to work: {request.Title}"
+                Message = $"{response.User.Name} wants to work: {request.Title}"
             };
 
             _pushNotifier.Send(message, notifyUsers.SelectMany(x => x.Devices));

@@ -66,7 +66,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
 
             notifier.Received().Send(
                 Arg.Is<NotificationPayload>(x =>
-                    x.Alert == $"Kudos: {Owner.Name} approves"
+                    x.Message == $"Kudos: {Owner.Name} approves"
                     && x.Ios.Payload.Type == NofiticationTypes.AppointmentKudos),
                 Arg.Any<IEnumerable<Device>>()
                 );
@@ -113,7 +113,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
 
             notifier.DidNotReceive().Send(
                 Arg.Is<NotificationPayload>(x =>
-                    x.Alert == $"Kudos: {Owner.Name} approves"
+                    x.Message == $"Kudos: {Owner.Name} approves"
                     && x.Ios.Payload.Type == NofiticationTypes.AppointmentKudos),
                 Arg.Any<IEnumerable<Device>>()
                 );
@@ -157,7 +157,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
 
             notifier.DidNotReceive().Send(
                 Arg.Is<NotificationPayload>(x =>
-                    x.Alert == $"Kudos: {Owner.Name} approves"
+                    x.Message == $"Kudos: {Owner.Name} approves"
                     && x.Ios.Payload.Type == NofiticationTypes.AppointmentKudos),
                 Arg.Any<IEnumerable<Device>>()
                 );

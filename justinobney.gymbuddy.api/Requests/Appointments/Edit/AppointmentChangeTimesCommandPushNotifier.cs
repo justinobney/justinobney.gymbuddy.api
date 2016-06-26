@@ -31,7 +31,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Edit
             var message = new NotificationPayload(additionalData)
             {
                 Title = "LetMeLift",
-                Alert = $"[Appointment] {notifier.Name} changed the available times. Please review and join again."
+                Message = $"[Appointment] {notifier.Name} changed the available times. Please review and join again."
             };
 
             

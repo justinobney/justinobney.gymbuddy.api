@@ -37,7 +37,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Confirm
             };
             var message = new NotificationPayload(additionalData)
             {
-                Alert = $"{appt.User.Name} confirmed.",
+                Message = $"{appt.User.Name} confirmed.",
                 Title = "Workout Session Confirmed"
             };
 
