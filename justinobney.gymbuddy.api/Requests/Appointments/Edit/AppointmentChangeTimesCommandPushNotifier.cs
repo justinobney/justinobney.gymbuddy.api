@@ -25,7 +25,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Edit
 
             var additionalData = new AdditionalData
             {
-                Type = NofiticationTypes.AddComment,
+                Type = NofiticationTypes.CreateAppointment,
                 AppointmentId = response.Id
             };
             var message = new NotificationPayload(additionalData)
