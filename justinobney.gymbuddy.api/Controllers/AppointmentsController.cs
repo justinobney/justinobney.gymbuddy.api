@@ -96,7 +96,17 @@ namespace justinobney.gymbuddy.api.Controllers
         {
             command.UserId = CurrentUser.Id;
             command.AppointmentId = id;
-            var appointment = _mediator.Send(command);
+            _mediator.Send(command);
+
+            var request = new GetAllByPredicateQuery<Appointment>(x => x.Id == command.AppointmentId);
+
+            var appointment = _mediator.Send(request)
+                .Include(x => x.Comments)
+                .Include(x => x.Exercises)
+                .Include(x => x.GuestList)
+                .Include(x => x.TimeSlots)
+                .FirstOrDefault();
+
             var listing = MappingConfig.Instance.Map<AppointmentListing>(appointment);
             return Ok(listing);
         }
