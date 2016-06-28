@@ -108,7 +108,7 @@ namespace justinobney.gymbuddy.api.Controllers
                 return Unauthorized();
             }
 
-            command.FacebookUserId = CurrentUser.FacebookUserId;
+            command.FacebookUserId = FacebookUserId;
             _mediator.Send(command);
             return Ok();
         }
