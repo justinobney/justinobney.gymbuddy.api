@@ -66,16 +66,15 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
 
             var newTimes = new List<DateTime?> { DateTime.UtcNow.AddHours(1) };
 
-            var result = Mediator.Send(new AppointmentChangeTimesCommand
+            Mediator.Send(new AppointmentChangeTimesCommand
             {
                 AppointmentId = 1,
                 UserId = 2,
                 TimeSlots = newTimes
             });
-
-            result.TimeSlots.First().Time.ShouldBe(newTimes.First());
-            timeslots.Count(x=>x.AppointmentId == 1).ShouldBe(0);
-            appointmentGuests.Count(x=>x.AppointmentId == 1).ShouldBe(0);
+            
+            var guest = appointmentGuests.First(x => x.AppointmentId == appt.Id);
+            guest.TimeSlot.Time.ShouldBe(newTimes.First());
         }
 
         [Test]

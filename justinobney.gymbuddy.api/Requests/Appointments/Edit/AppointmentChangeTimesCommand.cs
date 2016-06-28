@@ -41,20 +41,34 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Edit
             var appointment = _appointments.First(x=>x.Id == message.AppointmentId);
 
             // for notifications
+            // TODO: this can go away since we are putting the guests back on
             var guestUserIds = _guests.Where(x => x.AppointmentId == message.AppointmentId).Select(x => x.UserId);
             message.Devices = _devices.Where(x => guestUserIds.Contains(x.UserId)).ToList();
 
             _timeslots.Where(x => x.AppointmentId == message.AppointmentId)
                 .ToList()
                 .ForEach(x => _timeslots.Remove(x));
-
+            
             _guests.Where(x => x.AppointmentId == message.AppointmentId)
                 .ToList()
-                .ForEach(x => _guests.Remove(x));
+                .ForEach(x =>
+                {
+                    var newGuest = new AppointmentGuest
+                    {
+                        UserId = x.UserId,
+                        AppointmentId = x.AppointmentId,
+                        Status = x.Status,
+                        TimeSlot = new AppointmentTimeSlot
+                        {
+                            Time = message.TimeSlots.First(),
+                            AppointmentId = message.AppointmentId
+                        }
+                    };
 
-            var timeslots = message.TimeSlots.Select(x => new AppointmentTimeSlot {Time = x}).ToList();
+                    _guests.Remove(x);
+                    _guests.Add(newGuest);
+                });
 
-            appointment.TimeSlots = timeslots;
             appointment.ModifiedAt = DateTime.UtcNow;
 
             return appointment;
