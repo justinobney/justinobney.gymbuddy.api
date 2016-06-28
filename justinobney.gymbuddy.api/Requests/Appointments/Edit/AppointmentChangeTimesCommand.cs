@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using justinobney.gymbuddy.api.Data;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Data.Devices;
 using MediatR;
@@ -22,18 +23,21 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Edit
         private readonly IDbSet<AppointmentTimeSlot> _timeslots;
         private readonly IDbSet<AppointmentGuest> _guests;
         private readonly IDbSet<Device> _devices;
+        private readonly AppContext _context;
 
         public AppointmentChangeTimesCommandHandler(
             IDbSet<Appointment> appointments,
             IDbSet<AppointmentTimeSlot> timeslots,
             IDbSet<AppointmentGuest> guests,
-            IDbSet<Device> devices 
+            IDbSet<Device> devices,
+            AppContext context
             )
         {
             _appointments = appointments;
             _timeslots = timeslots;
             _guests = guests;
             _devices = devices;
+            _context = context;
         }
 
         public Appointment Handle(AppointmentChangeTimesCommand message)
@@ -45,6 +49,15 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Edit
             var guestUserIds = _guests.Where(x => x.AppointmentId == message.AppointmentId).Select(x => x.UserId);
             message.Devices = _devices.Where(x => guestUserIds.Contains(x.UserId)).ToList();
 
+
+            var timeslot = new AppointmentTimeSlot
+            {
+                Time = message.TimeSlots.First(),
+                AppointmentId = message.AppointmentId
+            };
+
+            var newGuests = new List<AppointmentGuest>();
+
             _timeslots.Where(x => x.AppointmentId == message.AppointmentId)
                 .ToList()
                 .ForEach(x => _timeslots.Remove(x));
@@ -53,23 +66,25 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Edit
                 .ToList()
                 .ForEach(x =>
                 {
-                    var newGuest = new AppointmentGuest
+                    _guests.Remove(x);
+                    newGuests.Add(new AppointmentGuest
                     {
                         UserId = x.UserId,
                         AppointmentId = x.AppointmentId,
-                        Status = x.Status,
-                        TimeSlot = new AppointmentTimeSlot
-                        {
-                            Time = message.TimeSlots.First(),
-                            AppointmentId = message.AppointmentId
-                        }
-                    };
-
-                    _guests.Remove(x);
-                    _guests.Add(newGuest);
+                        Status = x.Status
+                    });
                 });
 
             appointment.ModifiedAt = DateTime.UtcNow;
+            _context.SaveChanges();
+
+            _timeslots.Add(timeslot);
+
+            newGuests.ForEach(x =>
+            {
+                x.AppointmentTimeSlotId = timeslot.Id;
+                _guests.Add(x);
+            });
 
             return appointment;
         }

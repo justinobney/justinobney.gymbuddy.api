@@ -39,7 +39,7 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
         public void AppointmentChangeTimesCommand_UpdatesAppointment()
         {
             var timeslot = new AppointmentTimeSlot { Id = 1, AppointmentId = 1, Time = DateTime.Now };
-            var apptGuest = new AppointmentGuest
+            var apptGuest1 = new AppointmentGuest
             {
                 Id = 1,
                 AppointmentId = 1,
@@ -49,11 +49,21 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
                 Status = AppointmentGuestStatus.Confirmed
             };
 
+            var apptGuest2 = new AppointmentGuest
+            {
+                Id = 2,
+                AppointmentId = 1,
+                AppointmentTimeSlotId = 1,
+                UserId = 3,
+                TimeSlot = timeslot,
+                Status = AppointmentGuestStatus.Confirmed
+            };
+
             var appt = new Appointment
             {
                 Id = 1,
                 UserId = 1,
-                GuestList = new List<AppointmentGuest> { apptGuest },
+                GuestList = new List<AppointmentGuest> { apptGuest1, apptGuest2 },
                 TimeSlots = new List<AppointmentTimeSlot> { timeslot }
             };
             var appointments = Context.GetSet<Appointment>();
@@ -61,7 +71,8 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
             var timeslots = Context.GetSet<AppointmentTimeSlot>();
 
             appointments.Attach(appt);
-            appointmentGuests.Attach(apptGuest);
+            appointmentGuests.Attach(apptGuest1);
+            appointmentGuests.Attach(apptGuest2);
             timeslots.Attach(timeslot);
 
             var newTimes = new List<DateTime?> { DateTime.UtcNow.AddHours(1) };
@@ -72,9 +83,10 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
                 UserId = 2,
                 TimeSlots = newTimes
             });
-            
-            var guest = appointmentGuests.First(x => x.AppointmentId == appt.Id);
-            guest.TimeSlot.Time.ShouldBe(newTimes.First());
+
+            timeslots.Count(x => x.AppointmentId == appt.Id).ShouldBe(1);
+            var newTimeslot = timeslots.First(x => x.AppointmentId == appt.Id);
+            newTimeslot.Time.ShouldBe(newTimes.First());
         }
 
         [Test]
