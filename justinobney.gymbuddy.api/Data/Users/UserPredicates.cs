@@ -45,5 +45,10 @@ namespace justinobney.gymbuddy.api.Data.Users
         {
             return u => u.Devices.Any(d => d.DeviceId == deviceId);
         }
+
+        public static Expression<Func<User, bool>> RestrictByFacebookUserId(string facebookUserId)
+        {
+            return u => u.FacebookUserId == facebookUserId;
+        }
     }
 }

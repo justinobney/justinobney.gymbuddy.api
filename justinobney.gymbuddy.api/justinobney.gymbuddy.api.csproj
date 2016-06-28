@@ -428,6 +428,10 @@
     <Compile Include="Migrations\201606102138315_Appointment_KudosPropertyRename.Designer.cs">
       <DependentUpon>201606102138315_Appointment_KudosPropertyRename.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201606261502566_User_AddFacebookUserId.cs" />
+    <Compile Include="Migrations\201606261502566_User_AddFacebookUserId.Designer.cs">
+      <DependentUpon>201606261502566_User_AddFacebookUserId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
     <Compile Include="Notifications\NofiticationTypes.cs" />
@@ -551,6 +555,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201606102138315_Appointment_KudosPropertyRename.resx">
       <DependentUpon>201606102138315_Appointment_KudosPropertyRename.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606261502566_User_AddFacebookUserId.resx">
+      <DependentUpon>201606261502566_User_AddFacebookUserId.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>

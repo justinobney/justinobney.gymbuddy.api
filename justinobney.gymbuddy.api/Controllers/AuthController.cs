@@ -1,6 +1,5 @@
-using System;
+using System.Data.Entity;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Web.Http;
 using System.Web.Http.Description;
 using AutoMapper.QueryableExtensions;
@@ -11,16 +10,13 @@ using MediatR;
 
 namespace justinobney.gymbuddy.api.Controllers
 {
-    public class AuthController : ApiController
+    public class AuthController : AuthenticatedController
     {
-        private readonly Mediator _mediator;
-
-        public AuthController(Mediator mediator)
+        public AuthController(IMediator mediator) : base(mediator)
         {
-            _mediator = mediator;
         }
 
-        // GET: api/Gyms
+        // GET: api/Auth
         [ResponseType(typeof(ProfileListing))]
         public IHttpActionResult Get()
         {
@@ -31,6 +27,7 @@ namespace justinobney.gymbuddy.api.Controllers
                 var request = new GetAllByPredicateQuery<User> {Predicate = predicate};
 
                 var user = _mediator.Send(request)
+                    .Include(x => x.Gyms)
                     .ProjectTo<ProfileListing>(MappingConfig.Config)
                     .FirstOrDefault();
 
@@ -38,6 +35,5 @@ namespace justinobney.gymbuddy.api.Controllers
             }
             return Ok();
         }
-        
     }
 }

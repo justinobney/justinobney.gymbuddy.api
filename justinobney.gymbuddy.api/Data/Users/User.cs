@@ -19,6 +19,8 @@ namespace justinobney.gymbuddy.api.Data.Users
 
         public string ProfilePictureUrl { get; set; }
 
+        public string FacebookUserId { get; set; }
+
         public ICollection<Device> Devices { get; set; } = new List<Device>();
         public ICollection<Gym> Gyms { get; set; } = new List<Gym>();
 

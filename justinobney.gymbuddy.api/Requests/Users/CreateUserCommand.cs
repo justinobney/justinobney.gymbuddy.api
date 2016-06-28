@@ -18,6 +18,7 @@ namespace justinobney.gymbuddy.api.Requests.Users
         public FitnessLevel FilterFitnessLevel { get; set; }
         public Gender Gender { get; set; }
         public Gender FilterGender { get; set; }
+        public string FacebookUserId { get; set; }
         public string DeviceId { get; set; }
         public string Platform { get; set; }
     }
@@ -36,6 +37,7 @@ namespace justinobney.gymbuddy.api.Requests.Users
         public User Handle(CreateUserCommand message)
         {
             var user = _mapper.Map<User>(message);
+            user.ProfilePictureUrl = $"https://graph.facebook.com/{message.FacebookUserId}/picture?type=large";
             user.CreatedAt = DateTime.UtcNow;
             user.ModifiedAt = DateTime.UtcNow;
 
@@ -59,6 +61,7 @@ namespace justinobney.gymbuddy.api.Requests.Users
         {
             RuleFor(x => x.Name).NotEmpty().WithMessage("Name is required");
             RuleFor(x => x.DeviceId).NotEmpty().WithMessage("Device Id is required");
+            RuleFor(x => x.FacebookUserId).NotEmpty().WithMessage("Facebook User Id is required");
             RuleFor(x => x.FitnessLevel).Must(value => value > 0).WithMessage("Fitness Level is required");
             RuleFor(x => x.Gender).Must(value => value > 0).WithMessage("Gender is required");
             RuleFor(x => x.FilterFitnessLevel).Must(value => value > 0).WithMessage("Min. Fitness Level is required");

@@ -54,6 +54,7 @@ namespace justinobney.gymbuddy.api.Controllers
         [ResponseType(typeof(User))]
         public IHttpActionResult PostUser(CreateUserCommand command)
         {
+            command.FacebookUserId = FacebookUserId;
             var user = _mediator.Send(command);
             return CreatedAtRoute("DefaultApi", new { id = user.Id }, user);
         }
@@ -106,7 +107,8 @@ namespace justinobney.gymbuddy.api.Controllers
             {
                 return Unauthorized();
             }
-            
+
+            command.FacebookUserId = CurrentUser.FacebookUserId;
             _mediator.Send(command);
             return Ok();
         }
