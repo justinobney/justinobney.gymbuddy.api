@@ -1,7 +1,6 @@
 using System.Data.Entity;
 using System.Linq;
 using justinobney.gymbuddy.api.Data.Appointments;
-using justinobney.gymbuddy.api.Data.Devices;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Notifications;
@@ -31,10 +30,8 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Edit
             var message = new NotificationPayload(additionalData)
             {
                 Title = "LetMeLift",
-                Message = $"[Appointment] {notifier.Name} changed the available times. Please review and join again."
+                Message = $"[Appointment] {notifier.Name} changed the available times. Please review."
             };
-
-            
 
             var notifierRequest = new OtherPartiesNotifierRequest
             {
