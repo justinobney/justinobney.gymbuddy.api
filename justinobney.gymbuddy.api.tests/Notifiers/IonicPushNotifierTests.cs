@@ -82,8 +82,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
                 UserId = owner.Id
             });
 
-            var notifier = Substitute.For<IPushNotifier>();
-            Context.Container.Configure(container => container.For<IPushNotifier>().Use(notifier));
+            var notifier = Context.GetInstance<IPushNotifier>();
 
             Context.Register<IPostRequestHandler<AddAppointmentGuestCommand, AppointmentGuest>, AddAppointmentGuestPushNotifier>();
             var handler = Context.GetInstance<IPostRequestHandler<AddAppointmentGuestCommand, AppointmentGuest>>();
@@ -1180,7 +1179,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
             
             handler.Notify(request, response);
             notifier.Received().Send(
-                Arg.Is<NotificationPayload>(x => x.Message == $"[Appointment] {owner.Name} changed the available times. Please review and join again." && x.Ios.Payload.Type == NofiticationTypes.CreateAppointment),
+                Arg.Is<NotificationPayload>(x => x.Message == $"[Appointment] {owner.Name} changed the available times. Please review." && x.Ios.Payload.Type == NofiticationTypes.CreateAppointment),
                 Arg.Any<IEnumerable<Device>>()
                 );
 
