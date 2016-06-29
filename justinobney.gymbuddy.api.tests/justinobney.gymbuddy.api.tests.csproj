@@ -155,6 +155,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Requests\Appointments\AddAppointmentGuestTests.cs" />
     <Compile Include="Requests\Appointments\AppointmentChangeTimesTests.cs" />
+    <Compile Include="Requests\Appointments\AppointmentInviteTests.cs" />
     <Compile Include="Requests\Appointments\AppointmentQueryTests.cs" />
     <Compile Include="Requests\Appointments\ConfirmAppointmentTests.cs" />
     <Compile Include="Requests\Appointments\CreateAppointmentTests.cs" />
