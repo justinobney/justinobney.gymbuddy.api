@@ -160,6 +160,21 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(listing);
         }
 
+        [Route("api/appointments/{id}/invite/{friendId}")]
+        [HttpPost]
+        public IHttpActionResult InviteGuest(long id, long friendId)
+        {
+            var command = new AppointmentInviteFriendCommand
+            {
+                UserId = CurrentUser.Id,
+                AppointmentId = id,
+                FriendId = friendId
+            };
+
+            _mediator.Send(command);
+            return Ok();
+        }
+
         [Route("api/appointments/{id}/remove-guest/{guestAppointmentId}")]
         [ResponseType(typeof(AppointmentListing))]
         public IHttpActionResult RemoveAppointmentGuest(long guestAppointmentId)
