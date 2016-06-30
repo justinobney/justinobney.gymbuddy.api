@@ -442,6 +442,7 @@
     <Compile Include="Requests\Appointments\AddAppointmentGuest\AddAppointmentGuestCommand.cs" />
     <Compile Include="Requests\Appointments\AddAppointmentGuest\AddAppointmentGuestCommandValidator.cs" />
     <Compile Include="Requests\Appointments\AddAppointmentGuest\AddAppointmentGuestPushNotifier.cs" />
+    <Compile Include="Requests\Appointments\AppointmentInviteFriendCommand.cs" />
     <Compile Include="Requests\Appointments\Comments\AppointmentAddCommentCommandHandler.cs" />
     <Compile Include="Requests\Appointments\Comments\AppointmentAddCommentPushNotifier.cs" />
     <Compile Include="Requests\Appointments\Comments\AppointmentOnMyWayCommand.cs" />

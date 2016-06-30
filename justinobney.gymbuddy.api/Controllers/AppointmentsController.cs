@@ -26,7 +26,7 @@ namespace justinobney.gymbuddy.api.Controllers
         {
         }
 
-        // GET: api/Appointments
+        // GET: api/appointments
         [ResponseType(typeof(IEnumerable<AppointmentListing>))]
         public IHttpActionResult GetAppointments()
         {
@@ -45,7 +45,7 @@ namespace justinobney.gymbuddy.api.Controllers
         }
 
         [HttpGet]
-        [Route("api/Appointments/My-Schedule")]
+        [Route("api/appointments/my-schedule")]
         [ResponseType(typeof(IEnumerable<AppointmentListing>))]
         public IHttpActionResult GetMySchedule()
         {
@@ -61,7 +61,7 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(appointment);
         }
 
-        // GET: api/Appointments/5
+        // GET: api/appointments/5
         [ResponseType(typeof(AppointmentListing))]
         public IHttpActionResult GetAppointment(int id)
         {
@@ -89,7 +89,7 @@ namespace justinobney.gymbuddy.api.Controllers
             return CreatedAtRoute("DefaultApi", new { id = listing.Id }, listing);
         }
 
-        [Route("api/Appointments/{id}/change-times")]
+        [Route("api/appointments/{id}/change-times")]
         [ResponseType(typeof(AppointmentListing))]
         [HttpPost]
         public IHttpActionResult AppointmentChangeTimes(long id, AppointmentChangeTimesCommand command)
@@ -111,7 +111,7 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(listing);
         }
 
-        // DELETE: api/Appointments/5
+        // DELETE: api/appointments/5
         [ResponseType(typeof(AppointmentListing))]
         public IHttpActionResult DeleteAppointment(long id)
         {
@@ -128,7 +128,7 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(listing);
         }
 
-        [Route("api/Appointments/{id}/Kudos")]
+        [Route("api/appointments/{id}/kudos")]
         [ResponseType(typeof(AppointmentListing))]
         public IHttpActionResult Kudos(long id)
         {
@@ -144,7 +144,7 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(listing);
         }
 
-        [Route("api/Appointments/{id}/Add-Guest/{timeSlotId}")]
+        [Route("api/appointments/{id}/add-guest/{timeSlotId}")]
         [ResponseType(typeof(AppointmentGuestListing))]
         public IHttpActionResult AddAppointmentGuest(long id, long timeSlotId)
         {
@@ -160,7 +160,22 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(listing);
         }
 
-        [Route("api/Appointments/{id}/Remove-Guest/{guestAppointmentId}")]
+        [Route("api/appointments/{id}/invite/{friendId}")]
+        [HttpPost]
+        public IHttpActionResult InviteGuest(long id, long friendId)
+        {
+            var command = new AppointmentInviteFriendCommand
+            {
+                UserId = CurrentUser.Id,
+                AppointmentId = id,
+                FriendId = friendId
+            };
+
+            _mediator.Send(command);
+            return Ok();
+        }
+
+        [Route("api/appointments/{id}/remove-guest/{guestAppointmentId}")]
         [ResponseType(typeof(AppointmentListing))]
         public IHttpActionResult RemoveAppointmentGuest(long guestAppointmentId)
         {
@@ -174,7 +189,7 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(listing);
         }
 
-        [Route("api/Appointments/{id}/Confirm")]
+        [Route("api/appointments/{id}/confirm")]
         [ResponseType(typeof(AppointmentListing))]
         public IHttpActionResult ConfirmAppointment(long id)
         {
@@ -188,7 +203,7 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(listing);
         }
 
-        [Route("api/Appointments/{id}/On-My-Way")]
+        [Route("api/appointments/{id}/on-my-way")]
         [ResponseType(typeof(AppointmentListing))]
         public IHttpActionResult OnMyWay(long id, AppointmentOnMyWayCommand command)
         {
@@ -200,7 +215,7 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(listing);
         }
 
-        [Route("api/Appointments/{id}/Comment")]
+        [Route("api/appointments/{id}/comment")]
         [ResponseType(typeof(AppointmentListing))]
         public IHttpActionResult Comment(long id, AppointmentAddCommentCommand command)
         {
@@ -213,7 +228,7 @@ namespace justinobney.gymbuddy.api.Controllers
         }
 
         [HttpPut]
-        [Route("api/Appointments/{appointmentId}/Confirm-Guest/{appointmentGuestId}")]
+        [Route("api/appointments/{appointmentId}/confirm-guest/{appointmentGuestId}")]
         [ResponseType(typeof(AppointmentGuest))]
         public IHttpActionResult ConfirmAppointmentGuest(long appointmentId, long appointmentGuestId)
         {

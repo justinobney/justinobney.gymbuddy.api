@@ -76,9 +76,9 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Edit
                 });
 
             appointment.ModifiedAt = DateTime.UtcNow;
-            _context.SaveChanges();
-
             _timeslots.Add(timeslot);
+
+            _context.SaveChanges();
 
             newGuests.ForEach(x =>
             {
