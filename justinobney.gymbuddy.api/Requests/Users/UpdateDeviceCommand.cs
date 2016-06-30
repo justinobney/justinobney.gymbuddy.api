@@ -33,8 +33,11 @@ namespace justinobney.gymbuddy.api.Requests.Users
             device.PushToken = message.PushToken;
             device.Platform = message.Platform;
 
-            var user = _users.First(x => x.Id == device.UserId);
-            user.FacebookUserId = message.FacebookUserId;
+            if (message.FacebookUserId != null)
+            {
+                var user = _users.First(x => x.Id == device.UserId);
+                user.FacebookUserId = message.FacebookUserId;
+            }
         }
     }
 }
