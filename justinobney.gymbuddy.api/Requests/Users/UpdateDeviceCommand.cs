@@ -37,6 +37,11 @@ namespace justinobney.gymbuddy.api.Requests.Users
             {
                 var user = _users.First(x => x.Id == device.UserId);
                 user.FacebookUserId = message.FacebookUserId;
+
+                if (user.ProfilePictureUrl == null)
+                {
+                    user.ProfilePictureUrl = $"https://graph.facebook.com/{message.FacebookUserId}/picture?type=large";
+                }
             }
         }
     }
