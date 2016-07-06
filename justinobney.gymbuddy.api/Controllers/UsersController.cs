@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using AutoMapper.QueryableExtensions;
@@ -130,5 +131,31 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(profile);
         }
 
+
+        // GET: api/Users/5
+        [ResponseType(typeof(ProfileListing))]
+        [Route("api/Users/get-by-facebook-id")]
+        public IHttpActionResult GetByFacebookId(string fbId)
+        {
+            //parameter check.
+            if (string.IsNullOrWhiteSpace(fbId))
+                return Content((HttpStatusCode)422, "Unprocessable Entity: Invalid parameter(s).");
+            
+            var request = new GetAllByPredicateQuery<User>
+            {
+                Predicate = u => u.FacebookUserId == fbId
+            };
+
+            var user = _mediator.Send(request)
+                .ProjectTo<ProfileListing>(MappingConfig.Config)
+                .FirstOrDefault();
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+        }
     }
 }
