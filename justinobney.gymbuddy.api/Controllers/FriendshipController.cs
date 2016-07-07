@@ -1,11 +1,12 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http;
-using System.Web.Http.Description;
 using AutoMapper.QueryableExtensions;
 using justinobney.gymbuddy.api.Requests.Friendships;
 using justinobney.gymbuddy.api.Responses;
 using MediatR;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace justinobney.gymbuddy.api.Controllers
 {
@@ -84,6 +85,28 @@ namespace justinobney.gymbuddy.api.Controllers
             });
 
             return Ok(MappingConfig.Instance.Map<FriendshipListing>(friendship));
+        }
+
+        [ResponseType(typeof(IList<FriendshipListing>))]
+        [HttpPost]
+        [Route("api/Friendship/Get-By-Facebook-Ids")]
+        public IHttpActionResult GetByFacebookIds(IList<string> fbIds)
+        {
+            if (fbIds == null || !fbIds.Any())
+                return Content((HttpStatusCode)422, "Unprocessable Entity: Invalid parameter(s).");
+
+
+            var profileFriendshipListings = _mediator.Send(new GetFriendshipsByFacebookIdsCommand
+            {
+                UserId = CurrentUser.Id,
+                FbIds = fbIds
+            });
+            if (profileFriendshipListings == null || profileFriendshipListings.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(profileFriendshipListings);
         }
     }
 }
