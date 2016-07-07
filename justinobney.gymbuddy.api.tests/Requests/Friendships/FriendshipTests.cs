@@ -29,7 +29,8 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
                 FitnessLevel = FitnessLevel.Intermediate,
                 FilterFitnessLevel = FitnessLevel.Beginner,
                 Gyms = new List<Gym> { DefaultGym },
-                Name = "User"
+                Name = "User",
+                FacebookUserId = "1122334455"
             };
             Context.GetSet<User>().Attach(CurrentUser);
             Context.GetSet<Gym>().Attach(DefaultGym);
@@ -288,6 +289,223 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
 
             Action action = () => Mediator.Send(command);
             action.ShouldThrow<ValidationException>();
+        }
+
+        [Test]
+        public void GetFriendshipsByFacebookIdsHandlesNullFacebookIdCollection()
+        {
+            var command = new GetFriendshipsByFacebookIdsCommand
+            {
+                UserId = CurrentUser.Id,
+                FbIds = null
+            };
+
+            Action action = () => Mediator.Send(command);
+            action.ShouldThrow<ValidationException>();
+        }
+
+        [Test]
+        public void GetFriendshipsByFacebookIdsReturnsOnlyDistinctFacebookIdInformation()
+        {
+            var users = Context.GetSet<User>();
+
+            var friend = new User
+            {
+                Id = 2,
+                Name = "Bobcat",
+                FacebookUserId = "1337"
+            };
+
+            users.Attach(friend);
+            
+            var command = new GetFriendshipsByFacebookIdsCommand
+            {
+                UserId = friend.Id,
+                FbIds = new List<string> { "1337", "1337", "1447" }
+            };
+
+            var facebookFriendshipListings = Mediator.Send(command);
+
+            facebookFriendshipListings.Count(x => x.FacebookUserId == "1337").ShouldBe(1);
+            facebookFriendshipListings.Count.ShouldBe(2);
+        }
+
+        [Test]
+        public void GetFriendshipsByFacebookIdsStatusUnknownFacebookFriend()
+        {
+            var users = Context.GetSet<User>();
+            var user = new User
+            {
+                Id = 2,
+                Name = "Bobcat",
+                FacebookUserId = "1337"
+            };
+            users.Attach(user);
+
+            var command = new GetFriendshipsByFacebookIdsCommand
+            {
+                UserId = CurrentUser.Id,
+                FbIds = new List<string> { "1337", "1446", "s3dkl" }
+            };
+
+            var facebookFriendshipListings = Mediator.Send(command);
+            facebookFriendshipListings.Count(x => x.Status == FacebookFriendshipStatus.UnknownFacebookFriend).ShouldBe(2);
+            facebookFriendshipListings.Count(x => x.UserId == 0).ShouldBe(2);
+        }
+
+        [Test]
+        public void GetFriendshipsByFacebookIdsStatusNonSquadUser()
+        {
+            var users = Context.GetSet<User>();
+            var friendships = Context.GetSet<Friendship>();
+
+            var nonFriend = new User
+            {
+                Id = 2,
+                Name = "Bobcat",
+                FacebookUserId = "1337"
+            };
+            var blockedFriend = new User
+            {
+                Id = 3,
+                Name = "MONSTAR",
+                FacebookUserId = "0"
+            };
+
+            users.Attach(nonFriend);
+            users.Attach(blockedFriend);
+
+            friendships.Attach(new Friendship
+            {
+                UserId = CurrentUser.Id,
+                FriendId = blockedFriend.Id,
+                Status = FriendshipStatus.Blocked,
+                FriendshipKey = "1||3",
+                Initiator = true
+            });
+            friendships.Attach(new Friendship
+            {
+                UserId = blockedFriend.Id,
+                FriendId = CurrentUser.Id,
+                Status = FriendshipStatus.Blocked,
+                FriendshipKey = "1||3",
+                Initiator = false
+            });
+
+            friendships.Attach(new Friendship
+            {
+                UserId = CurrentUser.Id,
+                FriendId = CurrentUser.Id,
+                Status = FriendshipStatus.Self,
+                FriendshipKey = "1||1",
+                Initiator = true
+            });
+
+            var command = new GetFriendshipsByFacebookIdsCommand
+            {
+                UserId = CurrentUser.Id,
+                FbIds = new List<string> { "1337", "0", "1555" }
+            };
+
+            var facebookFriendshipListings = Mediator.Send(command);
+            facebookFriendshipListings.Count(x => x.Status == FacebookFriendshipStatus.NonSquadUser).ShouldBe(2);
+        }
+
+        [Test]
+        public void GetFriendshipsByFacebookIdsStatusSquadUser()
+        {
+            var users = Context.GetSet<User>();
+            var friendships = Context.GetSet<Friendship>();
+
+            var friend = new User
+            {
+                Id = 2,
+                Name = "Bobcat",
+                FacebookUserId = "1337"
+            };
+
+            users.Attach(friend);
+
+            friendships.Attach(new Friendship
+            {
+                UserId = CurrentUser.Id,
+                FriendId = friend.Id,
+                Status = FriendshipStatus.Active,
+                FriendshipKey = "1||2",
+                Initiator = true
+            });
+            friendships.Attach(new Friendship
+            {
+                UserId = friend.Id,
+                FriendId = CurrentUser.Id,
+                Status = FriendshipStatus.Active,
+                FriendshipKey = "1||2"
+            });
+
+
+            var command = new GetFriendshipsByFacebookIdsCommand
+            {
+                UserId = CurrentUser.Id,
+                FbIds = new List<string> { "1337", "1446" }
+            };
+
+            var facebookFriendshipListings = Mediator.Send(command);
+            facebookFriendshipListings.Count(x => x.Status == FacebookFriendshipStatus.SquadUser).ShouldBe(1);
+        }
+
+        [Test]
+        public void GetFriendshipsByFacebookIdsStatusPendingSquadUser()
+        {
+            var users = Context.GetSet<User>();
+            var friendships = Context.GetSet<Friendship>();
+
+            var friend = new User
+            {
+                Id = 2,
+                Name = "Bobcat",
+                FacebookUserId = "1337"
+            };
+
+            users.Attach(friend);
+
+            friendships.Attach(new Friendship
+            {
+                UserId = CurrentUser.Id,
+                FriendId = friend.Id,
+                Status = FriendshipStatus.Pending,
+                FriendshipKey = "1||2",
+                Initiator = true
+            });
+            friendships.Attach(new Friendship
+            {
+                UserId = friend.Id,
+                FriendId = CurrentUser.Id,
+                Status = FriendshipStatus.Pending,
+                FriendshipKey = "1||2"
+            });
+
+
+            var command = new GetFriendshipsByFacebookIdsCommand
+            {
+                UserId = CurrentUser.Id,
+                FbIds = new List<string> { "1337", "1446" }
+            };
+
+            var facebookFriendshipListings = Mediator.Send(command);
+            facebookFriendshipListings.Count(x => x.Status == FacebookFriendshipStatus.PendingSquadUser).ShouldBe(1);
+        }
+
+        [Test]
+        public void GetFriendshipsByFacebookIdsStatusSelf()
+        {
+            var command = new GetFriendshipsByFacebookIdsCommand
+            {
+                UserId = CurrentUser.Id,
+                FbIds = new List<string> { "1122334455", "1337" }
+            };
+
+            var facebookFriendshipListings = Mediator.Send(command);
+            facebookFriendshipListings.Count(x => x.Status == FacebookFriendshipStatus.Self).ShouldBe(1);
         }
     }
 }

@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Web.Http;
-using System.Web.Http.Description;
-using AutoMapper.QueryableExtensions;
+﻿using AutoMapper.QueryableExtensions;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Requests.Generic;
 using justinobney.gymbuddy.api.Requests.Users;
 using justinobney.gymbuddy.api.Responses;
 using MediatR;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace justinobney.gymbuddy.api.Controllers
 {
@@ -129,6 +129,5 @@ namespace justinobney.gymbuddy.api.Controllers
             var profile = MappingConfig.Instance.Map<ProfileListing>(user);
             return Ok(profile);
         }
-
     }
 }
