@@ -42,9 +42,11 @@ namespace justinobney.gymbuddy.api.Requests.Friendships
                 if (facebookFriendshipListing.UserId == message.UserId)
                     facebookFriendshipListing.Status = Enums.FacebookFriendshipStatus.Self;
                 else if (existingFriendship != null && existingFriendship.Status == Enums.FriendshipStatus.Active)
-                    facebookFriendshipListing.Status = Enums.FacebookFriendshipStatus.SquadMember;
+                    facebookFriendshipListing.Status = Enums.FacebookFriendshipStatus.SquadUser;
+                else if (existingFriendship != null && existingFriendship.Status == Enums.FriendshipStatus.Pending)
+                    facebookFriendshipListing.Status = Enums.FacebookFriendshipStatus.PendingSquadUser;
                 else
-                    facebookFriendshipListing.Status = Enums.FacebookFriendshipStatus.KnownUserNonSquadMember;
+                    facebookFriendshipListing.Status = Enums.FacebookFriendshipStatus.NonSquadUser;
 
                 facebookFriendshipListings.Add(facebookFriendshipListing);
             }
@@ -56,7 +58,7 @@ namespace justinobney.gymbuddy.api.Requests.Friendships
                 facebookFriendshipListings.Add(new FacebookFriendshipListing
                 {
                     FacebookUserId = nonMemberFriendFacebookId,
-                    Status = Enums.FacebookFriendshipStatus.UnknownFacebookUser
+                    Status = Enums.FacebookFriendshipStatus.UnknownFacebookFriend
                 });
             }
 

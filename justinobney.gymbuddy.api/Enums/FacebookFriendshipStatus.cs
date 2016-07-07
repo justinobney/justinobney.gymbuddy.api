@@ -2,9 +2,10 @@
 {
     public enum FacebookFriendshipStatus
     {
-        UnknownFacebookUser = 1,
-        KnownUserNonSquadMember = 2,
-        Self = 3,
-        SquadMember = 4,
+        UnknownFacebookFriend = 1,
+        Self = 2,
+        NonSquadUser = 3,
+        PendingSquadUser = 4,
+        SquadUser = 5,
     }
 }
