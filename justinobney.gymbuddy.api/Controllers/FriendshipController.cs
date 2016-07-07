@@ -96,17 +96,17 @@ namespace justinobney.gymbuddy.api.Controllers
                 return Content((HttpStatusCode)422, "Unprocessable Entity: Invalid parameter(s).");
 
 
-            var profileFriendshipListings = _mediator.Send(new GetFriendshipsByFacebookIdsCommand
+            var facebookFriendshipListings = _mediator.Send(new GetFriendshipsByFacebookIdsCommand
             {
                 UserId = CurrentUser.Id,
                 FbIds = fbIds
             });
-            if (profileFriendshipListings == null || profileFriendshipListings.Count == 0)
+            if (facebookFriendshipListings == null || facebookFriendshipListings.Count == 0)
             {
                 return NotFound();
             }
 
-            return Ok(profileFriendshipListings);
+            return Ok(facebookFriendshipListings);
         }
     }
 }

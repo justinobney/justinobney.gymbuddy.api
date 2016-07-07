@@ -5,9 +5,12 @@ using justinobney.gymbuddy.api.Interfaces;
 
 namespace justinobney.gymbuddy.api.Responses
 {
-    public class ProfileFriendshipListing : ProfileListing
+    public class FacebookFriendshipListing
     {
-        public FriendshipStatus Status { get; set; }
+        public long UserId { get; set; }
+        public string FacebookUserId { get; set; }
+
+        public FacebookFriendshipStatus Status { get; set; }
         public string StatusText => Status.ToString();
     }
 
@@ -15,9 +18,8 @@ namespace justinobney.gymbuddy.api.Responses
     {
         public void Configure(IMapperConfiguration cfg)
         {
-            cfg.CreateMap<User, ProfileFriendshipListing>()
-                .ForMember(dest => dest.FitnessLevel, opts => opts.MapFrom(src => src.FitnessLevel.ToString()))
-                .ForMember(dest => dest.Gender, opts => opts.MapFrom(src => src.Gender.ToString()));
+            cfg.CreateMap<User, FacebookFriendshipListing>()
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id));
         }
     }
 }

@@ -337,6 +337,7 @@
     <Compile Include="DependencyResolution\StructureMapWebApiDependencyScope.cs" />
     <Compile Include="Enums\AppointmentGuestStatus.cs" />
     <Compile Include="Enums\AppointmentStatus.cs" />
+    <Compile Include="Enums\FacebookFriendshipStatus.cs" />
     <Compile Include="Enums\FitnessLevel.cs" />
     <Compile Include="Enums\FriendshipStatus.cs" />
     <Compile Include="Enums\Gender.cs" />
@@ -498,7 +499,7 @@
     <Compile Include="Responses\AppointmentListingComment.cs" />
     <Compile Include="Responses\FriendshipListing.cs" />
     <Compile Include="Responses\GymListing.cs" />
-    <Compile Include="Responses\ProfileFriendshipListing.cs" />
+    <Compile Include="Responses\FacebookFriendshipListing.cs" />
     <Compile Include="Responses\ProfileListing.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
