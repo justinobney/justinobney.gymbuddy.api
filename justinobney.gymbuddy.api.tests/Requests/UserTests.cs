@@ -225,5 +225,19 @@ namespace justinobney.gymbuddy.api.tests.Requests
             response.ModifiedAt.Value.Date.ShouldBe(DateTime.UtcNow.Date);
         }
 
+
+        [Test]
+        public void UpdateNotificationSettingsCommandReturnsNullOnInvalidUserId()
+        {
+            var command = new UpdateNotificationSettingsCommand
+            {
+                UserId = 1,
+                SilenceAllNotifications = true
+            };
+
+            var response = Mediator.Send(command);
+            response.ShouldBe(null);
+        }
+
     }
 }

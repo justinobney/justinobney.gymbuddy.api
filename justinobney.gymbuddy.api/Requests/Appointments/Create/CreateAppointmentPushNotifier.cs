@@ -10,24 +10,27 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Create
     public class CreateAppointmentNotifier : IPostRequestHandler<CreateAppointmentCommand, Appointment>
     {
         private readonly IDbSet<User> _users;
+        private readonly IDbSet<Friendship> _friendships;
         private readonly IPushNotifier _pushNotifier;
 
         public CreateAppointmentNotifier(
             IDbSet<User> users,
+            IDbSet<Friendship> friendships,
             IPushNotifier pushNotifier
             )
         {
             _users = users;
+            _friendships = friendships;
             _pushNotifier = pushNotifier;
         }
 
         public void Notify(CreateAppointmentCommand request, Appointment response)
         {
+            var friendUserIds = _friendships.Where(x => x.UserId == request.UserId && x.Status == Enums.FriendshipStatus.Active).Select(x => x.FriendId).ToList();
             var notifyUsers = _users
                 .Include(x => x.Devices)
                 .Include(x => x.Gyms)
-                .Where(x => x.Gyms.Any(y => y.Id == request.GymId))
-                .Where(x => x.Id != request.UserId)
+                .Where(x => !x.SilenceAllNotifications && ((x.NewGymWorkoutNotifications && x.Gyms.Any(y => y.Id == request.GymId)) || (x.NewSquadWorkoutNotifications && friendUserIds.Contains(x.Id))) && x.Id != request.UserId)
                 .ToList();
 
             var additionalData = new AdditionalData

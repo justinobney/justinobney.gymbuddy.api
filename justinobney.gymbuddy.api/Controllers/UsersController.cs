@@ -145,6 +145,10 @@ namespace justinobney.gymbuddy.api.Controllers
             command.UserId = CurrentUser.Id;
 
             var user = _mediator.Send(command);
+            if (user == null)
+            {
+                return NotFound();
+            }
             var profile = MappingConfig.Instance.Map<ProfileListing>(user);
             return Ok(profile);
         }
