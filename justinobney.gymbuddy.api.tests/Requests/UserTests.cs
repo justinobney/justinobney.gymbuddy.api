@@ -33,5 +33,98 @@ namespace justinobney.gymbuddy.api.tests.Requests
             users.First(d=>d.Id == 123).FacebookUserId.ShouldBe("FACE123");
             context.Received(1).SaveChanges();
         }
+
+        [Test]
+        public void CreateUserCommandEnablesGymWorkoutNotifications()
+        {
+            var command = new CreateUserCommand
+            {
+                Id = 1,
+                Name = "MONSTAR",
+                DeviceId = "123",
+                FilterFitnessLevel = Enums.FitnessLevel.Beginner,
+                FacebookUserId = "1122334455",
+                FilterGender = Enums.Gender.Male,
+                Gender = Enums.Gender.Male,
+                FitnessLevel = Enums.FitnessLevel.Beginner,
+                Platform = "web"
+            };
+
+            var response = Mediator.Send(command);
+            response.NewGymWorkoutNotifications.ShouldBe(true);
+        }
+
+        [Test]
+        public void CreateUserCommandEnablesSquadWorkoutNotifications()
+        {
+            var command = new CreateUserCommand
+            {
+                Id = 1,
+                Name = "MONSTAR",
+                DeviceId = "123",
+                FilterFitnessLevel = Enums.FitnessLevel.Beginner,
+                FacebookUserId = "1122334455",
+                FilterGender = Enums.Gender.Male,
+                Gender = Enums.Gender.Male,
+                FitnessLevel = Enums.FitnessLevel.Beginner,
+                Platform = "web"
+            };
+
+            var response = Mediator.Send(command);
+            response.NewSquadWorkoutNotifications.ShouldBe(true);
+        }
+
+        [Test]
+        public void CreateUserCommandSilenceNotificationsDisabled()
+        {
+            var command = new CreateUserCommand
+            {
+                Id = 1,
+                Name = "MONSTAR",
+                DeviceId = "123",
+                FilterFitnessLevel = Enums.FitnessLevel.Beginner,
+                FacebookUserId = "1122334455",
+                FilterGender = Enums.Gender.Male,
+                Gender = Enums.Gender.Male,
+                FitnessLevel = Enums.FitnessLevel.Beginner,
+                Platform = "web"
+            };
+
+            var response = Mediator.Send(command);
+            response.SilenceAllNotifications.ShouldBe(false);
+        }
+
+        [Test]
+        public void UpdateNotificationSettingsCommandUpdatesGymWorkoutNotifications()
+        {
+            var users = Context.GetSet<User>();
+
+            var user = new User
+            {
+                Id = 1,
+                Name = "MONSTAR"
+            };
+            users.Attach(user);
+
+            var trueCommandTest = new UpdateNotificationSettingsCommand
+            {
+                UserId = 1,
+                NewGymWorkoutNotifications = true
+            };
+
+            var trueTestResponse = Mediator.Send(trueCommandTest);
+            trueTestResponse.NewGymWorkoutNotifications.ShouldBe(true);
+
+
+            var falseCommandTest = new UpdateNotificationSettingsCommand
+            {
+                UserId = 1,
+                NewGymWorkoutNotifications = false
+            };
+
+            var falseTestResponse = Mediator.Send(falseCommandTest);
+            falseTestResponse.NewGymWorkoutNotifications.ShouldBe(false);
+        }
+
     }
 }
