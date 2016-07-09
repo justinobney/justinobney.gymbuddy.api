@@ -9,7 +9,6 @@ using System.Linq;
 using System.Net;
 using System.Web.Http;
 using System.Web.Http.Description;
-using justinobney.gymbuddy.api.Requests.Users.Dtos;
 
 namespace justinobney.gymbuddy.api.Controllers
 {
@@ -134,14 +133,13 @@ namespace justinobney.gymbuddy.api.Controllers
         [ResponseType(typeof(ProfileListing))]
         [HttpPost]
         [Route("api/Users/Update-Notification-Settings")]
-        public IHttpActionResult UpdateNotificationSettings(NotificationSettingDto dto)
+        public IHttpActionResult UpdateNotificationSettings(UpdateNotificationSettingsCommand command)
         {
             if (CurrentUser == null)
             {
                 return Unauthorized();
             }
-
-            var command = MappingConfig.Instance.Map<UpdateNotificationSettingsCommand>(dto);
+            
             command.UserId = CurrentUser.Id;
 
             var user = _mediator.Send(command);
