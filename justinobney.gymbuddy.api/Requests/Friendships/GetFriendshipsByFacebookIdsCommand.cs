@@ -8,13 +8,13 @@ using System.Linq;
 
 namespace justinobney.gymbuddy.api.Requests.Friendships
 {
-    public class GetFriendshipsByFacebookIdsCommand : IRequest<IList<FacebookFriendshipListing>>
+    public class GetFriendshipsByFacebookIdsCommand : IRequest<ICollection<FacebookFriendshipListing>>
     {
         public long UserId { get; set; }
-        public IList<string> FbIds { get; set; }
+        public ICollection<string> FbIds { get; set; }
     }
 
-    public class GetUserListByFacebookIdsCommandHandler : IRequestHandler<GetFriendshipsByFacebookIdsCommand, IList<FacebookFriendshipListing>>
+    public class GetUserListByFacebookIdsCommandHandler : IRequestHandler<GetFriendshipsByFacebookIdsCommand, ICollection<FacebookFriendshipListing>>
     {
         private readonly IDbSet<User> _users;
         private readonly IDbSet<Friendship> _friendships;
@@ -25,7 +25,7 @@ namespace justinobney.gymbuddy.api.Requests.Friendships
             _friendships = friendships;
         }
 
-        public IList<FacebookFriendshipListing> Handle(GetFriendshipsByFacebookIdsCommand message)
+        public ICollection<FacebookFriendshipListing> Handle(GetFriendshipsByFacebookIdsCommand message)
         {
             var users = _users.Where(x => !string.IsNullOrEmpty(x.FacebookUserId) && message.FbIds.Contains(x.FacebookUserId)).ToList();
             var userFacebookIds = users.Select(x => x.FacebookUserId).Distinct().ToList();

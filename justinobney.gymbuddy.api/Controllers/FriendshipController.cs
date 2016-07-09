@@ -87,10 +87,10 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(MappingConfig.Instance.Map<FriendshipListing>(friendship));
         }
 
-        [ResponseType(typeof(IList<FriendshipListing>))]
+        [ResponseType(typeof(ICollection<FacebookFriendshipListing>))]
         [HttpPost]
         [Route("api/Friendship/Get-By-Facebook-Ids")]
-        public IHttpActionResult GetByFacebookIds(IList<string> fbIds)
+        public IHttpActionResult GetByFacebookIds(ICollection<string> fbIds)
         {
             if (fbIds == null || !fbIds.Any())
                 return Content((HttpStatusCode)422, "Unprocessable Entity: Invalid parameter(s).");
