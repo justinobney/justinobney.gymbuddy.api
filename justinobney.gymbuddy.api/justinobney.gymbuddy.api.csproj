@@ -433,6 +433,10 @@
     <Compile Include="Migrations\201606261502566_User_AddFacebookUserId.Designer.cs">
       <DependentUpon>201606261502566_User_AddFacebookUserId.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607081425109_User_Notification_Settings.cs" />
+    <Compile Include="Migrations\201607081425109_User_Notification_Settings.Designer.cs">
+      <DependentUpon>201607081425109_User_Notification_Settings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
     <Compile Include="Notifications\NofiticationTypes.cs" />
@@ -491,6 +495,7 @@
     <Compile Include="Requests\Users\DeleteUserCommand.cs" />
     <Compile Include="Requests\Friendships\GetFriendshipsByFacebookIdsCommand.cs" />
     <Compile Include="Requests\Users\UpdateDeviceCommand.cs" />
+    <Compile Include="Requests\Users\UpdateNotificationSettingsCommand.cs" />
     <Compile Include="Requests\Users\UpdateUserCommand.cs" />
     <Compile Include="Requests\Users\UpdateUserProfileImageCommand.cs" />
     <Compile Include="Responses\ApiError.cs" />
@@ -562,6 +567,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201606261502566_User_AddFacebookUserId.resx">
       <DependentUpon>201606261502566_User_AddFacebookUserId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607081425109_User_Notification_Settings.resx">
+      <DependentUpon>201607081425109_User_Notification_Settings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>

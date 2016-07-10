@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Data.Devices;
 using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
+using System;
+using System.Collections.Generic;
 
 namespace justinobney.gymbuddy.api.Data.Users
 {
@@ -28,5 +28,9 @@ namespace justinobney.gymbuddy.api.Data.Users
 
         public DateTime? CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
+
+        public bool NewGymWorkoutNotifications { get; set; }
+        public bool NewSquadWorkoutNotifications { get; set; }
+        public bool SilenceAllNotifications { get; set; }
     }
 }

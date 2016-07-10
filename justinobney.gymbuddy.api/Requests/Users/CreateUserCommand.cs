@@ -49,6 +49,9 @@ namespace justinobney.gymbuddy.api.Requests.Users
                 ModifiedAt = DateTime.UtcNow
             });
 
+            user.NewGymWorkoutNotifications = true;
+            user.NewSquadWorkoutNotifications = true;
+
             _users.Add(user);
 
             return user;

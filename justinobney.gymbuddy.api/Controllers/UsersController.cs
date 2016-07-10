@@ -129,5 +129,26 @@ namespace justinobney.gymbuddy.api.Controllers
             var profile = MappingConfig.Instance.Map<ProfileListing>(user);
             return Ok(profile);
         }
+
+        [ResponseType(typeof(ProfileListing))]
+        [HttpPost]
+        [Route("api/Users/Update-Notification-Settings")]
+        public IHttpActionResult UpdateNotificationSettings(UpdateNotificationSettingsCommand command)
+        {
+            if (CurrentUser == null)
+            {
+                return Unauthorized();
+            }
+            
+            command.UserId = CurrentUser.Id;
+
+            var user = _mediator.Send(command);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var profile = MappingConfig.Instance.Map<ProfileListing>(user);
+            return Ok(profile);
+        }
     }
 }
