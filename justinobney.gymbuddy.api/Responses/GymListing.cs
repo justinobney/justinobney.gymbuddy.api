@@ -13,6 +13,8 @@ namespace justinobney.gymbuddy.api.Responses
         public double? Lng { get; set; }
         public string Zipcode { get; set; }
         public int MemberCount { get; set; }
+
+        public bool HasUserJoinedGym { get; set; }
     }
 
     public class GymListingMapper : IAutoMapperConfiguration
