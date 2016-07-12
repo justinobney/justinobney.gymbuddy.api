@@ -1,12 +1,12 @@
-﻿using AutoMapper.Internal;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using AutoMapper.QueryableExtensions;
 using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using justinobney.gymbuddy.api.Responses;
 using MediatR;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
 
 namespace justinobney.gymbuddy.api.Requests.Gyms
 {
@@ -30,15 +30,16 @@ namespace justinobney.gymbuddy.api.Requests.Gyms
 
         public ICollection<GymListing> Handle(GetGymsCommand message)
         {
-            var gyms = _gyms.ToList();
-            var gymList = MappingConfig.Instance.Map<List<GymListing>>(gyms);
             var user = _users.FirstOrDefault(x => x.Id == message.UserId);
-            if (user?.Gyms != null && user.Gyms.Any())
+            if (user?.Gyms?.Any() == true)
             {
-                var userGymIds = user.Gyms.Select(x => x.Id).ToList();
-                gymList.Where(x => userGymIds.Contains(x.Id)).Each(x => x.HasUserJoinedGym = true);
+                var userGymIds = user.Gyms.Select(x => x.Id).ToArray();
+
+                return _gyms
+                    .ProjectTo<GymListing>(MappingConfig.Config, new {userGymIds})
+                    .ToList();
             }
-            return gymList;
+            return new List<GymListing>();
         }
     }
 }
