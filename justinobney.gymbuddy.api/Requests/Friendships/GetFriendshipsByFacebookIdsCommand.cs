@@ -27,13 +27,14 @@ namespace justinobney.gymbuddy.api.Requests.Friendships
 
         public ICollection<FacebookFriendshipListing> Handle(GetFriendshipsByFacebookIdsCommand message)
         {
+            var facebookFriendshipListings = new List<FacebookFriendshipListing>();
+
             var users = _users.Where(x => !string.IsNullOrEmpty(x.FacebookUserId) && message.FbIds.Contains(x.FacebookUserId)).ToList();
             var userFacebookIds = users.Select(x => x.FacebookUserId).Distinct().ToList();
             var userIds = users.Select(y => y.Id).Distinct().ToList();
 
             //existing users
             var existingFriendships = _friendships.Where(x => userIds.Contains(x.FriendId) && x.UserId == message.UserId).ToList();
-            var facebookFriendshipListings = new List<FacebookFriendshipListing>();
             foreach (var user in users)
             {
                 var facebookFriendshipListing = new FacebookFriendshipListing { UserId = user.Id, FacebookUserId = user.FacebookUserId };

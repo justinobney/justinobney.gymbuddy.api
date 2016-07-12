@@ -25,12 +25,7 @@ namespace justinobney.gymbuddy.api.Controllers
             if (CurrentUser == null)
                 return Unauthorized();
 
-            var response = _mediator.Send(new GetGymsCommand { UserId = CurrentUser.Id });
-            if (response == null || !response.Any())
-            {
-                return NotFound();
-            }
-            return Ok(response);
+            return Ok(_mediator.Send(new GetGymsCommand { UserId = CurrentUser.Id }));
         }
 
         // GET: api/Gyms/5
