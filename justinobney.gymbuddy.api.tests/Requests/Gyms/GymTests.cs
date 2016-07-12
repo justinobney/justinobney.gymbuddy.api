@@ -74,5 +74,17 @@ namespace justinobney.gymbuddy.api.tests.Requests.Gyms
             var response = Mediator.Send(command);
             response.Count(x => x.Id == 3 && x.HasUserJoinedGym).ShouldBe(0);
         }
+
+        [Test]
+        public void GetGymsCommandUserHasJoinedGym()
+        {
+            var command = new GetGymsCommand
+            {
+                UserId = 1
+            };
+
+            var response = Mediator.Send(command);
+            response.Count(x => x.Id == 1 && x.HasUserJoinedGym).ShouldBe(1);
+        }
     }
 }
