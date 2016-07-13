@@ -40,7 +40,7 @@ namespace justinobney.gymbuddy.api.Controllers
             {
                 UserId = CurrentUser.Id
             })
-            .Select(x=>x.Friend)
+            .Select(x => x.Friend)
             .ProjectTo<ProfileListing>(MappingConfig.Config);
 
             return Ok(friendship);
@@ -95,18 +95,7 @@ namespace justinobney.gymbuddy.api.Controllers
             if (fbIds == null || !fbIds.Any())
                 return Content((HttpStatusCode)422, "Unprocessable Entity: Invalid parameter(s).");
 
-
-            var facebookFriendshipListings = _mediator.Send(new GetFriendshipsByFacebookIdsCommand
-            {
-                UserId = CurrentUser.Id,
-                FbIds = fbIds
-            });
-            if (facebookFriendshipListings == null || facebookFriendshipListings.Count == 0)
-            {
-                return NotFound();
-            }
-
-            return Ok(facebookFriendshipListings);
+            return Ok(_mediator.Send(new GetFriendshipsByFacebookIdsCommand { UserId = CurrentUser.Id, FbIds = fbIds }));
         }
     }
 }

@@ -1,19 +1,20 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http;
-using System.Web.Http.Description;
 using AutoMapper.QueryableExtensions;
 using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Requests.Generic;
+using justinobney.gymbuddy.api.Requests.Gyms;
 using justinobney.gymbuddy.api.Responses;
 using MediatR;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace justinobney.gymbuddy.api.Controllers
 {
     public class GymsController : AuthenticatedController
     {
-        public GymsController(IMediator mediator):base(mediator)
+        public GymsController(IMediator mediator) : base(mediator)
         {
         }
 
@@ -21,11 +22,10 @@ namespace justinobney.gymbuddy.api.Controllers
         [ResponseType(typeof(IEnumerable<GymListing>))]
         public IHttpActionResult GetGyms()
         {
-            var gyms = _mediator.Send(new GetAllByPredicateQuery<Gym>())
-                .ProjectTo<GymListing>(MappingConfig.Config)
-                .ToList();
+            if (CurrentUser == null)
+                return Unauthorized();
 
-            return Ok(gyms);
+            return Ok(_mediator.Send(new GetGymsCommand { UserId = CurrentUser.Id }));
         }
 
         // GET: api/Gyms/5
@@ -70,6 +70,6 @@ namespace justinobney.gymbuddy.api.Controllers
 
             return Ok(users);
         }
-        
+
     }
 }
