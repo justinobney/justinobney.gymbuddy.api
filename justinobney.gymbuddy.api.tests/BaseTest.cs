@@ -41,6 +41,8 @@ namespace justinobney.gymbuddy.api.tests
             var notifier = Substitute.For<IPushNotifier>();
             registry.For<IPushNotifier>().Use(notifier);
 
+            registry.For<IBackgroundJobClient>().Use(Substitute.For<IBackgroundJobClient>());
+
             var log = new LoggerConfiguration()
                 .WriteTo.ColoredConsole()
                 .CreateLogger();
