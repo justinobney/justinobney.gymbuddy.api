@@ -104,11 +104,10 @@ namespace justinobney.gymbuddy.api.Controllers
         public IHttpActionResult UpdateDevice(UpdateDeviceCommand command)
         {
             if (CurrentUser == null || CurrentUser.Devices.All(d => d.DeviceId != command.DeviceId))
-            {
                 return Unauthorized();
-            }
 
             command.FacebookUserId = FacebookUserId;
+            command.ClientVersion = ClientVersion;
             _mediator.Send(command);
             return Ok();
         }
