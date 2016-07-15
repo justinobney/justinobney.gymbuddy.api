@@ -37,7 +37,7 @@ namespace justinobney.gymbuddy.api.tests.Requests.Gyms
                 FilterGender = GenderFilter.Both,
                 FitnessLevel = FitnessLevel.Intermediate,
                 FilterFitnessLevel = FitnessLevel.Beginner,
-                Gyms = new List<Gym>(),
+                Gyms = new List<Gym> { gym1 },
                 Name = "User2",
                 FacebookUserId = "192837"
             };
@@ -85,18 +85,6 @@ namespace justinobney.gymbuddy.api.tests.Requests.Gyms
 
             var response = Mediator.Send(command);
             response.Count(x => x.Id == 1 && x.HasUserJoinedGym).ShouldBe(1);
-        }
-
-        [Test]
-        public void GetGymsCommandUserHasJoinedGymWhenUserHasNoGyms()
-        {
-            var command = new GetGymsCommand
-            {
-                UserId = 2
-            };
-
-            var response = Mediator.Send(command);
-            response.Count(x => !x.HasUserJoinedGym).ShouldBe(3);
         }
     }
 }
