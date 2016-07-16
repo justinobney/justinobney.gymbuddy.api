@@ -316,7 +316,10 @@
     <Compile Include="Data\Notifications\Notification.cs" />
     <Compile Include="Data\Notifications\NotificationConfiguration.cs" />
     <Compile Include="Data\Posts\Post.cs" />
+    <Compile Include="Data\Posts\PostComments.cs" />
     <Compile Include="Data\Posts\PostConfiguration.cs" />
+    <Compile Include="Data\Posts\PostContent.cs" />
+    <Compile Include="Data\Posts\PostKudos.cs" />
     <Compile Include="Data\PredicateBuilder.cs" />
     <Compile Include="Data\Users\Friendship.cs" />
     <Compile Include="Data\Users\FriendshipConfiguration.cs" />
@@ -436,6 +439,10 @@
     <Compile Include="Migrations\201607081425109_User_Notification_Settings.cs" />
     <Compile Include="Migrations\201607081425109_User_Notification_Settings.Designer.cs">
       <DependentUpon>201607081425109_User_Notification_Settings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607162130548_Post_UpdateSchemaDesign.cs" />
+    <Compile Include="Migrations\201607162130548_Post_UpdateSchemaDesign.Designer.cs">
+      <DependentUpon>201607162130548_Post_UpdateSchemaDesign.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
@@ -571,6 +578,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607081425109_User_Notification_Settings.resx">
       <DependentUpon>201607081425109_User_Notification_Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607162130548_Post_UpdateSchemaDesign.resx">
+      <DependentUpon>201607162130548_Post_UpdateSchemaDesign.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>
