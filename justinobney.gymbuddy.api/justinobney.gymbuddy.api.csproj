@@ -437,6 +437,14 @@
     <Compile Include="Migrations\201607081425109_User_Notification_Settings.Designer.cs">
       <DependentUpon>201607081425109_User_Notification_Settings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607151606302_device-api-version.cs" />
+    <Compile Include="Migrations\201607151606302_device-api-version.Designer.cs">
+      <DependentUpon>201607151606302_device-api-version.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607151948004_rename-api-client-version.cs" />
+    <Compile Include="Migrations\201607151948004_rename-api-client-version.Designer.cs">
+      <DependentUpon>201607151948004_rename-api-client-version.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
     <Compile Include="Notifications\NofiticationTypes.cs" />
@@ -572,6 +580,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607081425109_User_Notification_Settings.resx">
       <DependentUpon>201607081425109_User_Notification_Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607151606302_device-api-version.resx">
+      <DependentUpon>201607151606302_device-api-version.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607151948004_rename-api-client-version.resx">
+      <DependentUpon>201607151948004_rename-api-client-version.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>
