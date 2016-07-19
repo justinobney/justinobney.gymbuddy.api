@@ -308,6 +308,7 @@
     <Compile Include="Data\Appointments\AppointmentExercise.cs" />
     <Compile Include="Data\Appointments\AppointmentGuest.cs" />
     <Compile Include="Data\Appointments\AppointmentTimeSlot.cs" />
+    <Compile Include="Data\AsyncJobs\AsyncJob.cs" />
     <Compile Include="Data\BaseRepository.cs" />
     <Compile Include="Data\Devices\Device.cs" />
     <Compile Include="Data\Devices\DeviceConfiguration.cs" />
@@ -344,6 +345,7 @@
     <Compile Include="Enums\FitnessLevel.cs" />
     <Compile Include="Enums\FriendshipStatus.cs" />
     <Compile Include="Enums\Gender.cs" />
+    <Compile Include="Enums\JobStatus.cs" />
     <Compile Include="Enums\PostType.cs" />
     <Compile Include="Exceptions\AuthorizationException.cs" />
     <Compile Include="Filters\AuthorizationExceptionFilter.cs" />
@@ -443,6 +445,10 @@
     <Compile Include="Migrations\201607162130548_Post_UpdateSchemaDesign.cs" />
     <Compile Include="Migrations\201607162130548_Post_UpdateSchemaDesign.Designer.cs">
       <DependentUpon>201607162130548_Post_UpdateSchemaDesign.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607190356161_Domain_AsyncJob_InitialCreation.cs" />
+    <Compile Include="Migrations\201607190356161_Domain_AsyncJob_InitialCreation.Designer.cs">
+      <DependentUpon>201607190356161_Domain_AsyncJob_InitialCreation.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
@@ -581,6 +587,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607162130548_Post_UpdateSchemaDesign.resx">
       <DependentUpon>201607162130548_Post_UpdateSchemaDesign.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607190356161_Domain_AsyncJob_InitialCreation.resx">
+      <DependentUpon>201607190356161_Domain_AsyncJob_InitialCreation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>
