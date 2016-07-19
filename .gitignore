@@ -214,3 +214,4 @@ WebAPI_Learning_1/container.txt
 
 justinobney.gymbuddy.api/container.txt
 *.ncrunch*
+*.DS_Store
