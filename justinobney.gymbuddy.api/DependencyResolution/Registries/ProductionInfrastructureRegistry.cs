@@ -1,6 +1,8 @@
 using System.Configuration;
 using System.Web.Configuration;
 using CloudinaryDotNet;
+using Hangfire;
+using Hangfire.SqlServer;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
@@ -31,9 +33,15 @@ namespace justinobney.gymbuddy.api.DependencyResolution.Registries
 
                     var cloudinary = Substitute.For<Cloudinary>(new Account("fake", "fake", "fake"));
                     For<Cloudinary>().Use(context => cloudinary);
+
+
+                    For<IBackgroundJobClient>().Use(Substitute.For<IBackgroundJobClient>());
                 }
                 else
                 {
+                    For<IBackgroundJobClient>()
+                        .Use(new BackgroundJobClient(new SqlServerStorage("AppContext")));
+
                     For<IRestClient>().Use(context => new RestClient());
 
                     var cloud = ConfigurationManager.AppSettings.Get("Cloudinary-Cloud");

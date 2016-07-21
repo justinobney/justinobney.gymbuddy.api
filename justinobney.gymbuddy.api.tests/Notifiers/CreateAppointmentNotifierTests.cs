@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Hangfire;
+using Hangfire.Common;
+using Hangfire.States;
 using justinobney.gymbuddy.api.Data.Appointments;
 using justinobney.gymbuddy.api.Data.Devices;
 using justinobney.gymbuddy.api.Data.Gyms;
@@ -389,6 +392,175 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
             notifier.DidNotReceive().Send(
                 Arg.Is<NotificationPayload>(x => x.Title == "New Appointment Available"),
                 Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == "99999"))
+                );
+        }
+
+        [Test]
+        public void AppointmentReminder_SchedulesTheReminder()
+        {
+            var users = Context.GetSet<User>();
+
+            var sameGymUser = new User
+            {
+                Id = 75,
+                Devices = new List<Device>
+                {
+                    new Device { Platform = "iOS", PushToken = "98142"}
+                },
+                NewGymWorkoutNotifications = true
+            };
+
+            users.Add(sameGymUser);
+
+            Context.Register<IPostRequestHandler<CreateAppointmentCommand, Appointment>, AppointmentReminder>();
+            var handler = Context.GetInstance<IPostRequestHandler<CreateAppointmentCommand, Appointment>>();
+            var backgroundClient = Context.GetInstance<IBackgroundJobClient>();
+
+            var request = new CreateAppointmentCommand
+            {
+                UserId = CurrentUser.Id,
+                GymId = DefaultGym.Id,
+                Title = "Super WORKOUT",
+                TimeSlots = new List<DateTime?> { DateTime.Now }
+            };
+            var response = new Appointment
+            {
+                Id = 2,
+                UserId = 1,
+                User = CurrentUser,
+                GymId = DefaultGym.Id,
+                TimeSlots = new List<AppointmentTimeSlot>
+                {
+                    new AppointmentTimeSlot
+                    {
+                        Time = DateTime.UtcNow.AddMinutes(121),
+                        AppointmentId = 2
+                    }
+                }
+            };
+
+            handler.Notify(request, response);
+            backgroundClient.Received().Create(
+                Arg.Is<Job>(x => x.Method.Name == "SendNotification" && (long)x.Args[0] == 2),
+                Arg.Any<IState>()
+            );
+        }
+
+        [Test]
+        public void AppointmentReminder_SkipsTheReminder_WhenAppointmentIsLessThanTwoHoursFromCreation()
+        {
+            var users = Context.GetSet<User>();
+
+            var sameGymUser = new User
+            {
+                Id = 75,
+                Devices = new List<Device>
+                {
+                    new Device { Platform = "iOS", PushToken = "98142"}
+                },
+                NewGymWorkoutNotifications = true
+            };
+
+            users.Add(sameGymUser);
+
+            Context.Register<IPostRequestHandler<CreateAppointmentCommand, Appointment>, AppointmentReminder>();
+            var handler = Context.GetInstance<IPostRequestHandler<CreateAppointmentCommand, Appointment>>();
+            var backgroundClient = Context.GetInstance<IBackgroundJobClient>();
+
+            var request = new CreateAppointmentCommand
+            {
+                UserId = CurrentUser.Id,
+                GymId = DefaultGym.Id,
+                Title = "Super WORKOUT",
+                TimeSlots = new List<DateTime?> { DateTime.Now }
+            };
+            var response = new Appointment
+            {
+                Id = 1,
+                UserId = 1,
+                User = CurrentUser,
+                GymId = DefaultGym.Id,
+                TimeSlots = new List<AppointmentTimeSlot>
+                {
+                    new AppointmentTimeSlot
+                    {
+                        Time = DateTime.UtcNow.AddMinutes(119),
+                        AppointmentId = 1
+                    }
+                }
+            };
+
+            handler.Notify(request, response);
+            backgroundClient.DidNotReceive().Create(
+                Arg.Is<Job>(x => x.Method.Name == "SendNotification" && (long)x.Args[0] == 1),
+                Arg.Any<IState>()
+            );
+        }
+
+        [Test]
+        public void AppointmentReminder_SendsTheReminderToConfirmedGuests()
+        {
+            var appts = Context.GetSet<Appointment>();
+            var guests = Context.GetSet<AppointmentGuest>();
+            var notifier = Context.GetInstance<IPushNotifier>();
+
+            Context.Register<IPostRequestHandler<CreateAppointmentCommand, Appointment>, AppointmentReminder>();
+            var handler = Context.GetInstance<IPostRequestHandler<CreateAppointmentCommand, Appointment>>() as AppointmentReminder;
+
+            var appt = new Appointment
+            {
+                Id = 2,
+                UserId = 1,
+                User = CurrentUser,
+                GymId = DefaultGym.Id,
+                TimeSlots = new List<AppointmentTimeSlot>
+                {
+                    new AppointmentTimeSlot
+                    {
+                        Time = DateTime.UtcNow.AddMinutes(121),
+                        AppointmentId = 2
+                    }
+                }
+            };
+
+            var guest1 = new AppointmentGuest
+            {
+                UserId = 2,
+                AppointmentId = appt.Id,
+                Status = AppointmentGuestStatus.Pending,
+                User = new User
+                {
+                    Id = 2,
+                    Devices = new List<Device> { new Device { PushToken = "123" } }
+                }
+            };
+
+            var guest2 = new AppointmentGuest
+            {
+                UserId = 2,
+                AppointmentId = appt.Id,
+                Status = AppointmentGuestStatus.Confirmed,
+                User = new User
+                {
+                    Id = 2,
+                    Devices = new List<Device> { new Device { PushToken = "321" } }
+                }
+            };
+
+            appts.Attach(appt);
+            guests.Attach(guest1);
+            guests.Attach(guest2);
+
+            handler.SendNotification(appt.Id);
+
+            notifier.Received().Send(
+                Arg.Is<NotificationPayload>(x => x.Title == "Upcoming Workout"),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == "321"))
+                );
+
+            notifier.DidNotReceive().Send(
+                Arg.Is<NotificationPayload>(x => x.Title == "Upcoming Workout"),
+                Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == "123"))
                 );
         }
     }

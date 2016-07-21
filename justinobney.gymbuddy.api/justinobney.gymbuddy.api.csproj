@@ -471,6 +471,7 @@
     <Compile Include="Requests\Appointments\Confirm\ConfirmAppointmentGuestCommandValidator.cs" />
     <Compile Include="Requests\Appointments\Confirm\ConfirmAppointmentGuestPushNotifier.cs" />
     <Compile Include="Requests\Appointments\Confirm\ConfirmAppointmentPushNotifier.cs" />
+    <Compile Include="Requests\Appointments\Create\AppointmentReminder.cs" />
     <Compile Include="Requests\Appointments\Create\CreateAppointmentCommand.cs" />
     <Compile Include="Requests\Appointments\Create\CreateAppointmentCommandMapper.cs" />
     <Compile Include="Requests\Appointments\Create\CreateAppointmentCommandValidator.cs" />
