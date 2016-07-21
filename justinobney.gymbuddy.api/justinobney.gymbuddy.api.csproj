@@ -364,6 +364,7 @@
     <Compile Include="Interfaces\IFriendship.cs" />
     <Compile Include="Interfaces\IHasTouchedProperties.cs" />
     <Compile Include="Interfaces\IImageUploader.cs" />
+    <Compile Include="Interfaces\IPostContentStategy.cs" />
     <Compile Include="Interfaces\IPostRequestHandler.cs" />
     <Compile Include="Interfaces\IPushNotifier.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
@@ -507,6 +508,11 @@
     <Compile Include="Requests\Gyms\GetGymsCommand.cs" />
     <Compile Include="Requests\Gyms\GymPeekUsersCommand.cs" />
     <Compile Include="Requests\Posts\CreatePostCommand.cs" />
+    <Compile Include="Requests\Posts\CreatePostCommandValidator.cs" />
+    <Compile Include="Requests\Posts\ImageContentStrategy.cs" />
+    <Compile Include="Requests\Posts\PostContentStategyFactory.cs" />
+    <Compile Include="Requests\Posts\PostContentValidator.cs" />
+    <Compile Include="Requests\Posts\TextContentStrategy.cs" />
     <Compile Include="Requests\Users\AddUserToGymCommand.cs" />
     <Compile Include="Requests\Users\CreateUserCommand.cs" />
     <Compile Include="Requests\Users\DeleteUserCommand.cs" />
