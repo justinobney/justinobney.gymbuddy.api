@@ -363,6 +363,7 @@
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Interfaces\IFriendship.cs" />
     <Compile Include="Interfaces\IHasTouchedProperties.cs" />
+    <Compile Include="Interfaces\IImageUploader.cs" />
     <Compile Include="Interfaces\IPostRequestHandler.cs" />
     <Compile Include="Interfaces\IPushNotifier.cs" />
     <Compile Include="Interfaces\IRepository.cs" />

@@ -3,6 +3,7 @@ using System.Web.Configuration;
 using CloudinaryDotNet;
 using Hangfire;
 using Hangfire.SqlServer;
+using justinobney.gymbuddy.api.Helpers;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
@@ -34,6 +35,7 @@ namespace justinobney.gymbuddy.api.DependencyResolution.Registries
                     var cloudinary = Substitute.For<Cloudinary>(new Account("fake", "fake", "fake"));
                     For<Cloudinary>().Use(context => cloudinary);
 
+                    For<IImageUploader>().Use(Substitute.For<IImageUploader>());
 
                     For<IBackgroundJobClient>().Use(Substitute.For<IBackgroundJobClient>());
                 }
@@ -49,6 +51,8 @@ namespace justinobney.gymbuddy.api.DependencyResolution.Registries
                     var secret = ConfigurationManager.AppSettings.Get("Cloudinary-ApiSecret");
                     var account = new Account(cloud,key,secret);
                     For<Cloudinary>().Use(new Cloudinary(account));
+
+                    For<IImageUploader>().Use<ImageUploader>();
                 }
 
                 ConfigureNotifications(scan);
