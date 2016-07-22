@@ -11,10 +11,12 @@ using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Posts;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
+using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Posts;
 using justinobney.gymbuddy.api.tests.Helpers;
 using NSubstitute;
 using NUnit.Framework;
+using Stream;
 
 namespace justinobney.gymbuddy.api.tests.Requests.Posts
 {
@@ -70,6 +72,7 @@ namespace justinobney.gymbuddy.api.tests.Requests.Posts
         {
             var posts = Context.GetSet<Post>();
             var asyncJobs = Context.GetSet<AsyncJob>();
+            var backgroundClient = Context.GetInstance<IBackgroundJobClient>();
 
             var command = new CreatePostCommand
             {
@@ -89,6 +92,22 @@ namespace justinobney.gymbuddy.api.tests.Requests.Posts
             posts.Count().ShouldBe(1);
             asyncJobs.Count().ShouldBe(0);
 
+            Func<Activity, bool> verifyActivity = activity =>
+                activity.Actor == "User:1"
+                && activity.Verb == "post";
+
+
+            backgroundClient.Received(1).Create(
+                Arg.Is<Job>(
+                    x =>
+                        x.Method.Name == "_AddActivity"
+                        && (string)x.Args[0] == "user"
+                        && (string)x.Args[1] == "1"
+                        && verifyActivity((Activity)x.Args[2])
+                    ),
+                Arg.Any<IState>()
+                );
+            
             var thePost = posts.First();
             thePost.Contents.Count.ShouldBe(1);
 

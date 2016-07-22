@@ -2,11 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
+using Hangfire;
+using Hangfire.Common;
+using Hangfire.States;
 using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
+using justinobney.gymbuddy.api.Helpers;
+using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Friendships;
 using justinobney.gymbuddy.api.tests.Helpers;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace justinobney.gymbuddy.api.tests.Requests.Friendships
@@ -213,6 +219,7 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
         {
             var users = Context.GetSet<User>();
             var friendships = Context.GetSet<Friendship>();
+            var backgroundClient = Context.GetInstance<IBackgroundJobClient>();
 
             var friend = new User
             {
@@ -249,8 +256,32 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
 
             friendships.Count(x => x.UserId == CurrentUser.Id && x.Status == FriendshipStatus.Active).ShouldBe(1);
             friendships.Count(x => x.UserId == friend.Id && x.Status == FriendshipStatus.Active).ShouldBe(1);
-        }
 
+            backgroundClient.Received(1).Create(
+                Arg.Is<Job>(
+                    x =>
+                        x.Method.Name == "_FollowFeed"
+                        && (string) x.Args[0] == "user"
+                        && (string) x.Args[1] == "1"
+                        && (string) x.Args[2] == "timeline"
+                        && (string) x.Args[3] == "2"
+                    ),
+                Arg.Any<IState>()
+                );
+
+            backgroundClient.Received(1).Create(
+                Arg.Is<Job>(
+                    x =>
+                        x.Method.Name == "_FollowFeed"
+                        && (string) x.Args[0] == "user"
+                        && (string) x.Args[1] == "2"
+                        && (string) x.Args[2] == "timeline"
+                        && (string) x.Args[3] == "1"
+                    ),
+                Arg.Any<IState>()
+                );
+        }
+        
         [Test]
         public void ConfirmFriendshipFromInitiatorFails()
         {

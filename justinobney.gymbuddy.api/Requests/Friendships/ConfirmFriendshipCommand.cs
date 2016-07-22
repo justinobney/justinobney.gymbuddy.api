@@ -2,8 +2,10 @@ using System.Data.Entity;
 using System.Linq;
 using FluentValidation;
 using FluentValidation.Results;
+using Hangfire;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
+using justinobney.gymbuddy.api.Helpers;
 using justinobney.gymbuddy.api.Interfaces;
 using MediatR;
 
@@ -18,10 +20,15 @@ namespace justinobney.gymbuddy.api.Requests.Friendships
     public class ConfirmFriendshipCommandHandler : IRequestHandler<ConfirmFriendshipCommand, Friendship>
     {
         private readonly IDbSet<Friendship> _friendships;
+        private readonly IStreamClientProxy _streamClientProxy;
 
-        public ConfirmFriendshipCommandHandler(IDbSet<Friendship> friendships)
+        public ConfirmFriendshipCommandHandler(
+            IDbSet<Friendship> friendships,
+            IStreamClientProxy streamClientProxy
+        )
         {
             _friendships = friendships;
+            _streamClientProxy = streamClientProxy;
         }
 
         public Friendship Handle(ConfirmFriendshipCommand message)
@@ -32,6 +39,12 @@ namespace justinobney.gymbuddy.api.Requests.Friendships
                 .ToList()
                 .ForEach(x =>
                 {
+                    _streamClientProxy.FollowFeed(
+                        StreamConstants.FeedUser,
+                        $"{x.UserId}",
+                        StreamConstants.FeedTimeline,
+                        $"{x.FriendId}"
+                    );
                     x.Status = FriendshipStatus.Active;
                 });
 

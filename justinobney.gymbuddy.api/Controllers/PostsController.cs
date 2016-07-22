@@ -1,7 +1,12 @@
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
+using justinobney.gymbuddy.api.Data.AsyncJobs;
 using justinobney.gymbuddy.api.Data.Posts;
+using justinobney.gymbuddy.api.Requests.Generic;
+using justinobney.gymbuddy.api.Requests.Posts;
 using MediatR;
 
 namespace justinobney.gymbuddy.api.Controllers
@@ -44,21 +49,23 @@ namespace justinobney.gymbuddy.api.Controllers
         [ResponseType(typeof(Post))]
         public IHttpActionResult Get(long id)
         {
-            //var Post = _mediator.Send(new GetPostQuery
-            //{
-            //    UserId = CurrentUser.Id,
-            //    FriendId = id
-            //});
+            var post = _mediator.Send(new GetAllByPredicateQuery<Post>
+            {
+                Predicate = x => x.Id == id
+            }).Include(x=>x.Contents).FirstOrDefault();
 
             //return Ok(MappingConfig.Instance.Map<PostListing>(Post));
-            return Ok("Not Implemented");
+            return Ok(post);
         }
 
-        // POST: api/Post/{id}
-        [ResponseType(typeof(Post))]
-        public IHttpActionResult Post(long id)
+        // POST: api/Post
+        [ResponseType(typeof(AsyncJob))]
+        public IHttpActionResult Post(CreatePostCommand post)
         {
-            return Ok("Not Implemented");
+            post.UserId = CurrentUser.Id;
+
+            var job = _mediator.Send(post);
+            return Ok(job);
         }
     }
 }

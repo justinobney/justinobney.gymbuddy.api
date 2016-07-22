@@ -116,6 +116,10 @@
       <HintPath>..\packages\Serilog.1.5.14\lib\net45\Serilog.FullNetFx.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="StreamNet, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\stream-net.1.2.2\lib\net45\StreamNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="StructureMap, Version=4.1.0.361, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\structuremap.4.1.0.361\lib\net40\StructureMap.dll</HintPath>
       <Private>True</Private>

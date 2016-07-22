@@ -2,6 +2,7 @@
 using Hangfire;
 using justinobney.gymbuddy.api.Data;
 using justinobney.gymbuddy.api.DependencyResolution.Registries;
+using justinobney.gymbuddy.api.Helpers;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.tests.DependencyResolution;
 using justinobney.gymbuddy.api.tests.Helpers;
@@ -10,6 +11,7 @@ using NSubstitute;
 using NUnit.Framework;
 using RestSharp;
 using Serilog;
+using Stream;
 using StructureMap;
 
 namespace justinobney.gymbuddy.api.tests
@@ -43,6 +45,11 @@ namespace justinobney.gymbuddy.api.tests
             var account = new Account("fake", "fake", "fake");
             var cloudinary = Substitute.For<Cloudinary>(account);
             registry.For<Cloudinary>().Use(context => cloudinary);
+
+            var streamClient = Substitute.For<StreamClient>("YOUR_API_KEY", "API_KEY_SECRET", null);
+            registry.For<StreamClient>().Use(streamClient);
+
+            registry.For<IStreamClientProxy>().Use<StreamClientProxy>();
 
             var notifier = Substitute.For<IPushNotifier>();
             registry.For<IPushNotifier>().Use(notifier);
