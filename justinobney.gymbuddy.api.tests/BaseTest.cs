@@ -34,6 +34,12 @@ namespace justinobney.gymbuddy.api.tests
             var restClient = Substitute.For<RestClient>();
             registry.For<IRestClient>().Use(restClient);
 
+            var fakeImageUploader = Substitute.For<IImageUploader>();
+            fakeImageUploader.UploadFromDataUri(Arg.Any<string>())
+                .Returns(info => $"url://{info[0]}");
+
+            registry.For<IImageUploader>().Use(fakeImageUploader);
+
             var account = new Account("fake", "fake", "fake");
             var cloudinary = Substitute.For<Cloudinary>(account);
             registry.For<Cloudinary>().Use(context => cloudinary);

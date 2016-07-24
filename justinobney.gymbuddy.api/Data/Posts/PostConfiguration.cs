@@ -10,12 +10,6 @@ namespace justinobney.gymbuddy.api.Data.Posts
         {
             Property(x => x.UserId)
                 .IsRequired();
-            
-            Property(x => x.Title)
-                .IsRequired();
-
-            Property(x => x.Type)
-                .IsRequired();
         }
     }
 

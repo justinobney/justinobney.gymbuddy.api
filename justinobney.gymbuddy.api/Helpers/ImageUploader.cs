@@ -1,10 +1,11 @@
 using System;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using justinobney.gymbuddy.api.Interfaces;
 
 namespace justinobney.gymbuddy.api.Helpers
 {
-    public class ImageUploader
+    public class ImageUploader : IImageUploader
     {
         private readonly Cloudinary _cloudinary;
 
