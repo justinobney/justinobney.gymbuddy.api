@@ -69,6 +69,9 @@ namespace justinobney.gymbuddy.api.tests
             Context.ClearAll();
             Context.ResetIoC();
             Context.GetInstance<AppContext>().ClearReceivedCalls();
+            Context.GetInstance<IBackgroundJobClient>().ClearReceivedCalls();
+            Context.GetInstance<IImageUploader>().ClearReceivedCalls();
+            Context.GetInstance<IPushNotifier>().ClearReceivedCalls();
         }
     }
 }
