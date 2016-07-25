@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using Hangfire;
@@ -5,8 +6,10 @@ using justinobney.gymbuddy.api.Data;
 using justinobney.gymbuddy.api.Data.AsyncJobs;
 using justinobney.gymbuddy.api.Data.Posts;
 using justinobney.gymbuddy.api.Enums;
+using justinobney.gymbuddy.api.Helpers;
 using justinobney.gymbuddy.api.Interfaces;
 using Serilog;
+using Stream;
 using WebGrease.Css.Extensions;
 
 namespace justinobney.gymbuddy.api.Requests.Posts
@@ -15,6 +18,7 @@ namespace justinobney.gymbuddy.api.Requests.Posts
     {
         private readonly ILogger _log;
         private readonly IBackgroundJobClient _backgroundJobClient;
+        private readonly IStreamClientProxy _streamClientProxy;
         private readonly IDbSet<AsyncJob> _asyncJobs;
         private readonly IDbSet<Post> _posts;
         private readonly IImageUploader _imageUploader;
@@ -22,15 +26,17 @@ namespace justinobney.gymbuddy.api.Requests.Posts
 
         public ImageContentStrategy(
             ILogger log,
-            IBackgroundJobClient backgroundJobClient,
             IDbSet<AsyncJob> asyncJobs,
             IDbSet<Post> posts,
             IImageUploader imageUploader,
+            IBackgroundJobClient backgroundJobClient,
+            IStreamClientProxy streamClientProxy,
             AppContext context
             )
         {
             _log = log;
             _backgroundJobClient = backgroundJobClient;
+            _streamClientProxy = streamClientProxy;
             _asyncJobs = asyncJobs;
             _posts = posts;
             _imageUploader = imageUploader;
@@ -52,6 +58,7 @@ namespace justinobney.gymbuddy.api.Requests.Posts
             job.StatusUrl = $"/api/jobs/{job.Id}";
 
             _backgroundJobClient.Enqueue(() => ProcessImageContent(message, job.Id));
+
             return job;
         }
 
@@ -63,28 +70,44 @@ namespace justinobney.gymbuddy.api.Requests.Posts
             if (theJob == null)
             {
                 _log.Information($"Processing Image Upload::: Unable to find job - {jobId}");
+                return;
+
             }
-            else
+
+            command.Content.Where(x=>x.Type == PostType.Image).ForEach(x =>
             {
-                command.Content.Where(x=>x.Type == PostType.Image).ForEach(x =>
-                {
-                    var url = _imageUploader.UploadFromDataUri(x.Value);
-                    x.Value = url;
-                });
+                var url = _imageUploader.UploadFromDataUri(x.Value);
+                x.Value = url;
+            });
 
-                var post = new Post
-                {
-                    Contents = command.Content,
-                    UserId = command.UserId
-                };
+            var post = new Post
+            {
+                Contents = command.Content,
+                UserId = command.UserId
+            };
 
-                _posts.Add(post);
-                _context.SaveChanges();
+            _posts.Add(post);
+            _context.SaveChanges();
+
+            AddToStream(post);
                 
-                theJob.Status = JobStatus.Complete;
-                theJob.ContentUrl = $"/api/posts/{post.Id}";
-                _context.SaveChanges();
-            }
+            theJob.Status = JobStatus.Complete;
+            theJob.ContentUrl = $"/api/posts/{post.Id}";
+            _context.SaveChanges();
+        }
+
+        private void AddToStream(Post post)
+        {
+            var activity = new Activity($"User:{post.UserId}", "post", $"Post:{post.Id}")
+            {
+                ForeignId = $"Post:{post.Id}"
+            };
+
+            var postActivity = new Dictionary<string, object>();
+            postActivity["text"] = post.Contents.First().Value;
+            activity.SetData("post", postActivity);
+
+            _streamClientProxy.AddActivity(StreamConstants.FeedUser, $"{post.UserId}", activity);
         }
     }
 }

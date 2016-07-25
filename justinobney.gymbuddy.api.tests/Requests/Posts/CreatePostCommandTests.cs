@@ -133,7 +133,7 @@ namespace justinobney.gymbuddy.api.tests.Requests.Posts
                 Arg.Is<Job>(x => x.Method.Name == "ProcessImageContent"),
                 Arg.Any<IState>()
             );
-
+            
             context.Received(2).SaveChanges();
         }
 
@@ -144,6 +144,8 @@ namespace justinobney.gymbuddy.api.tests.Requests.Posts
             var posts = Context.GetSet<Post>();
             var context = Context.GetInstance<AppContext>();
             var strategy = Context.GetInstance<ImageContentStrategy>();
+            var backgroundClient = Context.GetInstance<IBackgroundJobClient>();
+
             var existingJob = new AsyncJob
             {
                 Id = 1,
@@ -176,6 +178,22 @@ namespace justinobney.gymbuddy.api.tests.Requests.Posts
             theJob.Status.ShouldBe(JobStatus.Complete);
             theJob.ContentUrl.ShouldBe($"/api/posts/{thePost.Id}");
             context.Received(2).SaveChanges();
+
+            Func<Activity, bool> verifyActivity = activity =>
+                activity.Actor == "User:1"
+                && activity.Verb == "post";
+
+
+            backgroundClient.Received(1).Create(
+                Arg.Is<Job>(
+                    x =>
+                        x.Method.Name == "_AddActivity"
+                        && (string)x.Args[0] == "user"
+                        && (string)x.Args[1] == "1"
+                        && verifyActivity((Activity)x.Args[2])
+                    ),
+                Arg.Any<IState>()
+                );
         }
     }
 }
