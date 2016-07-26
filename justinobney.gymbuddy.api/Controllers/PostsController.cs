@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using justinobney.gymbuddy.api.Data.AsyncJobs;
@@ -16,36 +17,27 @@ namespace justinobney.gymbuddy.api.Controllers
         public PostsController(IMediator mediator) : base(mediator)
         {
         }
-
-        // GET: api/Post/Requests
-        [Route("api/Post/Requests")]
+        
         [ResponseType(typeof(IEnumerable<Post>))]
-        public IHttpActionResult GetRequests()
+        public async Task<IHttpActionResult> Get([FromUri] string lastId = "")
         {
-            //var Post = _mediator.Send(new GetAllPostRequestsQuery
-            //{
-            //    UserId = CurrentUser.Id
-            //})
-            //    .ProjectTo<PostListing>(MappingConfig.Config);
+            var result = await _mediator.SendAsync(new GetUserActivityQuery
+            {
+                UserId = CurrentUser.Id.ToString(),
+                LastId = lastId
+            });
 
-            return Ok("Not Implemented");
+            var postIds = result.Select(x => long.Parse(x.Object.Split(':').Last())).ToList();
+
+            var posts = _mediator.Send(new GetAllByPredicateQuery<Post>
+            {
+                Predicate = post => postIds.Contains(post.Id)
+            }).Include(x=>x.Contents);
+
+            return Ok(posts);
         }
 
-        [Route("api/Post")]
-        [ResponseType(typeof(IEnumerable<Post>))]
-        public IHttpActionResult Get()
-        {
-            //var Post = _mediator.Send(new GetAllPostsQuery
-            //{
-            //    UserId = CurrentUser.Id
-            //})
-            //    .Select(x => x.Friend)
-            //    .ProjectTo<ProfileListing>(MappingConfig.Config);
-
-            return Ok("Not Implemented");
-        }
-
-        // GET: api/Post/{id}
+        // GET: api/Posts/{id}
         [ResponseType(typeof(Post))]
         public IHttpActionResult Get(long id)
         {
@@ -54,12 +46,12 @@ namespace justinobney.gymbuddy.api.Controllers
                 Predicate = x => x.Id == id
             }).Include(x=>x.Contents).FirstOrDefault();
 
-            //return Ok(MappingConfig.Instance.Map<PostListing>(Post));
             return Ok(post);
         }
 
-        // POST: api/Post
+        // POST: api/Posts
         [ResponseType(typeof(AsyncJob))]
+        [HttpPost]
         public IHttpActionResult Post(CreatePostCommand post)
         {
             post.UserId = CurrentUser.Id;

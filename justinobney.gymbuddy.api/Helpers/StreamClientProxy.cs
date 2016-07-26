@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
 using justinobney.gymbuddy.api.Interfaces;
@@ -41,11 +43,28 @@ namespace justinobney.gymbuddy.api.Helpers
         {
             _backgroundJobClient.Enqueue(() => _FollowFeed(feedSlug, userId, targetFeedSlug, targetUserId));
         }
-
+        
         public void _FollowFeed(string feedSlug, string userId, string targetFeedSlug, string targetUserId)
         {
             var feed = _streamClient.Feed(feedSlug, userId);
             feed.FollowFeed(targetFeedSlug, targetUserId);
+        }
+
+        public async Task<IEnumerable<Activity>> GetActivity(string userId, string lastId)
+        {
+            var feed = _streamClient.Feed(StreamConstants.FeedTimeline, userId);
+            IEnumerable<Activity> result = new List<Activity>();
+
+            if (string.IsNullOrEmpty(lastId))
+            {
+                result = await feed.GetActivities();
+            }
+            else
+            {
+                result = await feed.GetActivities(0, 20, FeedFilter.Where().IdLessThan(lastId));
+            }
+            
+            return result;
         }
     }
 }
