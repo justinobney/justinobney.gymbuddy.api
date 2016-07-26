@@ -261,9 +261,9 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
                 Arg.Is<Job>(
                     x =>
                         x.Method.Name == "_FollowFeed"
-                        && (string) x.Args[0] == "user"
+                        && (string) x.Args[0] == "timeline"
                         && (string) x.Args[1] == "1"
-                        && (string) x.Args[2] == "timeline"
+                        && (string) x.Args[2] == "user"
                         && (string) x.Args[3] == "2"
                     ),
                 Arg.Any<IState>()
@@ -273,9 +273,9 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
                 Arg.Is<Job>(
                     x =>
                         x.Method.Name == "_FollowFeed"
-                        && (string) x.Args[0] == "user"
+                        && (string) x.Args[0] == "timeline"
                         && (string) x.Args[1] == "2"
-                        && (string) x.Args[2] == "timeline"
+                        && (string) x.Args[2] == "user"
                         && (string) x.Args[3] == "1"
                     ),
                 Arg.Any<IState>()

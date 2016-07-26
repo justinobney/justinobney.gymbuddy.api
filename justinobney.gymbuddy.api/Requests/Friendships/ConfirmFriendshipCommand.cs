@@ -40,9 +40,9 @@ namespace justinobney.gymbuddy.api.Requests.Friendships
                 .ForEach(x =>
                 {
                     _streamClientProxy.FollowFeed(
-                        StreamConstants.FeedUser,
-                        $"{x.UserId}",
                         StreamConstants.FeedTimeline,
+                        $"{x.UserId}",
+                        StreamConstants.FeedUser,
                         $"{x.FriendId}"
                     );
                     x.Status = FriendshipStatus.Active;
