@@ -188,6 +188,10 @@
       <HintPath>..\packages\Serilog.Sinks.Loggly.2.0.7\lib\net45\Serilog.Sinks.Loggly.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="StreamNet, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\stream-net.1.2.2\lib\net45\StreamNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="StructureMap, Version=4.1.0.361, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\structuremap.4.1.0.361\lib\net40\StructureMap.dll</HintPath>
       <Private>True</Private>
@@ -308,6 +312,7 @@
     <Compile Include="Data\Appointments\AppointmentExercise.cs" />
     <Compile Include="Data\Appointments\AppointmentGuest.cs" />
     <Compile Include="Data\Appointments\AppointmentTimeSlot.cs" />
+    <Compile Include="Data\AsyncJobs\AsyncJob.cs" />
     <Compile Include="Data\BaseRepository.cs" />
     <Compile Include="Data\Devices\Device.cs" />
     <Compile Include="Data\Devices\DeviceConfiguration.cs" />
@@ -316,7 +321,10 @@
     <Compile Include="Data\Notifications\Notification.cs" />
     <Compile Include="Data\Notifications\NotificationConfiguration.cs" />
     <Compile Include="Data\Posts\Post.cs" />
+    <Compile Include="Data\Posts\PostComments.cs" />
     <Compile Include="Data\Posts\PostConfiguration.cs" />
+    <Compile Include="Data\Posts\PostContent.cs" />
+    <Compile Include="Data\Posts\PostKudos.cs" />
     <Compile Include="Data\PredicateBuilder.cs" />
     <Compile Include="Data\Users\Friendship.cs" />
     <Compile Include="Data\Users\FriendshipConfiguration.cs" />
@@ -341,6 +349,7 @@
     <Compile Include="Enums\FitnessLevel.cs" />
     <Compile Include="Enums\FriendshipStatus.cs" />
     <Compile Include="Enums\Gender.cs" />
+    <Compile Include="Enums\JobStatus.cs" />
     <Compile Include="Enums\PostType.cs" />
     <Compile Include="Exceptions\AuthorizationException.cs" />
     <Compile Include="Filters\AuthorizationExceptionFilter.cs" />
@@ -352,15 +361,19 @@
     <Compile Include="Helpers\EntityCopier.cs" />
     <Compile Include="Helpers\ImageHelpers.cs" />
     <Compile Include="Helpers\ImageUploader.cs" />
+    <Compile Include="Helpers\StreamClientProxy.cs" />
     <Compile Include="Helpers\TypeExtensions.cs" />
     <Compile Include="Interfaces\IAuthorize.cs" />
     <Compile Include="Interfaces\IAutoMapperConfiguration.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Interfaces\IFriendship.cs" />
     <Compile Include="Interfaces\IHasTouchedProperties.cs" />
+    <Compile Include="Interfaces\IImageUploader.cs" />
+    <Compile Include="Interfaces\IPostContentStategy.cs" />
     <Compile Include="Interfaces\IPostRequestHandler.cs" />
     <Compile Include="Interfaces\IPushNotifier.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
+    <Compile Include="Interfaces\IStreamClientProxy.cs" />
     <Compile Include="Migrations\201602102036566_Domain_Rebuild.cs" />
     <Compile Include="Migrations\201602102036566_Domain_Rebuild.Designer.cs">
       <DependentUpon>201602102036566_Domain_Rebuild.cs</DependentUpon>
@@ -437,6 +450,14 @@
     <Compile Include="Migrations\201607081425109_User_Notification_Settings.Designer.cs">
       <DependentUpon>201607081425109_User_Notification_Settings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607162130548_Post_UpdateSchemaDesign.cs" />
+    <Compile Include="Migrations\201607162130548_Post_UpdateSchemaDesign.Designer.cs">
+      <DependentUpon>201607162130548_Post_UpdateSchemaDesign.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607190356161_Domain_AsyncJob_InitialCreation.cs" />
+    <Compile Include="Migrations\201607190356161_Domain_AsyncJob_InitialCreation.Designer.cs">
+      <DependentUpon>201607190356161_Domain_AsyncJob_InitialCreation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
     <Compile Include="Notifications\NofiticationTypes.cs" />
@@ -492,6 +513,12 @@
     <Compile Include="Requests\Guests\GetOpenRequestsForUserQuery.cs" />
     <Compile Include="Requests\Gyms\GetGymsCommand.cs" />
     <Compile Include="Requests\Gyms\GymPeekUsersCommand.cs" />
+    <Compile Include="Requests\Posts\CreatePostCommand.cs" />
+    <Compile Include="Requests\Posts\CreatePostCommandValidator.cs" />
+    <Compile Include="Requests\Posts\ImageContentStrategy.cs" />
+    <Compile Include="Requests\Posts\PostContentStategyFactory.cs" />
+    <Compile Include="Requests\Posts\PostContentValidator.cs" />
+    <Compile Include="Requests\Posts\TextContentStrategy.cs" />
     <Compile Include="Requests\Users\AddUserToGymCommand.cs" />
     <Compile Include="Requests\Users\CreateUserCommand.cs" />
     <Compile Include="Requests\Users\DeleteUserCommand.cs" />
@@ -572,6 +599,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607081425109_User_Notification_Settings.resx">
       <DependentUpon>201607081425109_User_Notification_Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607162130548_Post_UpdateSchemaDesign.resx">
+      <DependentUpon>201607162130548_Post_UpdateSchemaDesign.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607190356161_Domain_AsyncJob_InitialCreation.resx">
+      <DependentUpon>201607190356161_Domain_AsyncJob_InitialCreation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>

@@ -3,12 +3,14 @@ using System.Web.Configuration;
 using CloudinaryDotNet;
 using Hangfire;
 using Hangfire.SqlServer;
+using justinobney.gymbuddy.api.Helpers;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 using NSubstitute;
 using RestSharp;
 using Serilog;
+using Stream;
 using StructureMap;
 using StructureMap.Graph;
 
@@ -34,8 +36,12 @@ namespace justinobney.gymbuddy.api.DependencyResolution.Registries
                     var cloudinary = Substitute.For<Cloudinary>(new Account("fake", "fake", "fake"));
                     For<Cloudinary>().Use(context => cloudinary);
 
+                    For<IImageUploader>().Use(Substitute.For<IImageUploader>());
 
                     For<IBackgroundJobClient>().Use(Substitute.For<IBackgroundJobClient>());
+
+                    var streamClient = Substitute.For<StreamClient>("YOUR_API_KEY", "API_KEY_SECRET", null);
+                    For<StreamClient>().Use(context => streamClient);
                 }
                 else
                 {
@@ -45,11 +51,19 @@ namespace justinobney.gymbuddy.api.DependencyResolution.Registries
                     For<IRestClient>().Use(context => new RestClient());
 
                     var cloud = ConfigurationManager.AppSettings.Get("Cloudinary-Cloud");
-                    var key = ConfigurationManager.AppSettings.Get("Cloudinary-ApiKey");
-                    var secret = ConfigurationManager.AppSettings.Get("Cloudinary-ApiSecret");
-                    var account = new Account(cloud,key,secret);
-                    For<Cloudinary>().Use(new Cloudinary(account));
+                    var cloudinaryKey = ConfigurationManager.AppSettings.Get("Cloudinary-ApiKey");
+                    var cloudinarySecret = ConfigurationManager.AppSettings.Get("Cloudinary-ApiSecret");
+                    var account = new Account(cloud, cloudinaryKey, cloudinarySecret);
+                    For<Cloudinary>().Use(context => new Cloudinary(account));
+
+                    var streamKey = ConfigurationManager.AppSettings.Get("Stream-ApiKey");
+                    var streamSecret = ConfigurationManager.AppSettings.Get("Stream-ApiSecret");
+
+                    For<StreamClient>().Use(context => new StreamClient(streamKey, streamSecret, null));
+
+                    For<IImageUploader>().Use<ImageUploader>();
                 }
+
 
                 ConfigureNotifications(scan);
             });

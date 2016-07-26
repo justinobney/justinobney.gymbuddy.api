@@ -18,7 +18,6 @@ namespace justinobney.gymbuddy.api.Controllers
 
         }
 
-        // GET: api/Friendship/Requests
         [Route("api/Friendship/Requests")]
         [ResponseType(typeof(IEnumerable<FriendshipListing>))]
         public IHttpActionResult GetRequests()
@@ -46,42 +45,42 @@ namespace justinobney.gymbuddy.api.Controllers
             return Ok(friendship);
         }
 
-        // GET: api/Friendship/{id}
+        [Route("api/Friendship/{friendId}")]
         [ResponseType(typeof(FriendshipListing))]
-        public IHttpActionResult Get(long id)
+        public IHttpActionResult Get(long friendId)
         {
             var friendship = _mediator.Send(new GetFriendshipQuery
             {
                 UserId = CurrentUser.Id,
-                FriendId = id
+                FriendId = friendId
             });
 
             return Ok(MappingConfig.Instance.Map<FriendshipListing>(friendship));
         }
 
-        // POST: api/Friendship/{id}
+        [HttpPost]
+        [Route("api/Friendship/{friendId}")]
         [ResponseType(typeof(FriendshipListing))]
-        public IHttpActionResult Post(long id)
+        public IHttpActionResult Post(long friendId)
         {
             var friendship = _mediator.Send(new RequestFriendshipCommand
             {
                 UserId = CurrentUser.Id,
-                FriendId = id
+                FriendId = friendId
             });
 
             return Ok(MappingConfig.Instance.Map<FriendshipListing>(friendship));
         }
 
-        // POST: api/Friendship/{id}/Confirm
-        [ResponseType(typeof(FriendshipListing))]
-        [Route("api/Friendship/{id}/Confirm")]
         [HttpPost]
-        public IHttpActionResult ConfirmFriendship(long id)
+        [Route("api/Friendship/{friendId}/Confirm")]
+        [ResponseType(typeof(FriendshipListing))]
+        public IHttpActionResult ConfirmFriendship(long friendId)
         {
             var friendship = _mediator.Send(new ConfirmFriendshipCommand
             {
                 UserId = CurrentUser.Id,
-                FriendId = id
+                FriendId = friendId
             });
 
             return Ok(MappingConfig.Instance.Map<FriendshipListing>(friendship));

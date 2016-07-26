@@ -1,7 +1,7 @@
 using System.Data.Entity;
 using System.Linq;
 using justinobney.gymbuddy.api.Data.Users;
-using justinobney.gymbuddy.api.Helpers;
+using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Decorators;
 using MediatR;
 
@@ -17,9 +17,11 @@ namespace justinobney.gymbuddy.api.Requests.Users
     public class UpdateUserProfileImageCommandHandler : IRequestHandler<UpdateUserProfileImageCommand, User>
     {
         private readonly IDbSet<User> _users;
-        private readonly ImageUploader _uploader;
+        private readonly IImageUploader _uploader;
 
-        public UpdateUserProfileImageCommandHandler(IDbSet<User> users, ImageUploader uploader)
+        public UpdateUserProfileImageCommandHandler(
+            IDbSet<User> users,
+            IImageUploader uploader)
         {
             _users = users;
             _uploader = uploader;

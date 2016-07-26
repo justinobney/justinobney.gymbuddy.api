@@ -31,15 +31,11 @@ namespace justinobney.gymbuddy.api.Requests.Gyms
         public ICollection<GymListing> Handle(GetGymsCommand message)
         {
             var user = _users.FirstOrDefault(x => x.Id == message.UserId);
-            if (user?.Gyms?.Any() == true)
-            {
-                var userGymIds = user.Gyms.Select(x => x.Id).ToArray();
+            var userGymIds = user.Gyms.Select(x => x.Id).ToArray();
 
-                return _gyms
-                    .ProjectTo<GymListing>(MappingConfig.Config, new {userGymIds})
-                    .ToList();
-            }
-            return new List<GymListing>();
+            return _gyms
+                .ProjectTo<GymListing>(MappingConfig.Config, new { userGymIds })
+                .ToList();
         }
     }
 }

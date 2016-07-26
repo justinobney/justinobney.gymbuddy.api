@@ -2,6 +2,7 @@
 using Hangfire;
 using justinobney.gymbuddy.api.Data;
 using justinobney.gymbuddy.api.DependencyResolution.Registries;
+using justinobney.gymbuddy.api.Helpers;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.tests.DependencyResolution;
 using justinobney.gymbuddy.api.tests.Helpers;
@@ -10,6 +11,7 @@ using NSubstitute;
 using NUnit.Framework;
 using RestSharp;
 using Serilog;
+using Stream;
 using StructureMap;
 
 namespace justinobney.gymbuddy.api.tests
@@ -34,9 +36,20 @@ namespace justinobney.gymbuddy.api.tests
             var restClient = Substitute.For<RestClient>();
             registry.For<IRestClient>().Use(restClient);
 
+            var fakeImageUploader = Substitute.For<IImageUploader>();
+            fakeImageUploader.UploadFromDataUri(Arg.Any<string>())
+                .Returns(info => $"url://{info[0]}");
+
+            registry.For<IImageUploader>().Use(fakeImageUploader);
+
             var account = new Account("fake", "fake", "fake");
             var cloudinary = Substitute.For<Cloudinary>(account);
             registry.For<Cloudinary>().Use(context => cloudinary);
+
+            var streamClient = Substitute.For<StreamClient>("YOUR_API_KEY", "API_KEY_SECRET", null);
+            registry.For<StreamClient>().Use(streamClient);
+
+            registry.For<IStreamClientProxy>().Use<StreamClientProxy>();
 
             var notifier = Substitute.For<IPushNotifier>();
             registry.For<IPushNotifier>().Use(notifier);
@@ -63,6 +76,9 @@ namespace justinobney.gymbuddy.api.tests
             Context.ClearAll();
             Context.ResetIoC();
             Context.GetInstance<AppContext>().ClearReceivedCalls();
+            Context.GetInstance<IBackgroundJobClient>().ClearReceivedCalls();
+            Context.GetInstance<IImageUploader>().ClearReceivedCalls();
+            Context.GetInstance<IPushNotifier>().ClearReceivedCalls();
         }
     }
 }
