@@ -38,8 +38,8 @@ namespace justinobney.gymbuddy.api.Requests.Posts
 
             _posts.Add(post);
             _context.SaveChanges();
-            
-            AddToStream(post);
+
+            _streamClientProxy.AddActivityFromPost(post.Id);
 
             var job = new AsyncJob
             {
@@ -48,20 +48,6 @@ namespace justinobney.gymbuddy.api.Requests.Posts
             };
 
             return job;
-        }
-
-        private void AddToStream(Post post)
-        {
-            var activity = new Activity($"User:{post.UserId}", "post", $"Post:{post.Id}")
-            {
-                ForeignId = $"Post:{post.Id}"
-            };
-
-            var postActivity = new Dictionary<string, object>();
-            postActivity["text"] = post.Contents.First().Value;
-            activity.SetData("post", postActivity);
-
-            _streamClientProxy.AddActivity(StreamConstants.FeedUser, $"{post.UserId}", activity);
         }
     }
 }

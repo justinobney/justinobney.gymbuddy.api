@@ -198,18 +198,11 @@ namespace justinobney.gymbuddy.api.tests.Requests.Posts
             theJob.ContentUrl.ShouldBe($"/api/posts/{thePost.Id}");
             context.Received(2).SaveChanges();
 
-            Func<Activity, bool> verifyActivity = activity =>
-                activity.Actor == "User:1"
-                && activity.Verb == "post";
-
-
             backgroundClient.Received(1).Create(
                 Arg.Is<Job>(
                     x =>
-                        x.Method.Name == "_AddActivity"
-                        && (string)x.Args[0] == "user"
-                        && (string)x.Args[1] == "1"
-                        && verifyActivity((Activity)x.Args[2])
+                        x.Method.Name == "AddActivityFromPostBackground"
+                        && (long)x.Args[0] == thePost.Id
                     ),
                 Arg.Any<IState>()
                 );
