@@ -187,6 +187,8 @@ namespace justinobney.gymbuddy.api.tests.Requests.Posts
             var thePost = posts.First();
 
             thePost.Contents.First().Value.ShouldBe($"url://{imageUri}");
+            thePost.Timestamp.ShouldNotBeNull();
+
             theJob.Status.ShouldBe(JobStatus.Complete);
             theJob.ContentUrl.ShouldBe($"/api/posts/{thePost.Id}");
             context.Received(2).SaveChanges();

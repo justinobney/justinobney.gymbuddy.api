@@ -33,7 +33,7 @@ namespace justinobney.gymbuddy.api.Responses
                 .ForMember(dest => dest.ImageContent, opts => opts.MapFrom(src => src.Contents.FirstOrDefault(x=>x.Type == PostType.Image)))
                 .ForMember(dest => dest.KudosCount, opts => opts.MapFrom(src => src.Kudos.Count))
                 .ForMember(dest => dest.CommentCount, opts => opts.MapFrom(src => src.Comments.Count))
-                .ForMember(dest => dest.LastComment, opts => opts.MapFrom(src => src.Comments.LastOrDefault()));
+                .ForMember(dest => dest.LastComment, opts => opts.MapFrom(src => src.Comments.OrderByDescending(x=>x.Timestamp).FirstOrDefault()));
         }
     }
 }

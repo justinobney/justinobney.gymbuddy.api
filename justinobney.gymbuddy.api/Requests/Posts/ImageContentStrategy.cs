@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -83,8 +84,9 @@ namespace justinobney.gymbuddy.api.Requests.Posts
             var post = new Post
             {
                 Contents = command.Content,
-                UserId = command.UserId
-            };
+                UserId = command.UserId,
+                Timestamp = DateTime.UtcNow
+        };
 
             _posts.Add(post);
             _context.SaveChanges();
