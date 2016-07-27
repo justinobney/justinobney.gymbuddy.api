@@ -321,7 +321,7 @@
     <Compile Include="Data\Notifications\Notification.cs" />
     <Compile Include="Data\Notifications\NotificationConfiguration.cs" />
     <Compile Include="Data\Posts\Post.cs" />
-    <Compile Include="Data\Posts\PostComments.cs" />
+    <Compile Include="Data\Posts\PostComment.cs" />
     <Compile Include="Data\Posts\PostConfiguration.cs" />
     <Compile Include="Data\Posts\PostContent.cs" />
     <Compile Include="Data\Posts\PostKudos.cs" />
@@ -458,6 +458,10 @@
     <Compile Include="Migrations\201607190356161_Domain_AsyncJob_InitialCreation.Designer.cs">
       <DependentUpon>201607190356161_Domain_AsyncJob_InitialCreation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607270239465_Post_UserUpdate.cs" />
+    <Compile Include="Migrations\201607270239465_Post_UserUpdate.Designer.cs">
+      <DependentUpon>201607270239465_Post_UserUpdate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
     <Compile Include="Notifications\NofiticationTypes.cs" />
@@ -535,6 +539,7 @@
     <Compile Include="Responses\FriendshipListing.cs" />
     <Compile Include="Responses\GymListing.cs" />
     <Compile Include="Responses\FacebookFriendshipListing.cs" />
+    <Compile Include="Responses\PostSummaryListing.cs" />
     <Compile Include="Responses\ProfileListing.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -606,6 +611,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607190356161_Domain_AsyncJob_InitialCreation.resx">
       <DependentUpon>201607190356161_Domain_AsyncJob_InitialCreation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607270239465_Post_UserUpdate.resx">
+      <DependentUpon>201607270239465_Post_UserUpdate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>

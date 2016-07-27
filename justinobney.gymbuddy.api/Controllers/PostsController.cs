@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using AutoMapper.QueryableExtensions;
 using justinobney.gymbuddy.api.Data.AsyncJobs;
 using justinobney.gymbuddy.api.Data.Posts;
 using justinobney.gymbuddy.api.Requests.Generic;
 using justinobney.gymbuddy.api.Requests.Posts;
+using justinobney.gymbuddy.api.Responses;
 using MediatR;
 
 namespace justinobney.gymbuddy.api.Controllers
@@ -18,7 +20,7 @@ namespace justinobney.gymbuddy.api.Controllers
         {
         }
         
-        [ResponseType(typeof(IEnumerable<Post>))]
+        [ResponseType(typeof(IEnumerable<PostSummaryListing>))]
         public async Task<IHttpActionResult> Get([FromUri] string lastId = "")
         {
             var result = await _mediator.SendAsync(new GetUserActivityQuery
@@ -32,19 +34,24 @@ namespace justinobney.gymbuddy.api.Controllers
             var posts = _mediator.Send(new GetAllByPredicateQuery<Post>
             {
                 Predicate = post => postIds.Contains(post.Id)
-            }).Include(x=>x.Contents);
+            })
+            .Include(x=>x.Contents)
+            .ProjectTo<PostSummaryListing>(MappingConfig.Config);
 
             return Ok(posts);
         }
 
         // GET: api/Posts/{id}
-        [ResponseType(typeof(Post))]
+        [ResponseType(typeof(PostSummaryListing))]
         public IHttpActionResult Get(long id)
         {
             var post = _mediator.Send(new GetAllByPredicateQuery<Post>
             {
                 Predicate = x => x.Id == id
-            }).Include(x=>x.Contents).FirstOrDefault();
+            })
+            .Include(x=>x.Contents)
+            .ProjectTo<PostSummaryListing>(MappingConfig.Config)
+            .FirstOrDefault();
 
             return Ok(post);
         }

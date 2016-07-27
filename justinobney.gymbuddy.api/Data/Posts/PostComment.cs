@@ -3,7 +3,7 @@ using justinobney.gymbuddy.api.Interfaces;
 
 namespace justinobney.gymbuddy.api.Data.Posts
 {
-    public class PostComments : IEntity
+    public class PostComment : IEntity
     {
         public long Id { get; set; }
         public long PostId { get; set; }
