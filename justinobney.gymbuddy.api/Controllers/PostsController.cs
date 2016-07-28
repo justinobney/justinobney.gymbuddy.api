@@ -11,6 +11,7 @@ using justinobney.gymbuddy.api.Requests.Generic;
 using justinobney.gymbuddy.api.Requests.Posts;
 using justinobney.gymbuddy.api.Responses;
 using MediatR;
+using Stream;
 
 namespace justinobney.gymbuddy.api.Controllers
 {
@@ -20,16 +21,18 @@ namespace justinobney.gymbuddy.api.Controllers
         {
         }
         
-        [ResponseType(typeof(IEnumerable<PostSummaryListing>))]
+        [ResponseType(typeof(TimelineActivityResponse))]
         public async Task<IHttpActionResult> Get([FromUri] string lastId = "")
         {
-            var result = await _mediator.SendAsync(new GetUserActivityQuery
+            var activity = await _mediator.SendAsync(new GetUserActivityQuery
             {
                 UserId = CurrentUser.Id.ToString(),
                 LastId = lastId
             });
 
-            var postIds = result.Select(x => long.Parse(x.Object.Split(':').Last())).ToList();
+            var activities = activity as Activity[] ?? activity.ToArray();
+
+            var postIds = activities.Select(x => long.Parse(x.Object.Split(':').Last())).ToList();
 
             var posts = _mediator.Send(new GetAllByPredicateQuery<Post>
             {
@@ -38,7 +41,13 @@ namespace justinobney.gymbuddy.api.Controllers
             .Include(x=>x.Contents)
             .ProjectTo<PostSummaryListing>(MappingConfig.Config);
 
-            return Ok(posts);
+            var result = new TimelineActivityResponse
+            {
+                Posts = posts.ToList(),
+                Next = activities.LastOrDefault()?.Id
+            };
+
+            return Ok(result);
         }
 
         // GET: api/Posts/{id}
@@ -66,5 +75,11 @@ namespace justinobney.gymbuddy.api.Controllers
             var job = _mediator.Send(post);
             return Ok(job);
         }
+    }
+
+    public class TimelineActivityResponse
+    {
+        public List<PostSummaryListing> Posts { get; set; }
+        public string Next { get; set; }
     }
 }
