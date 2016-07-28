@@ -12,6 +12,7 @@ namespace justinobney.gymbuddy.api.Responses
         public long Id { get; set; }
         public long UserId { get; set; }
         public string UserName { get; set; }
+        public string ProfilePictureUrl { get; set; }
         public PostContent TextContent { get; set; }
         public PostContent ImageContent { get; set; }
 
@@ -20,7 +21,6 @@ namespace justinobney.gymbuddy.api.Responses
         public PostComment LastComment { get; set; }
 
         public DateTime? Timestamp { get; set; }
-
     }
 
     public class PostSummaryListingMapper : IAutoMapperConfiguration
@@ -29,11 +29,18 @@ namespace justinobney.gymbuddy.api.Responses
         {
             cfg.CreateMap<Post, PostSummaryListing>()
                 .ForMember(dest => dest.UserName, opts => opts.MapFrom(src => src.User.Name))
-                .ForMember(dest => dest.TextContent, opts => opts.MapFrom(src => src.Contents.FirstOrDefault(x=>x.Type == PostType.Text)))
-                .ForMember(dest => dest.ImageContent, opts => opts.MapFrom(src => src.Contents.FirstOrDefault(x=>x.Type == PostType.Image)))
+                .ForMember(dest => dest.ProfilePictureUrl, opts => opts.MapFrom(src => src.User.ProfilePictureUrl))
                 .ForMember(dest => dest.KudosCount, opts => opts.MapFrom(src => src.Kudos.Count))
                 .ForMember(dest => dest.CommentCount, opts => opts.MapFrom(src => src.Comments.Count))
-                .ForMember(dest => dest.LastComment, opts => opts.MapFrom(src => src.Comments.OrderByDescending(x=>x.Timestamp).FirstOrDefault()));
+                .ForMember(dest => dest.TextContent,
+                    opts => opts.MapFrom(src =>
+                        src.Contents.FirstOrDefault(x => x.Type == PostType.Text)))
+                .ForMember(dest => dest.ImageContent,
+                    opts => opts.MapFrom(src =>
+                        src.Contents.FirstOrDefault(x => x.Type == PostType.Image)))
+                .ForMember(dest => dest.LastComment,
+                    opts => opts.MapFrom(src =>
+                        src.Comments.OrderByDescending(x => x.Timestamp).FirstOrDefault()));
         }
     }
 }
