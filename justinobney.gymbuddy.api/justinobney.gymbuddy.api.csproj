@@ -462,6 +462,10 @@
     <Compile Include="Migrations\201607270239465_Post_UserUpdate.Designer.cs">
       <DependentUpon>201607270239465_Post_UserUpdate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607292240315_Device_StoreClientVersion.cs" />
+    <Compile Include="Migrations\201607292240315_Device_StoreClientVersion.Designer.cs">
+      <DependentUpon>201607292240315_Device_StoreClientVersion.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\IonicPushNotification.cs" />
     <Compile Include="Notifications\NofiticationTypes.cs" />
@@ -614,6 +618,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607270239465_Post_UserUpdate.resx">
       <DependentUpon>201607270239465_Post_UserUpdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607292240315_Device_StoreClientVersion.resx">
+      <DependentUpon>201607292240315_Device_StoreClientVersion.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Swagger\theme-flattop.css">
       <LogicalName>justinobney.swagger.ui.css</LogicalName>
