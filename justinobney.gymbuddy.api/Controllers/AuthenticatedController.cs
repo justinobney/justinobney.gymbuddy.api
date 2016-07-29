@@ -27,9 +27,9 @@ namespace justinobney.gymbuddy.api.Controllers
             }
         }
 
-        public string FacebookUserId => !Request.Headers.Contains("fb-user-id")
-            ? null
-            : Request.Headers.GetValues("fb-user-id").FirstOrDefault();
+        public string FacebookUserId => Request.Headers.FirstOrDefault(x => x.Key == "fb-user-id").Value?.FirstOrDefault();
+
+        public string ClientVersion => Request.Headers.FirstOrDefault(x => x.Key == "client-version").Value?.FirstOrDefault();
 
         public AuthenticatedController(IMediator mediator)
         {

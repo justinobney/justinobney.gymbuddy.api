@@ -1,5 +1,5 @@
-using System;
 using justinobney.gymbuddy.api.Interfaces;
+using System;
 
 namespace justinobney.gymbuddy.api.Data.Devices
 {
@@ -10,6 +10,7 @@ namespace justinobney.gymbuddy.api.Data.Devices
         public string DeviceId { get; set; }
         public string PushToken { get; set; }
         public string Platform { get; set; }
+        public string ClientVersion { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
     }
