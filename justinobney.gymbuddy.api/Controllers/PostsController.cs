@@ -1,13 +1,17 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using AutoMapper.QueryableExtensions;
 using justinobney.gymbuddy.api.Data.AsyncJobs;
 using justinobney.gymbuddy.api.Data.Posts;
 using justinobney.gymbuddy.api.Requests.Generic;
 using justinobney.gymbuddy.api.Requests.Posts;
+using justinobney.gymbuddy.api.Responses;
 using MediatR;
+using Stream;
 
 namespace justinobney.gymbuddy.api.Controllers
 {
@@ -16,50 +20,54 @@ namespace justinobney.gymbuddy.api.Controllers
         public PostsController(IMediator mediator) : base(mediator)
         {
         }
-
-        // GET: api/Post/Requests
-        [Route("api/Post/Requests")]
-        [ResponseType(typeof(IEnumerable<Post>))]
-        public IHttpActionResult GetRequests()
+        
+        [ResponseType(typeof(TimelineActivityResponse))]
+        public async Task<IHttpActionResult> Get([FromUri] string lastId = "")
         {
-            //var Post = _mediator.Send(new GetAllPostRequestsQuery
-            //{
-            //    UserId = CurrentUser.Id
-            //})
-            //    .ProjectTo<PostListing>(MappingConfig.Config);
+            var activity = await _mediator.SendAsync(new GetUserActivityQuery
+            {
+                UserId = CurrentUser.Id.ToString(),
+                LastId = lastId
+            });
 
-            return Ok("Not Implemented");
+            var activities = activity as Activity[] ?? activity.ToArray();
+
+            var postIds = activities.Select(x => long.Parse(x.Object.Split(':').Last())).ToList();
+
+            var posts = _mediator.Send(new GetAllByPredicateQuery<Post>
+            {
+                Predicate = post => postIds.Contains(post.Id)
+            })
+            .Include(x=>x.Contents)
+            .ProjectTo<PostSummaryListing>(MappingConfig.Config);
+
+            var result = new TimelineActivityResponse
+            {
+                Posts = posts.ToList(),
+                Next = activities.LastOrDefault()?.Id
+            };
+
+            return Ok(result);
         }
 
-        [Route("api/Post")]
-        [ResponseType(typeof(IEnumerable<Post>))]
-        public IHttpActionResult Get()
-        {
-            //var Post = _mediator.Send(new GetAllPostsQuery
-            //{
-            //    UserId = CurrentUser.Id
-            //})
-            //    .Select(x => x.Friend)
-            //    .ProjectTo<ProfileListing>(MappingConfig.Config);
-
-            return Ok("Not Implemented");
-        }
-
-        // GET: api/Post/{id}
-        [ResponseType(typeof(Post))]
+        // GET: api/Posts/{id}
+        [ResponseType(typeof(PostSummaryListing))]
         public IHttpActionResult Get(long id)
         {
             var post = _mediator.Send(new GetAllByPredicateQuery<Post>
             {
                 Predicate = x => x.Id == id
-            }).Include(x=>x.Contents).FirstOrDefault();
+            })
+            .Include(x=>x.Contents)
+            .ProjectTo<PostSummaryListing>(MappingConfig.Config)
+            .FirstOrDefault();
 
-            //return Ok(MappingConfig.Instance.Map<PostListing>(Post));
             return Ok(post);
         }
 
-        // POST: api/Post
+        // POST: api/Posts
         [ResponseType(typeof(AsyncJob))]
+        [HttpPost]
         public IHttpActionResult Post(CreatePostCommand post)
         {
             post.UserId = CurrentUser.Id;
@@ -67,5 +75,11 @@ namespace justinobney.gymbuddy.api.Controllers
             var job = _mediator.Send(post);
             return Ok(job);
         }
+    }
+
+    public class TimelineActivityResponse
+    {
+        public List<PostSummaryListing> Posts { get; set; }
+        public string Next { get; set; }
     }
 }

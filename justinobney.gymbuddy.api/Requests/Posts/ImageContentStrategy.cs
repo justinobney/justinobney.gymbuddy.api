@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -83,31 +84,18 @@ namespace justinobney.gymbuddy.api.Requests.Posts
             var post = new Post
             {
                 Contents = command.Content,
-                UserId = command.UserId
+                UserId = command.UserId,
+                Timestamp = DateTime.UtcNow
             };
 
             _posts.Add(post);
             _context.SaveChanges();
 
-            AddToStream(post);
+            _streamClientProxy.AddActivityFromPost(post.Id);
                 
             theJob.Status = JobStatus.Complete;
             theJob.ContentUrl = $"/api/posts/{post.Id}";
             _context.SaveChanges();
-        }
-
-        private void AddToStream(Post post)
-        {
-            var activity = new Activity($"User:{post.UserId}", "post", $"Post:{post.Id}")
-            {
-                ForeignId = $"Post:{post.Id}"
-            };
-
-            var postActivity = new Dictionary<string, object>();
-            postActivity["text"] = post.Contents.First().Value;
-            activity.SetData("post", postActivity);
-
-            _streamClientProxy.AddActivity(StreamConstants.FeedUser, $"{post.UserId}", activity);
         }
     }
 }

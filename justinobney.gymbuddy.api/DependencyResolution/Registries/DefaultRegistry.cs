@@ -43,6 +43,7 @@ namespace justinobney.gymbuddy.api.DependencyResolution.Registries
                     scan.AssemblyContainingType(typeof (LoggingHandler<,>));
 
                     scan.AddAllTypesOf(typeof (IRequestHandler<,>));
+                    scan.AddAllTypesOf(typeof (IAsyncRequestHandler<,>));
                     scan.AddAllTypesOf(typeof (INotificationHandler<>));
 
                     scan.AddAllTypesOf(typeof (IAuthorizer<>));

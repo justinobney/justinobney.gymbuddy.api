@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using AutoMapper.QueryableExtensions;
 using justinobney.gymbuddy.api.Data.Users;
+using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Generic;
 using justinobney.gymbuddy.api.Responses;
 using MediatR;
@@ -14,8 +15,14 @@ namespace justinobney.gymbuddy.api.Controllers
 {
     public class AuthController : AuthenticatedController
     {
-        public AuthController(IMediator mediator) : base(mediator)
+        private readonly IStreamClientProxy _streamClientProxy;
+
+        public AuthController(
+            IMediator mediator,
+            IStreamClientProxy streamClientProxy
+        ) : base(mediator)
         {
+            _streamClientProxy = streamClientProxy;
         }
 
         // GET: api/Auth
@@ -32,6 +39,11 @@ namespace justinobney.gymbuddy.api.Controllers
                     .Include(x => x.Gyms)
                     .ProjectTo<ProfileListing>(MappingConfig.Config)
                     .FirstOrDefault();
+
+                if (user != null)
+                {
+                    user.TimelineToken = _streamClientProxy.GetTimelineToken($"{user.Id}");
+                }
 
                 return Ok(user);
             }

@@ -14,16 +14,16 @@ namespace justinobney.gymbuddy.api.Requests.Posts
     
     public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, AsyncJob>
     {
-        private readonly PostContentStategyFactory _postContentStategyFactory;
+        private readonly PostContentStrategyFactory _postContentStrategyFactory;
 
-        public CreatePostCommandHandler(PostContentStategyFactory postContentStategyFactory)
+        public CreatePostCommandHandler(PostContentStrategyFactory postContentStrategyFactory)
         {
-            _postContentStategyFactory = postContentStategyFactory;
+            _postContentStrategyFactory = postContentStrategyFactory;
         }
 
         public AsyncJob Handle(CreatePostCommand message)
         {
-            return _postContentStategyFactory
+            return _postContentStrategyFactory
                 .GetByType(message.Content)
                 .Handle(message);
         }
