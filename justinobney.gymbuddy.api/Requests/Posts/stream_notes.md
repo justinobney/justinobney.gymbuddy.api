@@ -37,3 +37,14 @@
 ## follows
 
 `timeline_flat:a` => `user_posts:b`
+
+## actions
+
+* create post
+* delete post
+* toggle kudos
+* add comment to post
+* plan workout
+* update workout time
+* comment on workout
+* cancel workout
