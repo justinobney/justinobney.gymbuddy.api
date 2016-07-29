@@ -16,6 +16,7 @@ namespace justinobney.gymbuddy.api.Responses
         public bool NewSquadWorkoutNotifications { get; set; }
         public bool SilenceAllNotifications { get; set; }
         public List<GymListing> Gyms { get; set; }
+        public string TimelineToken { get; set; }
     }
 
     public class ProfileListingMapper : IAutoMapperConfiguration

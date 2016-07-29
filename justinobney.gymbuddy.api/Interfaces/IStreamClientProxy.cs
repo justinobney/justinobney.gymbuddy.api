@@ -11,5 +11,7 @@ namespace justinobney.gymbuddy.api.Interfaces
         Task<IEnumerable<Activity>> GetActivity(string userId, string lastId);
 
         void AddActivityFromPost(long postId);
+
+        string GetTimelineToken(string userId);
     }
 }

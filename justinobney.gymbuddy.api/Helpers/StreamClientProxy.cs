@@ -67,6 +67,11 @@ namespace justinobney.gymbuddy.api.Helpers
             _backgroundJobClient.Enqueue(() => AddActivityFromPostBackground(postId));
         }
 
+        public string GetTimelineToken(string userId)
+        {
+            return _streamClient.Feed(StreamConstants.FeedTimeline, userId).Token;
+        }
+
         public void AddActivityFromPostBackground(long postId)
         {
             var post = _posts

@@ -86,7 +86,7 @@ namespace justinobney.gymbuddy.api.Requests.Posts
                 Contents = command.Content,
                 UserId = command.UserId,
                 Timestamp = DateTime.UtcNow
-        };
+            };
 
             _posts.Add(post);
             _context.SaveChanges();
