@@ -521,7 +521,7 @@
     <Compile Include="Requests\Posts\CreatePostCommandValidator.cs" />
     <Compile Include="Requests\Posts\GetUserActivityQuery.cs" />
     <Compile Include="Requests\Posts\ImageContentStrategy.cs" />
-    <Compile Include="Requests\Posts\PostContentStategyFactory.cs" />
+    <Compile Include="Requests\Posts\PostContentStrategyFactory.cs" />
     <Compile Include="Requests\Posts\PostContentValidator.cs" />
     <Compile Include="Requests\Posts\TextContentStrategy.cs" />
     <Compile Include="Requests\Users\AddUserToGymCommand.cs" />

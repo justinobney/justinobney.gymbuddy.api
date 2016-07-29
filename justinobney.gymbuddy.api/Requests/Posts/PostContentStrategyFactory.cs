@@ -6,12 +6,12 @@ using justinobney.gymbuddy.api.Interfaces;
 
 namespace justinobney.gymbuddy.api.Requests.Posts
 {
-    public class PostContentStategyFactory
+    public class PostContentStrategyFactory
     {
         private readonly TextContentStrategy _textContentStrategy;
         private readonly ImageContentStrategy _imageContentStrategy;
 
-        public PostContentStategyFactory(
+        public PostContentStrategyFactory(
             TextContentStrategy textContentStrategy,
             ImageContentStrategy imageContentStrategy
             )
