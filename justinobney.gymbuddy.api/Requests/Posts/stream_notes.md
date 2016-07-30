@@ -24,7 +24,7 @@
 
 * user_posts (flat)
 * user (flat)
-* timeline_flat (flat)
+* timeline (flat)
 * notification (notification)
 
 ## activity
@@ -36,7 +36,8 @@
 
 ## follows
 
-`timeline_flat:a` => `user_posts:b`
+* on profile create: `timeline:a` => `user_posts:a`
+* on confirm friendship: `timeline:a` => `user_posts:b`
 
 ## actions
 
