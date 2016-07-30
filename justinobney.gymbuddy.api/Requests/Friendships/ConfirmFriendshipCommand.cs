@@ -42,7 +42,7 @@ namespace justinobney.gymbuddy.api.Requests.Friendships
                     _streamClientProxy.FollowFeed(
                         StreamConstants.FeedTimeline,
                         $"{x.UserId}",
-                        StreamConstants.FeedUser,
+                        StreamConstants.FeedUserPosts,
                         $"{x.FriendId}"
                     );
                     x.Status = FriendshipStatus.Active;
