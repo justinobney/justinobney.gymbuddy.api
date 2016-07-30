@@ -36,7 +36,8 @@
 
 ## follows
 
-`timeline:a` => `user_posts:b`
+* on profile create: `timeline:a` => `user_posts:a`
+* on confirm friendship: `timeline:a` => `user_posts:b`
 
 ## actions
 

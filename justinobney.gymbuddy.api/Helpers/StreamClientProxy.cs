@@ -13,8 +13,9 @@ namespace justinobney.gymbuddy.api.Helpers
     public class StreamConstants
     {
         public const string FeedUser = "user";
+        public const string FeedUserPosts = "user_posts";
         public const string FeedTimeline = "timeline";
-        public const string FeedTimelineAggregated = "timeline_agg";
+        public const string FeedNotifications = "notifications";
     }
 
     public class StreamClientProxy : IStreamClientProxy
@@ -38,7 +39,9 @@ namespace justinobney.gymbuddy.api.Helpers
         {
             _backgroundJobClient.Enqueue(() => _FollowFeed(feedSlug, userId, targetFeedSlug, targetUserId));
         }
-        
+
+        // This is not covered by a test because of issues with
+        // NSubstitute mocking the internal constructor...
         public void _FollowFeed(string feedSlug, string userId, string targetFeedSlug, string targetUserId)
         {
             var feed = _streamClient.Feed(feedSlug, userId);
