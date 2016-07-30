@@ -2,10 +2,12 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using Hangfire;
 using justinobney.gymbuddy.api.Data.Posts;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Interfaces;
+using justinobney.gymbuddy.api.Responses;
 using Stream;
 
 namespace justinobney.gymbuddy.api.Helpers
@@ -78,32 +80,24 @@ namespace justinobney.gymbuddy.api.Helpers
         public void AddActivityFromPostBackground(long postId)
         {
             var post = _posts
-                .Include(x => x.Contents)
+                .ProjectTo<PostSummaryListing>(MappingConfig.Config)
                 .FirstOrDefault(x => x.Id == postId);
 
-            var activity = new Activity($"User:{post.UserId}", "post", $"Post:{post.Id}")
-            {
-                ForeignId = $"Post:{post.Id}"
-            };
+            var activity = CreateActivityFromPost(post);
 
-            var postActivity = new Dictionary<string, object>();
-
-            var textContent = post.Contents.FirstOrDefault(x => x.Type == PostType.Text);
-            if (textContent != null)
-            {
-                postActivity["text"] = textContent.Value;
-            }
-
-            var imageContent = post.Contents.FirstOrDefault(x => x.Type == PostType.Image);
-            if (imageContent != null)
-            {
-                postActivity["imageUrl"] = imageContent.Value;
-            }
-
-            activity.SetData("post", postActivity);
-
-            var feed = _streamClient.Feed(StreamConstants.FeedUser, $"{post.UserId}");
+            var feed = _streamClient.Feed(StreamConstants.FeedUserPosts, $"{post.UserId}");
             Task.Run(() => feed.AddActivity(activity));
+        }
+
+        public Activity CreateActivityFromPost(PostSummaryListing postSummary)
+        {
+            var activity = new Activity($"User:{postSummary.UserId}", "post", $"Post:{postSummary.Id}")
+            {
+                ForeignId = $"Post:{postSummary.Id}"
+            };
+            
+            activity.SetData("meta", postSummary);
+            return activity;
         }
     }
 }

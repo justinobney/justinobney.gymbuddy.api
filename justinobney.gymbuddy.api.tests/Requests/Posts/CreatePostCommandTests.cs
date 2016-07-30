@@ -11,8 +11,10 @@ using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Posts;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
+using justinobney.gymbuddy.api.Helpers;
 using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Posts;
+using justinobney.gymbuddy.api.Responses;
 using justinobney.gymbuddy.api.tests.Helpers;
 using NSubstitute;
 using NUnit.Framework;
@@ -201,6 +203,48 @@ namespace justinobney.gymbuddy.api.tests.Requests.Posts
                     ),
                 Arg.Any<IState>()
                 );
+        }
+
+        [Test]
+        public void StreamClientProxy_AddActivityFromPostBackground()
+        {
+            var posts = Context.GetSet<Post>();
+            var streamClientProxy = Context.GetInstance<StreamClientProxy>();
+
+
+            var thePost = new Post
+            {
+                Id = 1,
+                Contents = new List<PostContent>
+                {
+                    new PostContent
+                    {
+                        Type = PostType.Text,
+                        Value = "Some text"
+                    }
+                },
+                Kudos = new List<PostKudos> { new PostKudos(), new PostKudos()},
+                Comments = new List<PostComment> {new PostComment {Value = "Hi"} },
+                User = CurrentUser,
+                UserId = CurrentUser.Id
+            };
+
+            var summary = MappingConfig.Instance.Map<PostSummaryListing>(thePost);
+
+            posts.Add(thePost);
+            var activity = streamClientProxy.CreateActivityFromPost(summary);
+            
+            activity.Actor.ShouldBe($"User:{CurrentUser.Id}");
+            activity.Verb.ShouldBe("post");
+            activity.Object.ShouldBe($"Post:{thePost.Id}");
+
+            var data = activity.GetData<PostSummaryListing>("meta");
+            data.UserName.ShouldBe(CurrentUser.Name);
+            data.ProfilePictureUrl.ShouldBe(CurrentUser.ProfilePictureUrl);
+            data.KudosCount.ShouldBe(2);
+            data.CommentCount.ShouldBe(1);
+            data.TextContent.Value.ShouldBe("Some text");
+            data.ImageContent.ShouldBeNull();
         }
     }
 }
