@@ -263,7 +263,7 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
                         x.Method.Name == "_FollowFeed"
                         && (string) x.Args[0] == "timeline"
                         && (string) x.Args[1] == "1"
-                        && (string) x.Args[2] == "user"
+                        && (string) x.Args[2] == "user_posts"
                         && (string) x.Args[3] == "2"
                     ),
                 Arg.Any<IState>()
@@ -275,7 +275,7 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
                         x.Method.Name == "_FollowFeed"
                         && (string) x.Args[0] == "timeline"
                         && (string) x.Args[1] == "2"
-                        && (string) x.Args[2] == "user"
+                        && (string) x.Args[2] == "user_posts"
                         && (string) x.Args[3] == "1"
                     ),
                 Arg.Any<IState>()
