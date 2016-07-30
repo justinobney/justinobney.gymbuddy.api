@@ -24,7 +24,7 @@
 
 * user_posts (flat)
 * user (flat)
-* timeline_flat (flat)
+* timeline (flat)
 * notification (notification)
 
 ## activity
@@ -36,7 +36,7 @@
 
 ## follows
 
-`timeline_flat:a` => `user_posts:b`
+`timeline:a` => `user_posts:b`
 
 ## actions
 
