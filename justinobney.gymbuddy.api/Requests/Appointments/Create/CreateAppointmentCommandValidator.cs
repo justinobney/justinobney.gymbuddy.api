@@ -18,7 +18,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Create
 
             Custom(
                 command =>
-                    !command.Location.IsNullOrWhiteSpace() || command.GymId != 0
+                    !command.Location.IsNullOrWhiteSpace() || (command.GymId.HasValue && command.GymId != 0)
                         ? null
                         : new ValidationFailure("Location", "A gym or location is required")
                 );
