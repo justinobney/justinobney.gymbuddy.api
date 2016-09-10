@@ -175,7 +175,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
         }
 
         [Test]
-        public void CreateAppointmentNotifier_SendsSquadUserNotification()
+        public void CreateAppointmentNotifier_SendsNonGymSquadUserNotification()
         {
             var users = Context.GetSet<User>();
             var friendships = Context.GetSet<Friendship>();
@@ -253,11 +253,11 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
             var request = new CreateAppointmentCommand
             {
                 UserId = CurrentUser.Id,
-                GymId = DefaultGym.Id,
+                Location = "Home",
                 Title = "Super WORKOUT",
                 TimeSlots = new List<DateTime?> { DateTime.Now }
             };
-            var response = new Appointment { UserId = 1, User = CurrentUser, GymId = DefaultGym.Id };
+            var response = new Appointment { UserId = 1, User = CurrentUser, Location = "Home" };
 
             handler.Notify(request, response);
 
