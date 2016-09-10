@@ -55,5 +55,20 @@ namespace justinobney.gymbuddy.api.tests.Requests.Appointments
             appt.TimeSlots.Count.ShouldBe(1);
             appt.Status.ShouldBe(AppointmentStatus.AwaitingGuests);
         }
+
+        [Test]
+        public void CreateAppointmentCommand_CreatesAppointment_AcceptsLocationInPlaceOfGymId()
+        {
+            var appt = Mediator.Send(new CreateAppointmentCommand
+            {
+                UserId = 1, // TODO: should throw on invalid user
+                Location = "Obney House Of Pain", // TODO: should throw on invalid gym
+                TimeSlots = new List<DateTime?> { DateTime.Now },
+                Title = "Back Day"
+            });
+
+            appt.TimeSlots.Count.ShouldBe(1);
+            appt.Status.ShouldBe(AppointmentStatus.AwaitingGuests);
+        }
     }
 }
