@@ -21,21 +21,35 @@ namespace justinobney.gymbuddy.api.Requests.Appointments
     public class GetAvailableAppointmentsForUserQueryHandler : IRequestHandler<GetAvailableAppointmentsForUserQuery, IQueryable<Appointment>>
     {
         private readonly IDbSet<Appointment> _appointments;
+        private readonly IDbSet<Friendship> _friendships;
         private readonly IDbSet<User> _users;
         
-        public GetAvailableAppointmentsForUserQueryHandler(IDbSet<Appointment> appointments, IDbSet<User> users)
+        public GetAvailableAppointmentsForUserQueryHandler(
+            IDbSet<Appointment> appointments,
+            IDbSet<Friendship> friendships,
+            IDbSet<User> users
+            )
         {
             _appointments = appointments;
+            _friendships = friendships;
             _users = users;
         }
 
         public IQueryable<Appointment> Handle(GetAvailableAppointmentsForUserQuery message)
         {
+            var friendUserIds =
+                _friendships.Where(x => x.UserId == message.UserId && x.Status == Enums.FriendshipStatus.Active)
+                    .Select(x => x.FriendId)
+                    .ToList();
+
             var user = _users.First(x => x.Id == message.UserId);
             var minTime = DateTime.UtcNow.AddMinutes(-30);
 
             Expression<Func<Appointment, bool>> predicate = appt =>
-                message.GymIds.Contains(appt.GymId.Value)
+                (
+                friendUserIds.Contains(appt.UserId) ||
+                (appt.GymId.HasValue && message.GymIds.Contains(appt.GymId.Value))
+                )
                 && appt.Status != AppointmentStatus.Confirmed
                 && appt.TimeSlots.Any(ts => ts.Time > minTime);
 

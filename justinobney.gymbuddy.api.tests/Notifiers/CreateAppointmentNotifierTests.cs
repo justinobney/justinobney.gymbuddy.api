@@ -271,7 +271,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
                 Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == "455655122"))
                 );
         }
-
+        
         [Test]
         public void CreateAppointmentNotifier_DoesNotSendSquadUserNotification()
         {
