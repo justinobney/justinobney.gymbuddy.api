@@ -514,6 +514,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
                 UserId = 1,
                 User = CurrentUser,
                 GymId = DefaultGym.Id,
+                Gym = DefaultGym,
                 TimeSlots = new List<AppointmentTimeSlot>
                 {
                     new AppointmentTimeSlot

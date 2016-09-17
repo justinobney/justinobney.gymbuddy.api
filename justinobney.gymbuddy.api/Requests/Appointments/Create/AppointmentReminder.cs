@@ -54,6 +54,7 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Create
         {
             var appt = _appointments
                 .Include(x=>x.User.Devices)
+                .Include(x => x.Gym)
                 .Include(x=>x.TimeSlots)
                 .FirstOrDefault(x => x.Id == appointmentId);
 
@@ -74,10 +75,11 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Create
                 Type = NofiticationTypes.CreateAppointment,
                 AppointmentId = appointmentId
             };
+
             var message = new NotificationPayload(additionalData)
             {
                 Title = "Upcoming Workout",
-                Message = "Upcoming Workout"
+                Message = $"{appt.Title} with {appt.User.Name} at {appt.Gym.Name}"
             };
 
             _pushNotifier.Send(message, notifyUsers.SelectMany(x => x.Devices));
