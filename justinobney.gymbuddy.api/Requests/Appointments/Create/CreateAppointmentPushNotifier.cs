@@ -38,10 +38,13 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Create
                 Type = NofiticationTypes.CreateAppointment,
                 AppointmentId = response.Id
             };
+
+            var place = response.Location ?? response.Gym.Name;
+
             var message = new NotificationPayload(additionalData)
             {
-                Title = "New Appointment Available",
-                Message = $"{response.User.Name} wants to work: {request.Title}"
+                Title = $"{response.User.Name} wants to work out",
+                Message = $"{request.Title} at {place}"
             };
 
             _pushNotifier.Send(message, notifyUsers.SelectMany(x => x.Devices));

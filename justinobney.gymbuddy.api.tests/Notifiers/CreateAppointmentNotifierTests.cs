@@ -75,11 +75,11 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
             var handler = Context.GetInstance<IPostRequestHandler<CreateAppointmentCommand, Appointment>>();
 
             var request = new CreateAppointmentCommand { UserId = 1, GymId = 1 };
-            var response = new Appointment { UserId = 1, User = new User { Name = "Justin" } };
+            var response = new Appointment { UserId = 1, User = new User { Name = "Justin" }, Gym = DefaultGym};
 
             handler.Notify(request, response);
             notifier.Received().Send(
-                Arg.Is<NotificationPayload>(x => x.Title == "New Appointment Available"),
+                Arg.Is<NotificationPayload>(x => x.Title == "Justin wants to work out"),
                 Arg.Any<IEnumerable<Device>>()
                 );
         }
@@ -119,12 +119,12 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
                 Title = "Super WORKOUT",
                 TimeSlots = new List<DateTime?> { DateTime.Now }
             };
-            var response = new Appointment { UserId = 1, User = CurrentUser, GymId = DefaultGym.Id };
+            var response = new Appointment { UserId = 1, User = CurrentUser, GymId = DefaultGym.Id, Gym = DefaultGym };
 
             handler.Notify(request, response);
 
             notifier.Received().Send(
-                Arg.Is<NotificationPayload>(x => x.Title == "New Appointment Available"),
+                Arg.Is<NotificationPayload>(x => x.Title == $"{CurrentUser.Name} wants to work out"),
                 Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == "98142"))
                 );
         }
@@ -164,7 +164,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
                 Title = "Super WORKOUT",
                 TimeSlots = new List<DateTime?> { DateTime.Now }
             };
-            var response = new Appointment { UserId = 1, User = CurrentUser, GymId = DefaultGym.Id };
+            var response = new Appointment { UserId = 1, User = CurrentUser, GymId = DefaultGym.Id, Gym = DefaultGym };
 
             handler.Notify(request, response);
 
@@ -257,17 +257,17 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
                 Title = "Super WORKOUT",
                 TimeSlots = new List<DateTime?> { DateTime.Now }
             };
-            var response = new Appointment { UserId = 1, User = CurrentUser, Location = "Home" };
+            var response = new Appointment { UserId = 1, User = CurrentUser, Location = "Home", Gym = DefaultGym };
 
             handler.Notify(request, response);
 
             notifier.Received().Send(
-                Arg.Is<NotificationPayload>(x => x.Title == "New Appointment Available"),
+                Arg.Is<NotificationPayload>(x => x.Title == $"{CurrentUser.Name} wants to work out"),
                 Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == "877777"))
                 );
 
             notifier.DidNotReceive().Send(
-                Arg.Is<NotificationPayload>(x => x.Title == "New Appointment Available"),
+                Arg.Is<NotificationPayload>(x => x.Title == $"{CurrentUser.Name} wants to work out"),
                 Arg.Is<IEnumerable<Device>>(x => x.Select(y => y.PushToken).Any(t => t == "455655122"))
                 );
         }
@@ -322,7 +322,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
                 Title = "Super WORKOUT",
                 TimeSlots = new List<DateTime?> { DateTime.Now }
             };
-            var response = new Appointment { UserId = 1, User = CurrentUser, GymId = DefaultGym.Id };
+            var response = new Appointment { UserId = 1, User = CurrentUser, GymId = DefaultGym.Id, Gym = DefaultGym };
 
             handler.Notify(request, response);
 
@@ -385,7 +385,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
                 Title = "Super WORKOUT",
                 TimeSlots = new List<DateTime?> { DateTime.Now }
             };
-            var response = new Appointment { UserId = 1, User = CurrentUser, GymId = DefaultGym.Id };
+            var response = new Appointment { UserId = 1, User = CurrentUser, GymId = DefaultGym.Id, Gym = DefaultGym };
 
             handler.Notify(request, response);
 
@@ -429,6 +429,7 @@ namespace justinobney.gymbuddy.api.tests.Notifiers
                 UserId = 1,
                 User = CurrentUser,
                 GymId = DefaultGym.Id,
+                Gym = DefaultGym,
                 TimeSlots = new List<AppointmentTimeSlot>
                 {
                     new AppointmentTimeSlot
