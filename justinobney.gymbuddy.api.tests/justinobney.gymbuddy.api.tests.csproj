@@ -172,6 +172,7 @@
     <Compile Include="Requests\Gyms\GymTests.cs" />
     <Compile Include="Requests\PostRequestHandlerTests.cs" />
     <Compile Include="Requests\Posts\CreatePostCommandTests.cs" />
+    <Compile Include="Requests\Posts\GetPostMetaDataQueryTests.cs" />
     <Compile Include="Requests\Posts\PostToggleKudosCommandTest.cs" />
     <Compile Include="Requests\Users\CreateUserStreamSetupTests.cs" />
     <Compile Include="Requests\UserTests.cs" />

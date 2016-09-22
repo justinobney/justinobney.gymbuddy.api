@@ -520,6 +520,7 @@
     <Compile Include="Requests\Gyms\GymPeekUsersCommand.cs" />
     <Compile Include="Requests\Posts\CreatePostCommand.cs" />
     <Compile Include="Requests\Posts\CreatePostCommandValidator.cs" />
+    <Compile Include="Requests\Posts\GetPostMetadataByIdsQuery.cs" />
     <Compile Include="Requests\Posts\GetUserActivityQuery.cs" />
     <Compile Include="Requests\Posts\ImageContentStrategy.cs" />
     <Compile Include="Requests\Posts\PostContentStrategyFactory.cs" />
