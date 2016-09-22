@@ -80,5 +80,10 @@ namespace justinobney.gymbuddy.api.tests
             Context.GetInstance<IImageUploader>().ClearReceivedCalls();
             Context.GetInstance<IPushNotifier>().ClearReceivedCalls();
         }
+
+        protected void AssertSaveChanges(int count)
+        {
+            Context.GetInstance<AppContext>().Received(count).SaveChanges();
+        }
     }
 }
