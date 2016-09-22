@@ -284,10 +284,7 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\MappingConfig.cs" />
@@ -549,11 +546,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="ApplicationInsights.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <EmbeddedResource Include="Migrations\201602102036566_Domain_Rebuild.resx">
       <DependentUpon>201602102036566_Domain_Rebuild.cs</DependentUpon>
     </EmbeddedResource>
@@ -638,14 +631,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <None Include="Project_Readme.html" />
     <None Include="Properties\PublishProfiles\gymbuddy.elevator2.com - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\gymbuddy.elevator2.com - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\GymBuddy.pubxml" />
-    <Content Include="Service References\Application Insights\ConnectedService.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

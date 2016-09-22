@@ -12,13 +12,11 @@ using justinobney.gymbuddy.api.Data.Posts;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
 using justinobney.gymbuddy.api.Helpers;
-using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Posts;
 using justinobney.gymbuddy.api.Responses;
 using justinobney.gymbuddy.api.tests.Helpers;
 using NSubstitute;
 using NUnit.Framework;
-using Stream;
 
 namespace justinobney.gymbuddy.api.tests.Requests.Posts
 {
