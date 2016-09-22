@@ -8,8 +8,6 @@ using Hangfire.States;
 using justinobney.gymbuddy.api.Data.Gyms;
 using justinobney.gymbuddy.api.Data.Users;
 using justinobney.gymbuddy.api.Enums;
-using justinobney.gymbuddy.api.Helpers;
-using justinobney.gymbuddy.api.Interfaces;
 using justinobney.gymbuddy.api.Requests.Friendships;
 using justinobney.gymbuddy.api.tests.Helpers;
 using NSubstitute;
@@ -325,7 +323,7 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
         [Test]
         public void GetFriendshipsByFacebookIdsHandlesNullFacebookIdCollection()
         {
-            var command = new GetFriendshipsByFacebookIdsCommand
+            var command = new GetFriendshipsByFacebookIdsQuery
             {
                 UserId = CurrentUser.Id,
                 FbIds = null
@@ -349,7 +347,7 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
 
             users.Attach(friend);
             
-            var command = new GetFriendshipsByFacebookIdsCommand
+            var command = new GetFriendshipsByFacebookIdsQuery
             {
                 UserId = friend.Id,
                 FbIds = new List<string> { "1337", "1337", "1447" }
@@ -373,7 +371,7 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
             };
             users.Attach(user);
 
-            var command = new GetFriendshipsByFacebookIdsCommand
+            var command = new GetFriendshipsByFacebookIdsQuery
             {
                 UserId = CurrentUser.Id,
                 FbIds = new List<string> { "1337", "1446", "s3dkl" }
@@ -432,7 +430,7 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
                 Initiator = true
             });
 
-            var command = new GetFriendshipsByFacebookIdsCommand
+            var command = new GetFriendshipsByFacebookIdsQuery
             {
                 UserId = CurrentUser.Id,
                 FbIds = new List<string> { "1337", "0", "1555" }
@@ -474,7 +472,7 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
             });
 
 
-            var command = new GetFriendshipsByFacebookIdsCommand
+            var command = new GetFriendshipsByFacebookIdsQuery
             {
                 UserId = CurrentUser.Id,
                 FbIds = new List<string> { "1337", "1446" }
@@ -516,7 +514,7 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
             });
 
 
-            var command = new GetFriendshipsByFacebookIdsCommand
+            var command = new GetFriendshipsByFacebookIdsQuery
             {
                 UserId = CurrentUser.Id,
                 FbIds = new List<string> { "1337", "1446" }
@@ -529,7 +527,7 @@ namespace justinobney.gymbuddy.api.tests.Requests.Friendships
         [Test]
         public void GetFriendshipsByFacebookIdsStatusSelf()
         {
-            var command = new GetFriendshipsByFacebookIdsCommand
+            var command = new GetFriendshipsByFacebookIdsQuery
             {
                 UserId = CurrentUser.Id,
                 FbIds = new List<string> { "1122334455", "1337" }

@@ -530,7 +530,7 @@
     <Compile Include="Requests\Users\CreateUserCommand.cs" />
     <Compile Include="Requests\Users\CreateUserStreamSetup.cs" />
     <Compile Include="Requests\Users\DeleteUserCommand.cs" />
-    <Compile Include="Requests\Friendships\GetFriendshipsByFacebookIdsCommand.cs" />
+    <Compile Include="Requests\Friendships\GetFriendshipsByFacebookIdsQuery.cs" />
     <Compile Include="Requests\Users\UpdateDeviceCommand.cs" />
     <Compile Include="Requests\Users\UpdateNotificationSettingsCommand.cs" />
     <Compile Include="Requests\Users\UpdateUserCommand.cs" />

@@ -94,7 +94,7 @@ namespace justinobney.gymbuddy.api.Controllers
             if (fbIds == null || !fbIds.Any())
                 return Content((HttpStatusCode)422, "Unprocessable Entity: Invalid parameter(s).");
 
-            return Ok(_mediator.Send(new GetFriendshipsByFacebookIdsCommand { UserId = CurrentUser.Id, FbIds = fbIds }));
+            return Ok(_mediator.Send(new GetFriendshipsByFacebookIdsQuery { UserId = CurrentUser.Id, FbIds = fbIds }));
         }
     }
 }

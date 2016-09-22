@@ -8,24 +8,24 @@ using System.Linq;
 
 namespace justinobney.gymbuddy.api.Requests.Friendships
 {
-    public class GetFriendshipsByFacebookIdsCommand : IRequest<ICollection<FacebookFriendshipListing>>
+    public class GetFriendshipsByFacebookIdsQuery : IRequest<ICollection<FacebookFriendshipListing>>
     {
         public long UserId { get; set; }
         public ICollection<string> FbIds { get; set; }
     }
 
-    public class GetUserListByFacebookIdsCommandHandler : IRequestHandler<GetFriendshipsByFacebookIdsCommand, ICollection<FacebookFriendshipListing>>
+    public class GetUserListByFacebookIdsQueryHandler : IRequestHandler<GetFriendshipsByFacebookIdsQuery, ICollection<FacebookFriendshipListing>>
     {
         private readonly IDbSet<User> _users;
         private readonly IDbSet<Friendship> _friendships;
 
-        public GetUserListByFacebookIdsCommandHandler(IDbSet<User> users, IDbSet<Friendship> friendships)
+        public GetUserListByFacebookIdsQueryHandler(IDbSet<User> users, IDbSet<Friendship> friendships)
         {
             _users = users;
             _friendships = friendships;
         }
 
-        public ICollection<FacebookFriendshipListing> Handle(GetFriendshipsByFacebookIdsCommand message)
+        public ICollection<FacebookFriendshipListing> Handle(GetFriendshipsByFacebookIdsQuery message)
         {
             var facebookFriendshipListings = new List<FacebookFriendshipListing>();
 
@@ -67,9 +67,9 @@ namespace justinobney.gymbuddy.api.Requests.Friendships
         }
     }
 
-    public class GetUserListByFacebookIdsCommandValidator : AbstractValidator<GetFriendshipsByFacebookIdsCommand>
+    public class GetUserListByFacebookIdsQueryValidator : AbstractValidator<GetFriendshipsByFacebookIdsQuery>
     {
-        public GetUserListByFacebookIdsCommandValidator()
+        public GetUserListByFacebookIdsQueryValidator()
         {
             RuleFor(x => x.FbIds).NotNull();
         }
