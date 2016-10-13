@@ -76,10 +76,12 @@ namespace justinobney.gymbuddy.api.Requests.Appointments.Create
                 AppointmentId = appointmentId
             };
 
+            var location = string.IsNullOrEmpty(appt.Location) ? appt.Gym?.Name : appt.Location;
+
             var message = new NotificationPayload(additionalData)
             {
                 Title = "Upcoming Workout",
-                Message = $"{appt.Title} with {appt.User.Name} at {appt.Gym.Name}"
+                Message = $"{appt.Title} with {appt.User.Name} at {location}"
             };
 
             _pushNotifier.Send(message, notifyUsers.SelectMany(x => x.Devices));
